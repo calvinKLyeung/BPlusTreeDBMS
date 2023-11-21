@@ -203,6 +203,30 @@ code/BPlusTreeDBMS.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_app.dir/build.make CMakeFiles/run_app.dir/code/BPlusTreeDBMS.cpp.s
 .PHONY : code/BPlusTreeDBMS.cpp.s
 
+tests/test_BPlusTreeDBMS.o: tests/test_BPlusTreeDBMS.cpp.o
+.PHONY : tests/test_BPlusTreeDBMS.o
+
+# target to build an object file
+tests/test_BPlusTreeDBMS.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/tests/test_BPlusTreeDBMS.cpp.o
+.PHONY : tests/test_BPlusTreeDBMS.cpp.o
+
+tests/test_BPlusTreeDBMS.i: tests/test_BPlusTreeDBMS.cpp.i
+.PHONY : tests/test_BPlusTreeDBMS.i
+
+# target to preprocess a source file
+tests/test_BPlusTreeDBMS.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/tests/test_BPlusTreeDBMS.cpp.i
+.PHONY : tests/test_BPlusTreeDBMS.cpp.i
+
+tests/test_BPlusTreeDBMS.s: tests/test_BPlusTreeDBMS.cpp.s
+.PHONY : tests/test_BPlusTreeDBMS.s
+
+# target to generate assembly for a file
+tests/test_BPlusTreeDBMS.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/tests/test_BPlusTreeDBMS.cpp.s
+.PHONY : tests/test_BPlusTreeDBMS.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -220,6 +244,9 @@ help:
 	@echo "... code/BPlusTreeDBMS.o"
 	@echo "... code/BPlusTreeDBMS.i"
 	@echo "... code/BPlusTreeDBMS.s"
+	@echo "... tests/test_BPlusTreeDBMS.o"
+	@echo "... tests/test_BPlusTreeDBMS.i"
+	@echo "... tests/test_BPlusTreeDBMS.s"
 .PHONY : help
 
 

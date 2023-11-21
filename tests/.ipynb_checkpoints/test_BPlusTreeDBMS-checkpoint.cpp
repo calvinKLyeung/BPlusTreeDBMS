@@ -2,7 +2,7 @@
 // in your homework submission.
 // Chekout TEST_F functions bellow to learn what is being tested.
 #include <gtest/gtest.h>
-#include "../code/BPlusTreeDBMS.h"
+#include "../code/B+TreeDBMS.h"
 
 #include <fstream>
 #include <iostream>
@@ -12,7 +12,7 @@
 
 using namespace std;
 
-class test_Gitlet : public ::testing::Test {
+class test_BPlusTreeDBMS : public ::testing::Test {
 protected:
 	// This function runs only once before any TEST_F function
 	static void SetUpTestCase(){
@@ -60,7 +60,7 @@ protected:
 
 
 
-TEST_F(test_Gitlet, TestGitleFunc1){
+TEST_F(test_BPlusTreeDBMS, TestGitleFunc1){
     Gitlet myobj;
     
     ASSERT_EQ(0, myobj.GitletFunc());
@@ -68,7 +68,7 @@ TEST_F(test_Gitlet, TestGitleFunc1){
         
 }
 
-TEST_F(test_Gitlet, TestGitleFunc2){
+TEST_F(test_BPlusTreeDBMS, TestGitleFunc2){
     Gitlet myobj;
     
     ASSERT_EQ(3, myobj.GitletFunc());

@@ -2,7 +2,7 @@
 // in your homework submission.
 // Chekout TEST_F functions bellow to learn what is being tested.
 #include <gtest/gtest.h>
-#include "../code/B+TreeDBMS.h"
+#include "../code/BPlusTreeDBMS.h"
 
 #include <fstream>
 #include <iostream>
@@ -12,7 +12,9 @@
 
 using namespace std;
 
-class test_Gitlet : public ::testing::Test {
+class test_BPlusTreeDBMS : public ::testing::Test {
+
+// Grade calculation
 protected:
 	// This function runs only once before any TEST_F function
 	static void SetUpTestCase(){
@@ -60,18 +62,33 @@ protected:
 
 
 
-TEST_F(test_Gitlet, TestGitleFunc1){
-    Gitlet myobj;
+// Actual TEST cases 
+TEST_F(test_BPlusTreeDBMS, TestBPlusTreeDBMSFunc1){
+	BPlusTreeDBMS myobj;
+
+	ASSERT_EQ(0, myobj.BPlusTreeDBMSFunc());
+	cout << "!!!!!!!!!!!" << endl; 
+	ASSERT_EQ(1, myobj.BPlusTreeDBMSFunc());
+	cout << "~~~~~~~~~" << endl; 
+
+	ASSERT_FALSE(myobj.test_false());
+
+	ASSERT_TRUE(myobj.test_true());
+        
+}
+
+TEST_F(test_BPlusTreeDBMS, TestBPlusTreeDBMSFunc2){
+    BPlusTreeDBMS myobj1;
     
-    ASSERT_EQ(0, myobj.GitletFunc());
+    ASSERT_EQ(15, myobj1.BPlusTreeDBMSFunc());
         
         
 }
 
-TEST_F(test_Gitlet, TestGitleFunc2){
-    Gitlet myobj;
+// TEST_F(test_BPlusTreeDBMS, TestBPlusTreeDBMSFunc3){
+//     BPlusTreeDBMS myobj2;
     
-    ASSERT_EQ(3, myobj.GitletFunc());
+//     ASSERT_NE(21, myobj2.BPlusTreeDBMSFunc(3));
         
         
-}
+// }

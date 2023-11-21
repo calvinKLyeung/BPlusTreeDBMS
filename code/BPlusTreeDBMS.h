@@ -11,9 +11,7 @@ struct node {
   shared_ptr<node> next;  // next: pointer to the next node in the list, or NULL if this is the last node.
 };
 
-// Linked List Invariant: following the 'next' links in a linked list
-// node must eventually lead to a NULL reference signifying the end of
-// the list. (E.g. no circular references are allowed.)
+
 class BPlusTreeDBMS {
 public:
   // constructor, initialize class variables and pointers here if need.
@@ -25,6 +23,9 @@ public:
   ~BPlusTreeDBMS();
 
   int BPlusTreeDBMSFunc();
+  bool test_true();
+  bool test_false();
+
     
     
 

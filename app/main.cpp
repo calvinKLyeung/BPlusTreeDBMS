@@ -19,7 +19,7 @@ bool check_required_argc(int argc, int required_len)
 int main (int argc, const char * argv[])
 {
   // no argv[1] given
-    
+    cout << "TEST!!!!!!! APP!!!!!!!!!!" << endl;
 
 	return 0;
 }

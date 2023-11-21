@@ -13,7 +13,17 @@ BPlusTreeDBMS::~BPlusTreeDBMS(){
 
 int BPlusTreeDBMS::BPlusTreeDBMSFunc()
 {
-    return 0;
+  return 2;
+}
+
+bool BPlusTreeDBMS::test_true()
+{
+  return true;
+}
+
+bool BPlusTreeDBMS::test_false()
+{
+  return false; 
 }
 
 
