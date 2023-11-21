@@ -2,7 +2,7 @@
 // in your homework submission.
 // Chekout TEST_F functions bellow to learn what is being tested.
 #include <gtest/gtest.h>
-#include "../code/B+TreeDBMS.h"
+#include "../code/BPlusTreeDBMS.h"
 
 #include <fstream>
 #include <iostream>
