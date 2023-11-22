@@ -3,12 +3,15 @@
 
 #include <string>
 #include <memory>
+#include <iostream>
+#include "Node.h"
+#include "BPlusTree.h"
 
-using namespace std;
+// using namespace std;
 
 struct node {
   int data;               // data: the value of this node
-  shared_ptr<node> next;  // next: pointer to the next node in the list, or NULL if this is the last node.
+  std::shared_ptr<node> next;  // next: pointer to the next node in the list, or NULL if this is the last node.
 };
 
 
@@ -30,7 +33,7 @@ public:
     
 
 private:
-  shared_ptr<node> top_ptr_;
+  std::shared_ptr<node> top_ptr_;
 
   // you can add add more private member variables and member functions here if you need
     
