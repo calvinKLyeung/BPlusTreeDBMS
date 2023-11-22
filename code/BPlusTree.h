@@ -15,14 +15,14 @@
 
 class BPlusTree {
 private:
-    std::shared_ptr<Node> root; 
+    Node* root; 
 
 
 public:
 
     BPlusTree();
     ~BPlusTree();
-    std::shared_ptr<Node> find(std::shared_ptr<Node> v);
+    Node* find(Node* v);
 
 };
 

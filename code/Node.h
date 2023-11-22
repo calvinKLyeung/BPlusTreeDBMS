@@ -21,10 +21,10 @@ private:
 
 
     int keys[ORDER_M];
-    std::shared_ptr<Node> children[ORDER_M + 1];
+    Node* children[ORDER_M + 1];
 
-    std::shared_ptr<Node> prev;
-    std::shared_ptr<Node> next;
+    Node* prev;
+    Node* next;
 
 
 
