@@ -176,6 +176,33 @@ app/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_app.dir/build.make CMakeFiles/run_app.dir/app/main.cpp.s
 .PHONY : app/main.cpp.s
 
+code/BPlusTree.o: code/BPlusTree.cpp.o
+.PHONY : code/BPlusTree.o
+
+# target to build an object file
+code/BPlusTree.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/code/BPlusTree.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_app.dir/build.make CMakeFiles/run_app.dir/code/BPlusTree.cpp.o
+.PHONY : code/BPlusTree.cpp.o
+
+code/BPlusTree.i: code/BPlusTree.cpp.i
+.PHONY : code/BPlusTree.i
+
+# target to preprocess a source file
+code/BPlusTree.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/code/BPlusTree.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_app.dir/build.make CMakeFiles/run_app.dir/code/BPlusTree.cpp.i
+.PHONY : code/BPlusTree.cpp.i
+
+code/BPlusTree.s: code/BPlusTree.cpp.s
+.PHONY : code/BPlusTree.s
+
+# target to generate assembly for a file
+code/BPlusTree.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/code/BPlusTree.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_app.dir/build.make CMakeFiles/run_app.dir/code/BPlusTree.cpp.s
+.PHONY : code/BPlusTree.cpp.s
+
 code/BPlusTreeDBMS.o: code/BPlusTreeDBMS.cpp.o
 .PHONY : code/BPlusTreeDBMS.o
 
@@ -202,6 +229,33 @@ code/BPlusTreeDBMS.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/code/BPlusTreeDBMS.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_app.dir/build.make CMakeFiles/run_app.dir/code/BPlusTreeDBMS.cpp.s
 .PHONY : code/BPlusTreeDBMS.cpp.s
+
+code/Node.o: code/Node.cpp.o
+.PHONY : code/Node.o
+
+# target to build an object file
+code/Node.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/code/Node.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_app.dir/build.make CMakeFiles/run_app.dir/code/Node.cpp.o
+.PHONY : code/Node.cpp.o
+
+code/Node.i: code/Node.cpp.i
+.PHONY : code/Node.i
+
+# target to preprocess a source file
+code/Node.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/code/Node.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_app.dir/build.make CMakeFiles/run_app.dir/code/Node.cpp.i
+.PHONY : code/Node.cpp.i
+
+code/Node.s: code/Node.cpp.s
+.PHONY : code/Node.s
+
+# target to generate assembly for a file
+code/Node.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_tests.dir/build.make CMakeFiles/run_tests.dir/code/Node.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/run_app.dir/build.make CMakeFiles/run_app.dir/code/Node.cpp.s
+.PHONY : code/Node.cpp.s
 
 tests/test_BPlusTreeDBMS.o: tests/test_BPlusTreeDBMS.cpp.o
 .PHONY : tests/test_BPlusTreeDBMS.o
@@ -241,9 +295,15 @@ help:
 	@echo "... app/main.o"
 	@echo "... app/main.i"
 	@echo "... app/main.s"
+	@echo "... code/BPlusTree.o"
+	@echo "... code/BPlusTree.i"
+	@echo "... code/BPlusTree.s"
 	@echo "... code/BPlusTreeDBMS.o"
 	@echo "... code/BPlusTreeDBMS.i"
 	@echo "... code/BPlusTreeDBMS.s"
+	@echo "... code/Node.o"
+	@echo "... code/Node.i"
+	@echo "... code/Node.s"
 	@echo "... tests/test_BPlusTreeDBMS.o"
 	@echo "... tests/test_BPlusTreeDBMS.i"
 	@echo "... tests/test_BPlusTreeDBMS.s"
