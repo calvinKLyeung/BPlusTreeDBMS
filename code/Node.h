@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <memory>
+#include <vector>
 
 // using namespace std;
 
@@ -15,28 +16,33 @@ private:
     bool leaf;
 
 
-    unsigned int slots; // how many empty slots remain?
+    unsigned int slots;  // number of valid keys in keys[]     BUT NOT     // how many empty slots remain?
     // OR 
-    unsigned int num_keys; // number of valid keys in keys[]
+    // unsigned int num_keys; // number of valid keys in keys[]
 
+    int keys[ORDER_M] = {0};
+    Node* children[ORDER_M + 1] = {NULL};
 
-    int keys[ORDER_M];
-    Node* children[ORDER_M + 1];
-
-    Node* prev;
-    Node* next;
+    Node* prev = NULL;
+    Node* next = NULL;
 
 
 
 public:
     // Public Node members in this block are implemented for you.
-    Node(std::string s);
+    Node();
+    Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slots, 
+        int _keys[], Node* _children[]);
+
     ~Node();
     std::string getData();
     bool IsLeaf();
     int getKey(unsigned int i);
+    unsigned int getSlots();
 
-    const int * Node::getArrayPointer() const;
+    // const int * accessKeysArray() const;
+    int* accessKeysArray();
+    Node* accessChildren();
 
     // Have you ever wondered when you say cout << "hello world!" << endl; what <<
     // means? how is it implemented? these are operator methods that you can

@@ -1,9 +1,26 @@
 #include "Node.h"
 
-Node::Node(std::string s) {
+Node::Node() {
     // DONE FOR YOU
-    data = s;
 }
+
+Node::Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slots, 
+            int _keys[], Node* _children[])
+{
+    this->data = _data;
+    this->level = _level;
+    this->leaf = _leaf;
+    this->slots = _slots;
+    for (unsigned int i=0; i<_slots;++i)
+    {
+        keys[i] = _keys[i];
+    }
+    for (unsigned int i=0; i<_slots + 1;++i)
+    {
+        children[i] = _children[i];
+    }
+}
+
 
 Node::~Node() {
     // "DONE" FOR YOU
@@ -32,10 +49,23 @@ int Node::getKey(unsigned int i)
     return this->keys[i];
 }
 
-const int *  Node::getArrayPointer() const 
+unsigned int Node::getSlots()
 {
-    // allow read only access to the private keys[] arr in 
+    return this->slots;
+}
+
+
+
+int* Node::accessKeysArray()
+{
+    // allow access to the private keys[] arr 
     return this->keys; 
+}
+
+Node* Node::accessChildren()
+{
+    // allow acces to the private children[] arr of pointers 
+    return *(this->children);
 }
 
 

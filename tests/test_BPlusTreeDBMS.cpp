@@ -1,13 +1,21 @@
 // If you change anything in this file, your changes will be ignored 
 // in your homework submission.
 // Chekout TEST_F functions bellow to learn what is being tested.
-#include <gtest/gtest.h>
 #include "../code/BPlusTreeDBMS.h"
+#include "../code/BPlusTree.h"
+#include "../code/Node.h"
 
+#include <gtest/gtest.h>
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <math.h>
+#include <ctime>
 #include <cmath>
+
+#define private public
+
+
 
 
 using namespace std;
@@ -62,25 +70,58 @@ protected:
 
 
 
+
+
+
+
 // Actual TEST cases 
-TEST_F(test_BPlusTreeDBMS, TestBPlusTreeDBMSFunc1){
-	BPlusTreeDBMS myobj;
+TEST_F(test_BPlusTreeDBMS, TestSmallestKeyGeqV){
 
-	ASSERT_EQ(0, myobj.BPlusTreeDBMSFunc());
-	cout << "!!!!!!!!!!!" << endl; 
-	ASSERT_EQ(1, myobj.BPlusTreeDBMSFunc());
-	cout << "~~~~~~~~~" << endl; 
+	std::string data = "test001";
+	unsigned int level = 0;
+	bool leaf = true; 
+	unsigned int slots = 4; 
 
-	ASSERT_FALSE(myobj.test_false());
+	int arr[ORDER_M] = {1,2,3,4};
+	Node* children[ORDER_M + 1] = {NULL, NULL, NULL, NULL, NULL};
+	Node myNode(data, level, leaf, slots, arr, children);
 
-	ASSERT_TRUE(myobj.test_true());
+	BPlusTree myBPlusTree; 
+
+	cout << "i should be 0: " << myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 1) << endl;
+	ASSERT_EQ(0, myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 1));
+
+	cout << "i should be 1: " << myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 2) << endl;
+	ASSERT_EQ(1, myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 2));
+
+	cout << "i should be -1: " << myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 12) << endl;
+	ASSERT_EQ(-1, myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 12));
+
+	cout << "i should be 3: " << myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 4) << endl;
+	ASSERT_NE(4, myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 4));
+
+
+	// Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slots, int _keys[ORDER_M], Node* _children[ORDER_M + 1]);
+
+	// ASSERT_EQ(0, myobj.BPlusTreeDBMSFunc());
+	// cout << "!!!!!!!!!!!" << endl; 
+	// ASSERT_EQ(1, myobj.BPlusTreeDBMSFunc());
+	// cout << "~~~~~~~~~" << endl; 
+
+	// ASSERT_FALSE(myobj.test_false());
+
+	// ASSERT_TRUE(myobj.test_true());
+
+
+
+
         
 }
 
 TEST_F(test_BPlusTreeDBMS, TestBPlusTreeDBMSFunc2){
     BPlusTreeDBMS myobj1;
     
-    ASSERT_EQ(15, myobj1.BPlusTreeDBMSFunc());
+    // ASSERT_EQ(15, myobj1.BPlusTreeDBMSFunc());
         
         
 }

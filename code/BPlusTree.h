@@ -4,7 +4,7 @@
 #include <iostream>
 #include <memory>
 #include "Node.h"
-#include "BPlusTree.h"
+
 
 // using namespace std;
 
@@ -22,7 +22,8 @@ public:
 
     BPlusTree();
     ~BPlusTree();
-    Node* find(Node* v);
+    Node* find(int v);
+    int IndexOfKiSmallestKeyGeqV(Node* curr_node, int v);
 
 };
 
