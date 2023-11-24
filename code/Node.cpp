@@ -5,20 +5,25 @@ Node::Node() {
 }
 
 Node::Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slots, 
-            int _keys[], Node* _children[])
+            int _keys[])
+            :
+            data{_data},
+            level{_level},
+            leaf{_leaf},
+            slots{_slots}
 {
-    this->data = _data;
-    this->level = _level;
-    this->leaf = _leaf;
-    this->slots = _slots;
+    // this->data = _data;
+    // this->level = _level;
+    // this->leaf = _leaf;
+    // this->slots = _slots;
     for (unsigned int i=0; i<_slots;++i)
     {
         keys[i] = _keys[i];
     }
-    for (unsigned int i=0; i<_slots + 1;++i)
-    {
-        children[i] = _children[i];
-    }
+    // for (unsigned int i=0; i<_slots + 1;++i)
+    // {
+    //     children[i] = _children[i];
+    // }
 }
 
 
@@ -55,6 +60,17 @@ unsigned int Node::getSlots()
 }
 
 
+void Node::setPrev(Node* node)
+{
+    this->prev = node;
+}
+void Node::setNext(Node* node)
+{
+    this->next = node;
+}
+
+
+
 
 int* Node::accessKeysArray()
 {
@@ -62,10 +78,10 @@ int* Node::accessKeysArray()
     return this->keys; 
 }
 
-Node* Node::accessChildren()
+Node** Node::accessChildren()
 {
     // allow acces to the private children[] arr of pointers 
-    return *(this->children);
+    return this->children;
 }
 
 

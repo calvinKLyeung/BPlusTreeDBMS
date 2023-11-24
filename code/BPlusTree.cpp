@@ -11,6 +11,18 @@ BPlusTree::~BPlusTree()
 
 }
 
+void BPlusTree::setRoot(Node* node)
+{
+    // set the given node as the root of BPluesTree
+    this->root = node;
+}
+
+Node* BPlusTree::getRoot()
+{
+    // get the root node store in the BPlusTree 
+    return this->root;
+}
+
 
 
 Node* BPlusTree::find(int v)
@@ -22,22 +34,24 @@ Node* BPlusTree::find(int v)
     // while loop to traverse the B+Tree 
     while (C->IsLeaf() == false)
     {
+        std::cout << "??????????????????????????" << std::endl;
+        std::cout << "v is now: " << v << std::endl;
         int i = this->IndexOfKiSmallestKeyGeqV(C, v);
-
+        std::cout << "IndexOfKiSmallestKeyGeqV: " << i << std::endl;
         // unsigned int i = C->getArrayPointer()[0]; // get first num in keys arr
 
         if (i == -1) // there is no such number i where K_{i} is smallest number such that v ≤ C.Ki
         {
-            unsigned int m = C->getSlots() + 1;  // m == index of last non-null pointer in the node
-            C = &(C->accessChildren()[m]); // Pointer at index m
+            unsigned int m = C->getSlots();  // m == index of last non-null pointer in the node, slot IS ALREADY the last pointer as Exclusive End indexing [0, 4)
+            C = C->accessChildren()[m]; // Pointer at index m
         }
         else if (v == C->getKey((unsigned int)i))
         {
-            C = &(C->accessChildren()[i+1]);
+            C = C->accessChildren()[i+1];
         }
         else // v < C.Ki  v strightly smaller than K_{i}
         {
-            C = &(C->accessChildren()[i]);
+            C = C->accessChildren()[i];
         }
     }
     // iterate through each key in the Leaf Node 
@@ -45,7 +59,9 @@ Node* BPlusTree::find(int v)
     {
         if (C->accessKeysArray()[i] == v)
         {
-            return &(C->accessChildren()[i]); // return Pi, a pointer that point to the Actual Disk?????
+            return C;
+
+            // return C->accessChildren()[i]; // return Pi, a pointer that point to the Actual Disk?????
         }
     }
     return NULL; // Not found 
@@ -75,12 +91,67 @@ Node* BPlusTree::find(int v)
 int BPlusTree::IndexOfKiSmallestKeyGeqV(Node* curr_node, int v)
 {
     // return index of K_{i} which is the smallest key >= v 
+    std::cout << "Where are We? : " << curr_node->getData() << std::endl;
+    std::cout << "What is SLots size: " << curr_node->getSlots() << std::endl;
     for (unsigned int i=0; i<curr_node->getSlots(); ++i)
     {
         if (v <= curr_node->accessKeysArray()[i])
-        {
+        {   
+            std::cout << "V is :" << v << std::endl;
+            std::cout << "V <= THE NUM is : " << curr_node->accessKeysArray()[i] << std::endl;
             return i; 
         }
     }
     return -1; 
 }
+
+std::set <Node *> BPlusTree::findRange(int lb, int ub)
+{
+    std::set <Node *> resultSet; 
+    Node* C = this->root; 
+
+    
+
+    return ;
+}
+
+
+
+
+
+
+// function findRange(lb, ub)
+// /* Returns all records with search key value V such that lb ≤ V ≤ ub. */
+//     Set resultSet = {};
+//     Set C = root node
+//     while (C is not a leaf node) begin
+//         Let i = smallest number such that lb ≤ C.Ki
+//         if there is no such number i then begin
+//             Let Pm = last non-null pointer in the node
+//             Set C = C.Pm
+//         end
+//         else if (lb = C.Ki) then Set C = C.Pi+1
+//         else Set C = C.Pi /* lb < C.Ki */
+//     end
+//     /* C is a leaf node */
+//     Let i be the least value such that Ki ≥ lb
+//     if there is no such i
+//         then Set i = 1 + number of keys in C; /* To force move to next leaf */
+//     Set done = false;
+//     while (not done) begin
+//         Let n = number of keys in C.
+//         if ( i ≤ n and C.Ki ≤ ub) then begin
+//             Add C.Pi to resultSet
+//             Set i = i + 1
+//         end
+//         else if (i ≤ n and C.Ki > ub)
+//             then Set done = true;
+//         else if (i > n and C.Pn+1 is not null)
+//             then Set C = C.Pn+1, and i = 1 /* Move to next leaf */
+//         else Set done = true; /* No more leaves to the right */
+//     end
+//     return resultSet;
+
+
+
+

@@ -32,7 +32,7 @@ public:
     // Public Node members in this block are implemented for you.
     Node();
     Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slots, 
-        int _keys[], Node* _children[]);
+        int _keys[]);
 
     ~Node();
     std::string getData();
@@ -40,9 +40,14 @@ public:
     int getKey(unsigned int i);
     unsigned int getSlots();
 
+
+    void setPrev(Node* node);
+    void setNext(Node* node);
+
+
     // const int * accessKeysArray() const;
     int* accessKeysArray();
-    Node* accessChildren();
+    Node** accessChildren();
 
     // Have you ever wondered when you say cout << "hello world!" << endl; what <<
     // means? how is it implemented? these are operator methods that you can
