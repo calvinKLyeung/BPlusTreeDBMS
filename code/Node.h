@@ -45,8 +45,8 @@ public:
     void setNext(Node* node);
 
 
-    // const int * accessKeysArray() const;
-    int* accessKeysArray();
+    // const int * accessKeys() const;
+    int* accessKeys();
     Node** accessChildren();
 
     // Have you ever wondered when you say cout << "hello world!" << endl; what <<

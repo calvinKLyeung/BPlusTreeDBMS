@@ -72,7 +72,7 @@ void Node::setNext(Node* node)
 
 
 
-int* Node::accessKeysArray()
+int* Node::accessKeys()
 {
     // allow access to the private keys[] arr 
     return this->keys; 

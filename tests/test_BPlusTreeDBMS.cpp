@@ -134,12 +134,12 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTreeFind){
 	cout << "What is in found_node" << endl;
 	for (unsigned int i=0; i<ORDER_M; ++i)
 	{
-		cout << found_node->accessKeysArray()[i] << endl; 
+		cout << found_node->accessKeys()[i] << endl; 
 	}
 	cout << "What is in NodeTracker[0]" << endl;
 	for (unsigned int i=0; i<ORDER_M; ++i)
 	{
-		cout << NodeTracker[1]->accessKeysArray()[i] << endl; 
+		cout << NodeTracker[1]->accessKeys()[i] << endl; 
 	}
 
 
