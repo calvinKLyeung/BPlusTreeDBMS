@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <set>
+#include <vector>
 #include "Node.h"
 
 
@@ -30,7 +31,9 @@ public:
     Node* find(int v);
     int IndexOfKiSmallestKeyGeqV(Node* curr_node, int v);
 
-    std::set <Node *> findRange(int lb, int ub);
+    int test(Node* curr_node, int v);
+
+    std::vector <Node *> findRange(int lb, int ub);
 
 };
 

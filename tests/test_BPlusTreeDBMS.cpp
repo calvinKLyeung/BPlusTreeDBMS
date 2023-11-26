@@ -70,11 +70,11 @@ protected:
 
 
 // Global variable for Testing 
-Node* NodeTracker[ORDER_M + 1] = {NULL};
+Node* GlobalNodeTracker[ORDER_M + 1] = {NULL};
 Node* GlobalRoot = NULL;
 
 // function declarations 
-BPlusTree* mkBPlusTree();
+BPlusTree* mkBPlusTree1();
 
 
 
@@ -122,60 +122,100 @@ TEST_F(test_BPlusTreeDBMS, TestSmallestKeyGeqV){
 }
 
 TEST_F(test_BPlusTreeDBMS, TestBPlusTreeFind){
-    BPlusTree* myBPlusTree = mkBPlusTree();
+    BPlusTree* myBPlusTree = mkBPlusTree1();
 
-	cout << "Checking if 16 is found in myNodeLeft" << endl; 
 	
 	
-	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 	Node* found_node = myBPlusTree->find(16);
-	cout << "=============================================" << endl;
 	cout << found_node << endl;
 	cout << "What is in found_node" << endl;
 	for (unsigned int i=0; i<ORDER_M; ++i)
 	{
 		cout << found_node->accessKeys()[i] << endl; 
 	}
-	cout << "What is in NodeTracker[0]" << endl;
+	cout << "What is in GlobalNodeTracker[0]" << endl;
 	for (unsigned int i=0; i<ORDER_M; ++i)
 	{
-		cout << NodeTracker[1]->accessKeys()[i] << endl; 
+		cout << GlobalNodeTracker[1]->accessKeys()[i] << endl; 
 	}
 
 
-	// ASSERT_EQ(NodeTracker[0], myBPlusTree->find(2)); 
-	ASSERT_EQ(NodeTracker[1], myBPlusTree->find(16)); 
-	ASSERT_EQ(NodeTracker[2], myBPlusTree->find(20)); 
-	ASSERT_EQ(NodeTracker[3], myBPlusTree->find(27)); 
-	ASSERT_EQ(NodeTracker[4], myBPlusTree->find(39)); 
+	// ASSERT_EQ(GlobalNodeTracker[0], myBPlusTree->find(2)); 
+	ASSERT_EQ(GlobalNodeTracker[1], myBPlusTree->find(16)); 
+	ASSERT_EQ(GlobalNodeTracker[2], myBPlusTree->find(20)); 
+	ASSERT_EQ(GlobalNodeTracker[3], myBPlusTree->find(27)); 
+	ASSERT_EQ(GlobalNodeTracker[4], myBPlusTree->find(39)); 
 
-	ASSERT_NE(NodeTracker[4], myBPlusTree->find(7)); 
-	ASSERT_NE(NodeTracker[3], myBPlusTree->find(14)); 
-	ASSERT_NE(NodeTracker[2], myBPlusTree->find(30)); 
-	ASSERT_NE(NodeTracker[1], myBPlusTree->find(13)); 
-	ASSERT_NE(NodeTracker[0], myBPlusTree->find(17)); 
+	ASSERT_NE(GlobalNodeTracker[4], myBPlusTree->find(7)); 
+	ASSERT_NE(GlobalNodeTracker[3], myBPlusTree->find(14)); 
+	ASSERT_NE(GlobalNodeTracker[2], myBPlusTree->find(30)); 
+	ASSERT_NE(GlobalNodeTracker[1], myBPlusTree->find(13)); 
+	ASSERT_NE(GlobalNodeTracker[0], myBPlusTree->find(17)); 
 
     
 	for (unsigned int i=0; i<5; ++i)
 	{
-		delete NodeTracker[i];
+		delete GlobalNodeTracker[i];
 	}
 	delete GlobalRoot;
 	delete myBPlusTree;
 }
 
-// TEST_F(test_BPlusTreeDBMS, TestBPlusTreeDBMSFunc3){
-//     BPlusTreeDBMS myobj2;
+TEST_F(test_BPlusTreeDBMS, TestBPlusTreeFindRange){
+
+	BPlusTree* myBPlusTree = mkBPlusTree1();
+
+	std::vector <Node *> resultSet = myBPlusTree->findRange(15, 28);
+
+	for(auto node : resultSet) 
+	{
+		cout << "The Adress of the node in Result Set is:" << endl; 
+  		cout << node << endl; 
+		for (unsigned int i=0; i<node->getSlots(); ++i)
+		{
+			cout << node->accessKeys()[i] << " "; 
+		}
+		cout << endl; 
+	}   
+
+	for (unsigned int i=0; i<resultSet.size(); ++i)
+	{
+		cout << GlobalNodeTracker[i+1] << " SHOULD BE THE SAME ADRESS AS " << resultSet[i] << endl; 
+	}
+
+
+	ASSERT_EQ(GlobalNodeTracker[1], resultSet[0]); 
+	ASSERT_EQ(GlobalNodeTracker[2], resultSet[1]); 
+	ASSERT_EQ(GlobalNodeTracker[3], resultSet[2]); 
+
+	for (auto node : resultSet)
+	{
+		ASSERT_NE(GlobalNodeTracker[0], node); 
+	}
+	for (auto node : resultSet)
+	{
+		ASSERT_NE(GlobalNodeTracker[4], node); 
+	}
+
+
     
-//     ASSERT_NE(21, myobj2.BPlusTreeDBMSFunc(3));
+	for (unsigned int i=0; i<5; ++i)
+	{
+		delete GlobalNodeTracker[i];
+	}
+	delete GlobalRoot;
+	delete myBPlusTree;
         
         
-// }
+}
+
+
+
 
 
 
 // Helper functions 
-BPlusTree* mkBPlusTree()
+BPlusTree* mkBPlusTree1()
 {
 	// Test BPlusTree Reference: https://web.stanford.edu/class/cs346/2015/notes/Blink.pdf
 	BPlusTree* myBPlusTree = new BPlusTree; 
@@ -229,16 +269,21 @@ BPlusTree* mkBPlusTree()
 	myBPlusTree->setRoot(myNodeRoot);
 
 
-	// Global NodeTrackerForTesting
+	// Global GlobalNodeTracker ForTesting
 	GlobalRoot = myNodeRoot;
-	NodeTracker[0] = myNodeLeft;
-	NodeTracker[1] = myNodeMid1;
-	NodeTracker[2] = myNodeMid2;
-	NodeTracker[3] = myNodeMid3;
-	NodeTracker[4] = myNodeRight;
+	GlobalNodeTracker[0] = myNodeLeft;
+	GlobalNodeTracker[1] = myNodeMid1;
+	GlobalNodeTracker[2] = myNodeMid2;
+	GlobalNodeTracker[3] = myNodeMid3;
+	GlobalNodeTracker[4] = myNodeRight;
 
 
 	return myBPlusTree; 
 }
+
+
+
+
+
 
 

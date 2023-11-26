@@ -62,11 +62,28 @@ unsigned int Node::getSlots()
 
 void Node::setPrev(Node* node)
 {
+    // set the node's prev pointer 
     this->prev = node;
 }
+
+Node* Node::getPrev()
+{
+    // get the prev pointer from the invoking Node 
+    return this->prev;
+}
+
+
+
 void Node::setNext(Node* node)
 {
+    // set the node's next pointer 
     this->next = node;
+}
+
+Node* Node::getNext()
+{
+    // get the next pointer from the invoking Node 
+    return this->next;
 }
 
 

@@ -93,7 +93,7 @@ int BPlusTree::IndexOfKiSmallestKeyGeqV(Node* curr_node, int v)
     // return index of K_{i} which is the smallest key >= v 
     std::cout << "Where are We? : " << curr_node->getData() << std::endl;
     std::cout << "What is SLots size: " << curr_node->getSlots() << std::endl;
-    for (unsigned int i=0; i<curr_node->getSlots(); ++i)
+    for (unsigned int i = 0; i < curr_node->getSlots(); ++i)
     {
         if (v <= curr_node->accessKeys()[i])
         {   
@@ -105,13 +105,13 @@ int BPlusTree::IndexOfKiSmallestKeyGeqV(Node* curr_node, int v)
     return -1; 
 }
 
-std::set <Node *> BPlusTree::findRange(int lb, int ub)
+std::vector <Node *> BPlusTree::findRange(int lb, int ub) // lb == lower bound, ub == upper bound 
 {
-    std::set <Node *> resultSet; 
+    std::vector <Node *> retSet; 
     Node* C = this->root; 
     while (C->IsLeaf() != true)
     {
-        unsigned int i = this->IndexOfKiSmallestKeyGeqV(C, lb);
+        int i = this->IndexOfKiSmallestKeyGeqV(C, lb);
         if (i == -1)   // -1 ==  there is no such number i such that lb <= C.Ki
         {
             unsigned int m = C->getSlots();
@@ -126,45 +126,74 @@ std::set <Node *> BPlusTree::findRange(int lb, int ub)
             C = C->accessChildren()[i]; // where lb < C.Ki
         }
     }
-    unsigned int i = this->IndexOfKiSmallestKeyGeqV(C, lb);  // i be the least value such that Ki >= lb
-    if (i == -1)
-    {
 
+    // if i != -1 == key exists or within range of current leaf node 
+    int i; // = this->IndexOfKiSmallestKeyGeqV(C, lb);  
+    // else, walk right to valid leaf node 
+    while(C != NULL && -1 == (i = this->IndexOfKiSmallestKeyGeqV(C, lb)))
+    {
+        C = C->getNext(); // access the next sibling on the right
     }
-    return ;
+
+    int j; // = this->test(C, ub);
+    while(C != NULL && -1 == (j = this->test(C, ub)))
+    {
+        retSet.push_back(C);
+        C = C->getNext();
+    }
+    retSet.push_back(C);
+
+    return retSet;
 }
 
-function findRange(lb, ub)
-/* Returns all records with search key value V such that lb ≤ V ≤ ub. */
-    Set resultSet = {};
-    Set C = root node
-    while (C is not a leaf node) begin
-        Let i = smallest number such that lb ≤ C.Ki
-        if there is no such number i then begin
-            Let Pm = last non-null pointer in the node
-            Set C = C.Pm
-        end
-        else if (lb = C.Ki) then Set C = C.Pi+1
-        else Set C = C.Pi /* lb < C.Ki */
-    end
-    /* C is a leaf node */
-    Let i be the least value such that Ki ≥ lb
-    if there is no such i
-        then Set i = 1 + number of keys in C; /* To force move to next leaf ?????????????????????*/
-    Set done = false;
-    while (not done) begin
-        Let n = number of keys in C.
-        if ( i ≤ n and C.Ki ≤ ub) then begin
-            Add C.Pi to resultSet
-            Set i = i + 1
-        end
-        else if (i ≤ n and C.Ki > ub)
-            then Set done = true;
-        else if (i > n and C.Pn+1 is not null)
-            then Set C = C.Pn+1, and i = 1 /* Move to next leaf */
-        else Set done = true; /* No more leaves to the right */
-    end
-    return resultSet;
+
+
+int BPlusTree::test(Node* curr_node, int v)
+{
+
+    for (unsigned int i = 0; i < curr_node->getSlots(); ++i)
+    {
+        if (v <= curr_node->accessKeys()[i])
+        {   
+            return i; 
+        }
+    }
+    return -1; 
+}
+
+
+
+// function findRange(lb, ub)
+// /* Returns all records with search key value V such that lb ≤ V ≤ ub. */
+//     Set resultSet = {};
+//     Set C = root node
+//     while (C is not a leaf node) begin
+//         Let i = smallest number such that lb ≤ C.Ki
+//         if there is no such number i then begin
+//             Let Pm = last non-null pointer in the node
+//             Set C = C.Pm
+//         end
+//         else if (lb = C.Ki) then Set C = C.Pi+1
+//         else Set C = C.Pi /* lb < C.Ki */
+//     end
+//     /* C is a leaf node */
+//     Let i be the least value such that Ki ≥ lb
+//     if there is no such i
+//         then Set i = 1 + number of keys in C; /* To force move to next leaf ?????????????????????*/
+//     Set done = false;
+//     while (not done) begin
+//         Let n = number of keys in C.
+//         if ( i ≤ n and C.Ki ≤ ub) then begin
+//             Add C.Pi to resultSet
+//             Set i = i + 1
+//         end
+//         else if (i ≤ n and C.Ki > ub)
+//             then Set done = true;
+//         else if (i > n and C.Pn+1 is not null)
+//             then Set C = C.Pn+1, and i = 1 /* Move to next leaf */
+//         else Set done = true; /* No more leaves to the right */
+//     end
+//     return resultSet;
 
 
 

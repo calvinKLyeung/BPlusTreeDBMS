@@ -42,7 +42,9 @@ public:
 
 
     void setPrev(Node* node);
+    Node* getPrev();
     void setNext(Node* node);
+    Node* getNext();
 
 
     // const int * accessKeys() const;
