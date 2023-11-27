@@ -75,6 +75,7 @@ Node* GlobalRoot = NULL;
 
 // function declarations 
 BPlusTree* mkBPlusTree1();
+bool BPlusTreeInvariantChecker();
 
 
 
@@ -160,6 +161,8 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTreeFind){
 	delete GlobalRoot;
 	delete myBPlusTree;
 }
+
+
 
 TEST_F(test_BPlusTreeDBMS, TestBPlusTreeFindRange){
 
@@ -279,6 +282,15 @@ BPlusTree* mkBPlusTree1()
 
 
 	return myBPlusTree; 
+}
+
+
+
+bool BPlusTreeInvariantChecker()
+{
+
+
+	return false; 
 }
 
 

@@ -20,8 +20,9 @@ private:
     // OR 
     // unsigned int num_keys; // number of valid keys in keys[]
 
-    int keys[ORDER_M] = {0};
-    Node* children[ORDER_M + 1] = {NULL};
+    // NOT STANDARD PRACTICE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    int keys[ORDER_M] = {0};  // ORDER_M - 1 == max keys 
+    Node* children[ORDER_M + 1] = {NULL}; // ORDER_M == may children 
 
     Node* prev = NULL;
     Node* next = NULL;

@@ -136,30 +136,30 @@ std::vector <Node *> BPlusTree::findRange(int lb, int ub) // lb == lower bound, 
     }
 
     int j; // = this->test(C, ub);
-    while(C != NULL && -1 == (j = this->test(C, ub)))
+    while(C != NULL && -1 == (j = IndexOfKiSmallestKeyGeqV(C, ub))) //this->test(C, ub)))
     {
         retSet.push_back(C);
         C = C->getNext();
     }
-    retSet.push_back(C);
+    retSet.push_back(C); 
 
     return retSet;
 }
 
 
 
-int BPlusTree::test(Node* curr_node, int v)
-{
+// int BPlusTree::test(Node* curr_node, int v)
+// {
 
-    for (unsigned int i = 0; i < curr_node->getSlots(); ++i)
-    {
-        if (v <= curr_node->accessKeys()[i])
-        {   
-            return i; 
-        }
-    }
-    return -1; 
-}
+//     for (unsigned int i = 0; i < curr_node->getSlots(); ++i)
+//     {
+//         if (v <= curr_node->accessKeys()[i])
+//         {   
+//             return i; 
+//         }
+//     }
+//     return -1; 
+// }
 
 
 
@@ -194,6 +194,116 @@ int BPlusTree::test(Node* curr_node, int v)
 //         else Set done = true; /* No more leaves to the right */
 //     end
 //     return resultSet;
+
+bool BPlusTree::insert(int key)
+{
+    bool ret = false; 
+    if (this->getRoot() == NULL)
+    {
+        int arr[] = {key};
+        Node* new_root_node = new Node("root", 0, true, 1, arr); // leaf == true 
+        this->setRoot(new_root_node);
+        ret = true; 
+    }
+    else
+    {
+        // walk to the leaf node L that should contain key value K
+        Node* L = this->root; 
+        while (L->IsLeaf() != true)
+        {
+            int i = this->IndexOfKiSmallestKeyGeqV(L, key);
+            if (i == -1)   // -1 ==  there is no such number i such that lb <= C.Ki
+            {
+                unsigned int m = L->getSlots();
+                L = L->accessChildren()[m];
+            }
+            else if (key == L->getKey((unsigned int)i))
+            {
+                L = L->accessChildren()[i+1];
+            }
+            else
+            {
+                L = L->accessChildren()[i]; // where lb < C.Ki
+            }
+        }
+
+        if (L->getSlots() < ORDER_M - 1)
+        {
+            this->insertInLeaf(L, key);
+        }
+        else
+        {
+            // Create NEW node L′
+            Node* new_root_node = new Node();
+        }
+    }
+
+}
+
+
+
+
+
+procedure insert(value K, pointer P)
+    if (tree is empty) create an empty leaf node L, which is also the root
+    else Find the leaf node L that should contain key value K
+        if (L has less than n − 1 key values)
+            then insert in leaf (L, K, P)
+        else begin /* L has n − 1 key values already, split it */
+            Create node L′
+            Copy L.P1 …L.Kn−1 to a block of memory T that can
+                hold n (pointer, key-value) pairs
+            insert in leaf (T, K, P)
+            Set L′
+            .Pn = L.Pn; Set L.Pn = L′
+            Erase L.P1 through L.Kn−1 from L
+            Copy T.P1 through T.K⌈n∕2⌉ from T into L starting at L.P1
+            Copy T.P⌈n∕2⌉+1 through T.Kn from T into L′ starting at L′.P1
+            Let K′ be the smallest key-value in L′
+            insert in parent(L, K′, L′)
+        end
+
+void BPlusTree::insertInLeaf(Node* L, int key)
+{
+    if (key < L->accessKeys()[0])
+    {
+        // move existing keys in L 1 slot to the right 
+        for (unsigned int i = L->getSlots() - 1; i >= 0; --i)
+        {
+            L->accessKeys()[i+1] = L->accessKeys()[i];
+        }
+        L->accessKeys()[0] = key;
+    }
+    else
+    {
+        // Let Ki be the highest value in L that is less than or equal to K
+        int i = -1; 
+        for (unsigned int j = L->getSlots() - 1; j >= 1; --i)
+        {
+            if ((L->accessKeys()[j] <= key))
+            {
+                i = j;
+                break; 
+            }
+        }
+        if (i != -1) // just in case? 
+        {
+            L->accessKeys()[i+1] = key;  // Insert P, K into L just after L.Ki
+        }
+    }
+}
+
+
+
+
+
+procedure insert in leaf (node L, value K, pointer P)
+    if (K < L.K1)
+        then insert P, K into L just before L.P1
+    else begin
+        Let Ki be the highest value in L that is less than or equal to K
+        Insert P, K into L just after L.Ki
+    end
 
 
 

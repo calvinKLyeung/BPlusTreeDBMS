@@ -30,10 +30,12 @@ public:
 
     Node* find(int v);
     int IndexOfKiSmallestKeyGeqV(Node* curr_node, int v);
-
-    int test(Node* curr_node, int v);
+    // int test(Node* curr_node, int v);
 
     std::vector <Node *> findRange(int lb, int ub);
+
+    bool insert(int key);
+    void insertInLeaf(Node* L, int key);
 
 };
 
