@@ -37,9 +37,12 @@ public:
 
     ~Node();
     std::string getData();
-    bool IsLeaf();
+    int getLevel();
+    bool isLeaf();
     int getKey(unsigned int i);
+
     unsigned int getSlots();
+    void setSlots(unsigned int slots);
 
 
     void setPrev(Node* node);

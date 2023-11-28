@@ -45,7 +45,12 @@ std::string Node::getData() {
     return data;
 }
 
-bool Node::IsLeaf()
+int Node::getLevel()
+{
+    this->level;
+}
+
+bool Node::isLeaf()
 {
     // return status of node to check if node is leaf or not 
     return this->leaf;
@@ -60,6 +65,11 @@ int Node::getKey(unsigned int i)
 unsigned int Node::getSlots()
 {
     return this->slots;
+}
+
+void Node::setSlots(unsigned int slots)
+{
+    this->slots = slots;
 }
 
 

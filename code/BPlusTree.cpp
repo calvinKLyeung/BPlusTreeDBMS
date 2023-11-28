@@ -14,13 +14,19 @@ BPlusTree::~BPlusTree()
 void BPlusTree::setRoot(Node* node)
 {
     // set the given node as the root of BPluesTree
-    this->root = node;
+    *(this->root) = node;
 }
 
-Node* BPlusTree::getRoot()
+Node* BPlusTree::getRootNode()
 {
-    // get the root node store in the BPlusTree 
-    return this->root;
+    // get the root node of the BPlusTree, by dereferencing the double pointer of the root 
+    return *(this->root);
+}
+
+Node** BPlusTree::getRoot()
+{
+    // return the root pointer of pointer of node as is 
+    return this->root; 
 }
 
 
@@ -29,10 +35,10 @@ Node* BPlusTree::find(int v)
 {
     /* Assumes no duplicate keys, and returns pointer to the record with
     * search key value v if such a record exists, and null otherwise */
-    Node* C = this->root;
+    Node* C = this->getRootNode();
 
     // while loop to traverse the B+Tree 
-    while (C->IsLeaf() != true)
+    while (C->isLeaf() != true)
     {
         std::cout << "??????????????????????????" << std::endl;
         std::cout << "v is now: " << v << std::endl;
@@ -108,8 +114,8 @@ int BPlusTree::IndexOfKiSmallestKeyGeqV(Node* curr_node, int v)
 std::vector <Node *> BPlusTree::findRange(int lb, int ub) // lb == lower bound, ub == upper bound 
 {
     std::vector <Node *> retSet; 
-    Node* C = this->root; 
-    while (C->IsLeaf() != true)
+    Node* C = this->getRootNode(); 
+    while (C->isLeaf() != true)
     {
         int i = this->IndexOfKiSmallestKeyGeqV(C, lb);
         if (i == -1)   // -1 ==  there is no such number i such that lb <= C.Ki
@@ -198,7 +204,7 @@ std::vector <Node *> BPlusTree::findRange(int lb, int ub) // lb == lower bound, 
 bool BPlusTree::insert(int key)
 {
     bool ret = false; 
-    if (this->getRoot() == NULL)
+    if (this->getRootNode() == NULL)
     {
         int arr[] = {key};
         Node* new_root_node = new Node("root", 0, true, 1, arr); // leaf == true 
@@ -208,8 +214,8 @@ bool BPlusTree::insert(int key)
     else
     {
         // walk to the leaf node L that should contain key value K
-        Node* L = this->root; 
-        while (L->IsLeaf() != true)
+        Node* L = this->getRootNode(); 
+        while (L->isLeaf() != true)
         {
             int i = this->IndexOfKiSmallestKeyGeqV(L, key);
             if (i == -1)   // -1 ==  there is no such number i such that lb <= C.Ki
@@ -229,41 +235,68 @@ bool BPlusTree::insert(int key)
 
         if (L->getSlots() < ORDER_M - 1)
         {
-            this->insertInLeaf(L, key);
+            this->InsertInLeaf(L, key);
         }
-        else
+        else  /* L has n − 1 key values already, split it */
         {
             // Create NEW node L′
-            Node* new_root_node = new Node();
+            Node* LPrime = new Node();
+            Node* T = new Node(L->getData(), L->getLevel(), L->isLeaf(), L->getSlots(), L->accessKeys()); 
+            this->InsertInLeaf(T, key); // should be OVerFull after InsertInLeaf() ?
+
+            // Meaningless since Our Leaf Nodes' children are NULL by set up 
+            // LPrime->accessChildren()[ORDER_M] = L->accessChildren()[ORDER_M]; 
+            // Not inCompatible to our own design!!!
+            // L->accessChildren()[ORDER_M] = LPrime; 
+
+            LPrime->setNext(L->getNext()); 
+            L->setNext(LPrime);
+
+
+            unsigned int mDividedByTwoCeiling = ceil(ORDER_M / 2.0);
+            L->setSlots(mDividedByTwoCeiling);
+            // Copy Valid keys from T to L 
+            for (unsigned int i = 0; i < L->getSlots(); ++i)
+            {   
+                L->accessKeys()[i] = T->accessKeys()[i]; 
+            }
+
+            LPrime->setSlots(ORDER_M - mDividedByTwoCeiling);
+            for (unsigned int i = 0; i < LPrime->getSlots(); ++i) //ceil(ORDER_M / 2.0); i < ORDER_M; ++i)
+            {
+                LPrime->accessKeys()[i] = T->accessKeys()[i + mDividedByTwoCeiling];
+            }
+
+            int KPrime = LPrime->accessKeys()[0]; 
+            this->InsertInParent(L, KPrime, LPrime);
+
+
         }
     }
 
 }
 
 
+// procedure insert(value K, pointer P)
+//     if (tree is empty) create an empty leaf node L, which is also the root
+//     else Find the leaf node L that should contain key value K
+//         if (L has less than n − 1 key values)
+//             then insert in leaf (L, K, P)
+//         else begin /* L has n − 1 key values already, split it */
+//             Create node L′
+//             Copy L.P1 …L.Kn−1 to a block of memory T that can
+//                 hold n (pointer, key-value) pairs
+//             insert in leaf (T, K, P)
+//             Set L′
+//             .Pn = L.Pn; Set L.Pn = L′
+//             Erase L.P1 through L.Kn−1 from L
+//             Copy T.P1 through T.K⌈n∕2⌉ from T into L starting at L.P1
+//             Copy T.P⌈n∕2⌉+1 through T.Kn from T into L′ starting at L′.P1
+//             Let K′ be the smallest key-value in L′
+//             insert in parent(L, K′, L′)
+//         end
 
-
-
-procedure insert(value K, pointer P)
-    if (tree is empty) create an empty leaf node L, which is also the root
-    else Find the leaf node L that should contain key value K
-        if (L has less than n − 1 key values)
-            then insert in leaf (L, K, P)
-        else begin /* L has n − 1 key values already, split it */
-            Create node L′
-            Copy L.P1 …L.Kn−1 to a block of memory T that can
-                hold n (pointer, key-value) pairs
-            insert in leaf (T, K, P)
-            Set L′
-            .Pn = L.Pn; Set L.Pn = L′
-            Erase L.P1 through L.Kn−1 from L
-            Copy T.P1 through T.K⌈n∕2⌉ from T into L starting at L.P1
-            Copy T.P⌈n∕2⌉+1 through T.Kn from T into L′ starting at L′.P1
-            Let K′ be the smallest key-value in L′
-            insert in parent(L, K′, L′)
-        end
-
-void BPlusTree::insertInLeaf(Node* L, int key)
+void BPlusTree::InsertInLeaf(Node* L, int key)
 {
     if (key < L->accessKeys()[0])
     {
@@ -293,18 +326,112 @@ void BPlusTree::insertInLeaf(Node* L, int key)
     }
 }
 
+// procedure insert in leaf (node L, value K, pointer P)
+//     if (K < L.K1)
+//         then insert P, K into L just before L.P1
+//     else begin
+//         Let Ki be the highest value in L that is less than or equal to K
+//         Insert P, K into L just after L.Ki
+//     end
 
 
+void BPlusTree::InsertInParent(Node* N, int KPrime, Node* NPrime)
+{
+    if (this->getRootNode() == N)
+    {
+        int arr[] = {KPrime}; 
+        Node* R = new Node("rootR", 0, false, 1, arr);
+        R->accessChildren()[0] = N;             // Left pointer 
+        R->accessChildren()[1] = NPrime;        // Mid1 pointer 
+        this->setRoot(R);
+        return; 
+    }
+    Node* P = this->getParentNode(N); // Set Node* P to the Parent Node of N 
+    
+        
+}
+
+// procedure insert in parent(node N, value K′, node N′)
+//     if (N is the root of the tree)
+//         then begin
+//             Create a new node R containing N, K′, N′ /* N and N′ are pointers */
+//             Make R the root of the tree
+//             return
+//         end
+//     Let P = parent (N)
+//     if (P has less than n pointers)
+//         then insert (K′, N′) in P just after N
+//     else begin /* Split P */
+//         Copy P to a block of memory T that can hold P and (K′, N′)
+//         Insert (K′, N′) into T just after N
+//         Erase all entries from P; Create node P′
+//         Copy T.P1 …T.P⌈(n+1)∕2⌉ into P
+//         Let K′′ = T.K⌈(n+1)∕2⌉
+//         Copy T.P⌈(n+1)∕2⌉+1 …T.Pn+1 into P′
+//         insert in parent(P, K′′, P′)
+//     end
+
+Node* BPlusTree::getParentNode(Node* N)
+{
+    Node* tracer = this->getRootNode(); // cannot use getRootNode() here because we want to work with pointer of pointer to Root node 
+
+    // use 1st key in node N as guidance to traverse
+    int key = N->accessKeys()[0]; 
+
+    // if 1 of the child of tracer == N, tracer node is Parent of N
+    for (unsigned int i = 0; i < tracer->getSlots() + 1; ++i)
+    {
+        if (tracer->accessChildren()[i] == N)
+        {
+            return tracer; 
+        }
+    }
+    
+    // WRONG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // else follow the key as guidence to the next level of node 
+    int i = this->IndexOfKiSmallestKeyGeqV(tracer, key);
+    if (i == -1)
+    {
+        unsigned int m = tracer->getSlots();
+        tracer = tracer->accessChildren()[m]; 
+    }
+    else if (key == tracer->getKey((unsigned int) i))
+    {
+        tracer = tracer->accessChildren()[i+1]; 
+    }
+    else
+    {
+        tracer = tracer->accessChildren()[i]; 
+    }
 
 
-procedure insert in leaf (node L, value K, pointer P)
-    if (K < L.K1)
-        then insert P, K into L just before L.P1
-    else begin
-        Let Ki be the highest value in L that is less than or equal to K
-        Insert P, K into L just after L.Ki
-    end
+}
 
 
+Node* C = this->getRootNode();
+
+    // while loop to traverse the B+Tree 
+    while (C->isLeaf() != true)
+    {
+        std::cout << "??????????????????????????" << std::endl;
+        std::cout << "v is now: " << v << std::endl;
+        int i = this->IndexOfKiSmallestKeyGeqV(C, v);
+        std::cout << "IndexOfKiSmallestKeyGeqV: " << i << std::endl;
+        // unsigned int i = C->getArrayPointer()[0]; // get first num in keys arr
+
+        if (i == -1) // -1 == there is no such number i where K_{i} is smallest number such that v ≤ C.Ki
+        {
+            unsigned int m = C->getSlots();  // m == index of last non-null pointer in the node, slot IS ALREADY the last pointer as Exclusive End indexing [0, 4)
+            C = C->accessChildren()[m]; // Pointer at index m
+        }
+        else if (v == C->getKey((unsigned int) i))
+        {
+            C = C->accessChildren()[i+1];
+        }
+        else // v < C.Ki  v strightly smaller than K_{i}
+        {
+            C = C->accessChildren()[i];
+        }
+    }
 
 

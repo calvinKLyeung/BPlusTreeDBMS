@@ -5,7 +5,9 @@
 #include <memory>
 #include <set>
 #include <vector>
+#include <cmath>
 #include "Node.h"
+
 
 
 // using namespace std;
@@ -17,7 +19,7 @@
 
 class BPlusTree {
 private:
-    Node* root; 
+    Node** root; 
 
 
 
@@ -26,7 +28,8 @@ public:
     BPlusTree();
     ~BPlusTree();
     void setRoot(Node* node);
-    Node* getRoot();
+    Node* getRootNode();
+    Node** getRoot();
 
     Node* find(int v);
     int IndexOfKiSmallestKeyGeqV(Node* curr_node, int v);
@@ -35,7 +38,9 @@ public:
     std::vector <Node *> findRange(int lb, int ub);
 
     bool insert(int key);
-    void insertInLeaf(Node* L, int key);
+    void InsertInLeaf(Node* L, int key);
+    void InsertInParent(Node* N, int KPrime, Node* NPrime);
+    Node* getParentNode(Node* N);
 
 };
 
