@@ -19,7 +19,7 @@
 
 class BPlusTree {
 private:
-    Node** root; 
+    Node* root; 
 
 
 
@@ -29,7 +29,7 @@ public:
     ~BPlusTree();
     void setRoot(Node* node);
     Node* getRootNode();
-    Node** getRoot();
+    //Node** getRoot();
 
     Node* find(int v);
     int IndexOfKiSmallestKeyGeqV(Node* curr_node, int v);
@@ -41,6 +41,8 @@ public:
     void InsertInLeaf(Node* L, int key);
     void InsertInParent(Node* N, int KPrime, Node* NPrime);
     Node* getParentNode(Node* N);
+
+    void InsertInInternalNode(Node* P, Node* N, int KPrime, Node* NPrime);
 
 };
 

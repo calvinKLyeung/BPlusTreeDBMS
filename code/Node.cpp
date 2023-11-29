@@ -47,7 +47,7 @@ std::string Node::getData() {
 
 int Node::getLevel()
 {
-    this->level;
+    return this->level;
 }
 
 bool Node::isLeaf()

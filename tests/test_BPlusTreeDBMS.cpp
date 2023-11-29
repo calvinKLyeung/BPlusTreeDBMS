@@ -70,8 +70,8 @@ protected:
 
 
 // Global variable for Testing 
-Node* GlobalNodeTracker[ORDER_M + 1] = {NULL};
-Node* GlobalRoot = NULL;
+Node* GlobalNodeTracker1[ORDER_M + 1] = {NULL};
+Node* GlobalRoot1 = NULL;
 
 // function declarations 
 BPlusTree* mkBPlusTree1();
@@ -92,16 +92,16 @@ TEST_F(test_BPlusTreeDBMS, TestSmallestKeyGeqV){
 	Node myNode("test001", 0, true, 4, arr);
 	BPlusTree myBPlusTree; 
 
-	cout << "i should be 0: " << myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 1) << endl;
+	// cout << "i should be 0: " << myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 1) << endl;
 	ASSERT_EQ(0, myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 1));
 
-	cout << "i should be 1: " << myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 2) << endl;
+	// cout << "i should be 1: " << myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 2) << endl;
 	ASSERT_EQ(1, myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 2));
 
-	cout << "i should be -1: " << myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 12) << endl;
+	// cout << "i should be -1: " << myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 12) << endl;
 	ASSERT_EQ(-1, myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 12));
 
-	cout << "i should be 3: " << myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 4) << endl;
+	// cout << "i should be 3: " << myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 4) << endl;
 	ASSERT_NE(4, myBPlusTree.IndexOfKiSmallestKeyGeqV(&myNode, 4));
 
 
@@ -128,37 +128,37 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTreeFind){
 	
 	
 	Node* found_node = myBPlusTree->find(16);
-	cout << found_node << endl;
-	cout << "What is in found_node" << endl;
-	for (unsigned int i=0; i<ORDER_M; ++i)
-	{
-		cout << found_node->accessKeys()[i] << endl; 
-	}
-	cout << "What is in GlobalNodeTracker[0]" << endl;
-	for (unsigned int i=0; i<ORDER_M; ++i)
-	{
-		cout << GlobalNodeTracker[1]->accessKeys()[i] << endl; 
-	}
+	// cout << found_node << endl;
+	// cout << "What is in found_node" << endl;
+	// for (unsigned int i=0; i<ORDER_M; ++i)
+	// {
+	// 	cout << found_node->accessKeys()[i] << endl; 
+	// }
+	// cout << "What is in GlobalNodeTracker1[0]" << endl;
+	// for (unsigned int i=0; i<ORDER_M; ++i)
+	// {
+	// 	cout << GlobalNodeTracker1[1]->accessKeys()[i] << endl; 
+	// }
 
 
-	// ASSERT_EQ(GlobalNodeTracker[0], myBPlusTree->find(2)); 
-	ASSERT_EQ(GlobalNodeTracker[1], myBPlusTree->find(16)); 
-	ASSERT_EQ(GlobalNodeTracker[2], myBPlusTree->find(20)); 
-	ASSERT_EQ(GlobalNodeTracker[3], myBPlusTree->find(27)); 
-	ASSERT_EQ(GlobalNodeTracker[4], myBPlusTree->find(39)); 
+	// ASSERT_EQ(GlobalNodeTracker1[0], myBPlusTree->find(2)); 
+	ASSERT_EQ(GlobalNodeTracker1[1], myBPlusTree->find(16)); 
+	ASSERT_EQ(GlobalNodeTracker1[2], myBPlusTree->find(20)); 
+	ASSERT_EQ(GlobalNodeTracker1[3], myBPlusTree->find(27)); 
+	ASSERT_EQ(GlobalNodeTracker1[4], myBPlusTree->find(39)); 
 
-	ASSERT_NE(GlobalNodeTracker[4], myBPlusTree->find(7)); 
-	ASSERT_NE(GlobalNodeTracker[3], myBPlusTree->find(14)); 
-	ASSERT_NE(GlobalNodeTracker[2], myBPlusTree->find(30)); 
-	ASSERT_NE(GlobalNodeTracker[1], myBPlusTree->find(13)); 
-	ASSERT_NE(GlobalNodeTracker[0], myBPlusTree->find(17)); 
+	ASSERT_NE(GlobalNodeTracker1[4], myBPlusTree->find(7)); 
+	ASSERT_NE(GlobalNodeTracker1[3], myBPlusTree->find(14)); 
+	ASSERT_NE(GlobalNodeTracker1[2], myBPlusTree->find(30)); 
+	ASSERT_NE(GlobalNodeTracker1[1], myBPlusTree->find(13)); 
+	ASSERT_NE(GlobalNodeTracker1[0], myBPlusTree->find(17)); 
 
     
-	for (unsigned int i=0; i<5; ++i)
+	for (unsigned int i=0; i<ORDER_M; ++i)
 	{
-		delete GlobalNodeTracker[i];
+		delete GlobalNodeTracker1[i];
 	}
-	delete GlobalRoot;
+	delete GlobalRoot1;
 	delete myBPlusTree;
 }
 
@@ -170,49 +170,162 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTreeFindRange){
 
 	std::vector <Node *> resultSet = myBPlusTree->findRange(15, 28);
 
-	for(auto node : resultSet) 
-	{
-		cout << "The Adress of the node in Result Set is:" << endl; 
-  		cout << node << endl; 
-		for (unsigned int i=0; i<node->getSlots(); ++i)
-		{
-			cout << node->accessKeys()[i] << " "; 
-		}
-		cout << endl; 
-	}   
+	// for(auto node : resultSet) 
+	// {
+	// 	cout << "The Adress of the node in Result Set is:" << endl; 
+  	// 	cout << node << endl; 
+	// 	for (unsigned int i=0; i<node->getSlots(); ++i)
+	// 	{
+	// 		cout << node->accessKeys()[i] << " "; 
+	// 	}
+	// 	cout << endl; 
+	// }   
 
-	for (unsigned int i=0; i<resultSet.size(); ++i)
-	{
-		cout << GlobalNodeTracker[i+1] << " SHOULD BE THE SAME ADRESS AS " << resultSet[i] << endl; 
-	}
+	// for (unsigned int i=0; i<resultSet.size(); ++i)
+	// {
+	// 	cout << GlobalNodeTracker1[i+1] << " SHOULD BE THE SAME ADRESS AS " << resultSet[i] << endl; 
+	// }
 
 
-	ASSERT_EQ(GlobalNodeTracker[1], resultSet[0]); 
-	ASSERT_EQ(GlobalNodeTracker[2], resultSet[1]); 
-	ASSERT_EQ(GlobalNodeTracker[3], resultSet[2]); 
+	ASSERT_EQ(GlobalNodeTracker1[1], resultSet[0]); 
+	ASSERT_EQ(GlobalNodeTracker1[2], resultSet[1]); 
+	ASSERT_EQ(GlobalNodeTracker1[3], resultSet[2]); 
 
 	for (auto node : resultSet)
 	{
-		ASSERT_NE(GlobalNodeTracker[0], node); 
+		ASSERT_NE(GlobalNodeTracker1[0], node); 
 	}
 	for (auto node : resultSet)
 	{
-		ASSERT_NE(GlobalNodeTracker[4], node); 
+		ASSERT_NE(GlobalNodeTracker1[4], node); 
 	}
 
 
     
-	for (unsigned int i=0; i<5; ++i)
+	for (unsigned int i=0; i<ORDER_M; ++i)
 	{
-		delete GlobalNodeTracker[i];
+		delete GlobalNodeTracker1[i];
 	}
-	delete GlobalRoot;
+	delete GlobalRoot1;
 	delete myBPlusTree;
         
         
 }
 
 
+TEST_F(test_BPlusTreeDBMS, TestBPlusTreeInsertInLeaf){
+
+	// TESTing key < keys[0]
+	BPlusTree* myBPlusTree = mkBPlusTree1();
+	int arr[] = {5, 8};
+	Node* Leaf_Example = new Node("test_leaf", 0, true, 2, 
+        arr);
+	
+	// for (unsigned int i=0; i < Leaf_Example->getSlots(); ++i)
+	// {
+	// 	cout << Leaf_Example->accessKeys()[i] << endl;
+	// }	
+
+	myBPlusTree->InsertInLeaf(Leaf_Example, 4);
+
+	// for (unsigned int i=0; i<Leaf_Example->getSlots(); ++i)
+	// {
+	// 	cout << Leaf_Example->accessKeys()[i] << endl;
+	// }	
+
+	ASSERT_TRUE(Leaf_Example->accessKeys()[0] == 4);
+	ASSERT_TRUE(Leaf_Example->accessKeys()[1] == 5);
+	ASSERT_TRUE(Leaf_Example->accessKeys()[2] == 8);
+	delete Leaf_Example;
+
+
+
+
+	// // TESTing key insert in the middle 
+	BPlusTree* myBPlusTree1 = mkBPlusTree1();
+	int arr1[] = {5, 8};
+	Node* Leaf_Example1 = new Node("test_leaf", 0, true, 2, 
+        arr1);
+	
+	// for (unsigned int i=0; i < Leaf_Example1->getSlots(); ++i)
+	// {
+	// 	cout << Leaf_Example1->accessKeys()[i] << endl;
+	// }	
+
+	myBPlusTree1->InsertInLeaf(Leaf_Example1, 7);
+
+	// for (unsigned int i=0; i<Leaf_Example1->getSlots(); ++i)
+	// {
+	// 	cout << Leaf_Example1->accessKeys()[i] << endl;
+	// }	
+
+	ASSERT_TRUE(Leaf_Example1->accessKeys()[0] == 5);
+	ASSERT_TRUE(Leaf_Example1->accessKeys()[1] == 7);
+	ASSERT_TRUE(Leaf_Example1->accessKeys()[2] == 8);
+	delete Leaf_Example1;
+
+
+
+
+
+	// // TESTing key insert at the END
+	BPlusTree* myBPlusTree2 = mkBPlusTree1();
+	int arr2[] = {5, 8};
+	Node* Leaf_Example2 = new Node("test_leaf", 0, true, 2, 
+        arr2);
+	
+	for (unsigned int i=0; i < Leaf_Example2->getSlots(); ++i)
+	{
+		cout << Leaf_Example2->accessKeys()[i] << endl;
+	}	
+
+	myBPlusTree2->InsertInLeaf(Leaf_Example2, 9);
+
+	for (unsigned int i=0; i<Leaf_Example2->getSlots(); ++i)
+	{
+		cout << Leaf_Example2->accessKeys()[i] << endl;
+	}	
+
+	ASSERT_TRUE(Leaf_Example2->accessKeys()[0] == 5);
+	ASSERT_TRUE(Leaf_Example2->accessKeys()[1] == 8);
+	ASSERT_TRUE(Leaf_Example2->accessKeys()[2] == 9);
+	delete Leaf_Example2;
+
+
+
+
+}
+
+
+
+
+
+TEST_F(test_BPlusTreeDBMS, TestBPlusTreeGetParentNode){
+
+	BPlusTree* myBPlusTree = mkBPlusTree1();
+
+	Node* Random_N = new Node();
+
+
+	ASSERT_EQ(NULL, myBPlusTree->getParentNode(Random_N));
+
+	for (unsigned int i = 0; i < ORDER_M; ++i)
+	{
+		ASSERT_EQ(GlobalRoot1, myBPlusTree->getParentNode(GlobalNodeTracker1[i]));
+	}
+	
+
+
+    delete Random_N;
+	for (unsigned int i=0; i<ORDER_M; ++i)
+	{
+		delete GlobalNodeTracker1[i];
+	}
+	delete GlobalRoot1;
+	delete myBPlusTree;
+        
+        
+}
 
 
 
@@ -272,13 +385,13 @@ BPlusTree* mkBPlusTree1()
 	myBPlusTree->setRoot(myNodeRoot);
 
 
-	// Global GlobalNodeTracker ForTesting
-	GlobalRoot = myNodeRoot;
-	GlobalNodeTracker[0] = myNodeLeft;
-	GlobalNodeTracker[1] = myNodeMid1;
-	GlobalNodeTracker[2] = myNodeMid2;
-	GlobalNodeTracker[3] = myNodeMid3;
-	GlobalNodeTracker[4] = myNodeRight;
+	// Global GlobalNodeTracker1 ForTesting
+	GlobalRoot1 = myNodeRoot;
+	GlobalNodeTracker1[0] = myNodeLeft;
+	GlobalNodeTracker1[1] = myNodeMid1;
+	GlobalNodeTracker1[2] = myNodeMid2;
+	GlobalNodeTracker1[3] = myNodeMid3;
+	GlobalNodeTracker1[4] = myNodeRight;
 
 
 	return myBPlusTree; 
