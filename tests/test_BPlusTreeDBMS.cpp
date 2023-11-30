@@ -73,8 +73,13 @@ protected:
 Node* GlobalNodeTracker1[ORDER_M + 1] = {NULL};
 Node* GlobalRoot1 = NULL;
 
+Node* GlobalNodeTracker2[8] = {NULL};
+Node* GlobalRoot2 = NULL;
+
 // function declarations 
 BPlusTree* mkBPlusTree1();
+BPlusTree* mkBPlusTree2();
+
 bool BPlusTreeInvariantChecker();
 
 
@@ -82,7 +87,7 @@ bool BPlusTreeInvariantChecker();
 
 
 // Actual TEST cases 
-TEST_F(test_BPlusTreeDBMS, TestSmallestKeyGeqV){
+TEST_F(test_BPlusTreeDBMS, TestBPlusTree_IndexOfKiSmallestKeyGeqV){
 
 	// std::string data = "test001";
 	// unsigned int level = 0;
@@ -122,7 +127,7 @@ TEST_F(test_BPlusTreeDBMS, TestSmallestKeyGeqV){
         
 }
 
-TEST_F(test_BPlusTreeDBMS, TestBPlusTreeFind){
+TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Find){
     BPlusTree* myBPlusTree = mkBPlusTree1();
 
 	
@@ -164,7 +169,7 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTreeFind){
 
 
 
-TEST_F(test_BPlusTreeDBMS, TestBPlusTreeFindRange){
+TEST_F(test_BPlusTreeDBMS, TestBPlusTree_FindRange){
 
 	BPlusTree* myBPlusTree = mkBPlusTree1();
 
@@ -213,7 +218,7 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTreeFindRange){
 }
 
 
-TEST_F(test_BPlusTreeDBMS, TestBPlusTreeInsertInLeaf){
+TEST_F(test_BPlusTreeDBMS, TestBPlusTree_InsertInLeaf){
 
 	// TESTing key < keys[0]
 	BPlusTree* myBPlusTree = mkBPlusTree1();
@@ -300,7 +305,7 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTreeInsertInLeaf){
 
 
 
-TEST_F(test_BPlusTreeDBMS, TestBPlusTreeGetParentNode){
+TEST_F(test_BPlusTreeDBMS, TestBPlusTree_GetParentNode){
 
 	BPlusTree* myBPlusTree = mkBPlusTree1();
 
@@ -328,6 +333,52 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTreeGetParentNode){
 }
 
 
+TEST_F(test_BPlusTreeDBMS, TestBPlusTree_InsertInInternalNode)
+{
+	BPlusTree* myBPlusTree = mkBPlusTree2();
+	Node* P = myBPlusTree->getParentNode(GlobalNodeTracker2[4]);
+	ASSERT_TRUE(P == GlobalNodeTracker2[0]);
+
+	Node* N = GlobalNodeTracker2[4];
+
+	int arr[] = {17, 18}; 
+	Node* NPrime = new Node("NPrime", 2, true, 2, arr);
+
+	int KPrime = NPrime->accessKeys()[0];
+
+
+	myBPlusTree->InsertInInternalNode(P, N, KPrime, NPrime);
+
+	cout << "CURRENT P->accessKeys()[2]: " << P->accessKeys()[2] << endl; 
+	cout << P->accessChildren()[3] << " Should be the same address as " << NPrime << endl;
+
+	ASSERT_EQ(P->accessChildren()[3], NPrime);
+
+	cout << P->accessChildren()[3]->accessKeys()[0] << endl; 
+	cout << P->accessChildren()[3]->accessKeys()[1] << endl; 
+
+	cout << "====================" << endl; 
+
+	cout << NPrime->accessKeys()[0] << endl; 
+	cout << NPrime->accessKeys()[1] << endl; 
+
+
+	delete NPrime; 
+
+	for (unsigned int i=0; i<8; ++i)
+	{
+		delete GlobalNodeTracker2[i];
+	}
+	delete GlobalRoot2;
+	delete myBPlusTree;
+
+}
+
+
+
+
+
+
 
 
 // Helper functions 
@@ -346,8 +397,8 @@ BPlusTree* mkBPlusTree1()
 	int arr1[ORDER_M] = {2, 3, 5, 7};
 	Node* myNodeLeft = new Node("left", 1, true, 4, arr1);
 
-	int arr2[ORDER_M] = {14, 16};
-	Node* myNodeMid1 = new Node("mid1", 1, true, 2, arr2);
+	int arr2[ORDER_M] = {14, 15, 16};
+	Node* myNodeMid1 = new Node("mid1", 1, true, 3, arr2);
 
 	int arr3[ORDER_M] = {19, 20, 22};
 	Node* myNodeMid2 = new Node("mid2", 1, true, 3, arr3);
@@ -392,6 +443,99 @@ BPlusTree* mkBPlusTree1()
 	GlobalNodeTracker1[2] = myNodeMid2;
 	GlobalNodeTracker1[3] = myNodeMid3;
 	GlobalNodeTracker1[4] = myNodeRight;
+
+
+	return myBPlusTree; 
+}
+
+
+BPlusTree* mkBPlusTree2()
+{
+	// Test BPlusTree Reference: https://web.stanford.edu/class/cs346/2015/notes/Blink.pdf
+	BPlusTree* myBPlusTree = new BPlusTree; 
+	
+
+	// instantiations 
+	// Root 
+	int arr[ORDER_M] = {17};
+	Node* myNodeRoot = new Node("root", 0, false, 1, arr);
+
+	// level 1
+	int arr1[ORDER_M] = {5, 13};
+	Node* mylevel1_left = new Node("level1_left", 1, false, 2, arr1);
+
+	int arr2[ORDER_M] = {24, 30};
+	Node* mylevel1_mid1 = new Node("level1_mid1", 1, false, 2, arr2);
+
+	// level 2, under level1_left
+	int arr3[ORDER_M] = {2, 3};
+	Node* mylevel2_0 = new Node("level2_0", 1, true, 2, arr3);
+
+	int arr4[ORDER_M] = {5, 7, 8};
+	Node* mylevel2_1 = new Node("level2_1", 1, true, 3, arr4);
+
+	int arr5[ORDER_M] = {14, 15, 16, 17};
+	Node* mylevel2_2 = new Node("level2_2", 1, true, 4, arr5);
+
+	// level 2, under level1_mid1
+	int arr6[ORDER_M] = {19, 20, 22};
+	Node* mylevel2_3 = new Node("level2_3", 1, true, 3, arr6);
+
+	int arr7[ORDER_M] = {22, 27, 29};
+	Node* mylevel2_4 = new Node("level2_4", 1, true, 3, arr7);
+
+	int arr8[ORDER_M] = {33, 34, 38, 39};
+	Node* mylevel2_5 = new Node("level2_5", 1, true, 4, arr8);
+
+	// connect between Leaf nodes 
+
+	
+	mylevel2_0->setNext(mylevel2_1);
+	
+	mylevel2_1->setPrev(mylevel2_0);
+	mylevel2_1->setNext(mylevel2_2);
+	
+	mylevel2_2->setPrev(mylevel2_1);
+	mylevel2_2->setNext(mylevel2_3);
+	
+	mylevel2_3->setPrev(mylevel2_2);
+	mylevel2_3->setNext(mylevel2_4);
+	
+	mylevel2_4->setPrev(mylevel2_3);
+	mylevel2_4->setNext(mylevel2_5);
+
+	mylevel2_5->setPrev(mylevel2_4);
+
+
+
+	// set Root's children 
+	myNodeRoot->accessChildren()[0] = mylevel1_left;
+	myNodeRoot->accessChildren()[1] = mylevel1_mid1;
+
+	// set mylevel1_left's children 
+	mylevel1_left->accessChildren()[0] = mylevel2_0;
+	mylevel1_left->accessChildren()[1] = mylevel2_1;
+	mylevel1_left->accessChildren()[2] = mylevel2_2;
+
+	// set mylevel1_mid1's children 
+	mylevel1_mid1->accessChildren()[0] = mylevel2_3;
+	mylevel1_mid1->accessChildren()[1] = mylevel2_4;
+	mylevel1_mid1->accessChildren()[2] = mylevel2_5;
+
+	// set Root 
+	myBPlusTree->setRoot(myNodeRoot);
+
+
+	// Global GlobalNodeTracker1 ForTesting
+	GlobalRoot2 = myNodeRoot;
+	GlobalNodeTracker2[0] = mylevel1_left;
+	GlobalNodeTracker2[1] = mylevel1_mid1;
+	GlobalNodeTracker2[2] = mylevel2_0;
+	GlobalNodeTracker2[3] = mylevel2_1;
+	GlobalNodeTracker2[4] = mylevel2_2;
+	GlobalNodeTracker2[5] = mylevel2_3;
+	GlobalNodeTracker2[6] = mylevel2_4;
+	GlobalNodeTracker2[7] = mylevel2_5;
 
 
 	return myBPlusTree; 

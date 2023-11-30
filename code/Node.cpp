@@ -2,6 +2,19 @@
 
 Node::Node() {
     // DONE FOR YOU
+    this->data = "";
+    this->level = 0; 
+    this->leaf = true; 
+    this->slots = 0; 
+    for (unsigned int i = 0; i < ORDER_M; ++i)
+    {   
+        this->keys[i] = 0;
+    }
+    for (unsigned int i = 0; i < ORDER_M + 1; ++i)
+    {   
+        this->children[i] = NULL;
+    }
+
 
 }
 
@@ -29,6 +42,25 @@ Node::Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slo
     // }
 }
 
+Node::Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slots, 
+            int _keys[], Node* _children[ORDER_M + 1])
+            :
+            data{_data},
+            level{_level},
+            leaf{_leaf},
+            slots{_slots}
+{
+
+    for (unsigned int i=0; i<_slots;++i)
+    {
+        keys[i] = _keys[i];
+    }
+    for (unsigned int i=0; i<_slots + 1;++i)
+    {
+        children[i] = _children[i];
+    }
+}
+
 
 Node::~Node() {
     // "DONE" FOR YOU
@@ -40,9 +72,32 @@ Node::~Node() {
     // left out of the header/impl file entirely.
 }
 
+
+void Node::clear()
+{
+    this->data = "";
+    this->level = 0; 
+    this->leaf = true; 
+    this->slots = 0; 
+    for (unsigned int i = 0; i < ORDER_M; ++i)
+    {   
+        this->keys[i] = 0;
+    }
+    for (unsigned int i = 0; i < ORDER_M + 1; ++i)
+    {   
+        this->children[i] = NULL;
+    }
+}
+
+
 std::string Node::getData() {
     // DONE FOR YOU
     return data;
+}
+
+void Node::setData(std::string data)
+{
+    this->data = data;
 }
 
 int Node::getLevel()
@@ -50,11 +105,17 @@ int Node::getLevel()
     return this->level;
 }
 
-bool Node::isLeaf()
+bool Node::getLeaf()
 {
     // return status of node to check if node is leaf or not 
     return this->leaf;
 }
+
+void Node::setLeaf(bool leaf)
+{
+    this->leaf = leaf;
+}
+
 
 int Node::getKey(unsigned int i)
 {

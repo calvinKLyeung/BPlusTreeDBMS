@@ -21,11 +21,15 @@ private:
     // unsigned int num_keys; // number of valid keys in keys[]
 
     // NOT STANDARD PRACTICE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    int keys[ORDER_M] = {0};  // ORDER_M - 1 == max keys 
-    Node* children[ORDER_M + 1] = {NULL}; // ORDER_M == may children 
+    int keys[ORDER_M];  // ORDER_M - 1 == max keys 
+    Node* children[ORDER_M + 1]; // ORDER_M == may children 
 
-    Node* prev = NULL;
-    Node* next = NULL;
+    Node* prev;
+    Node* next;
+
+
+
+    
 
 
 
@@ -35,10 +39,20 @@ public:
     Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slots, 
         int _keys[]);
 
+    Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slots, 
+            int _keys[], Node* _children[]);
+
     ~Node();
+
+    void clear();
+
     std::string getData();
+    void setData(std::string data);
+
     int getLevel();
-    bool isLeaf();
+    bool getLeaf();
+    void setLeaf(bool leaf);
+
     int getKey(unsigned int i);
 
     unsigned int getSlots();
@@ -50,10 +64,11 @@ public:
     void setNext(Node* node);
     Node* getNext();
 
-
     // const int * accessKeys() const;
     int* accessKeys();
     Node** accessChildren();
+
+
 
     // Have you ever wondered when you say cout << "hello world!" << endl; what <<
     // means? how is it implemented? these are operator methods that you can
