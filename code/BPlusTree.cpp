@@ -386,32 +386,51 @@ void BPlusTree::InsertInParent(Node* N, int KPrime, Node* NPrime)
 
             unsigned int mPlusOneDividedByTwoCeiling = ceil(ORDER_M + 1 / 2.0);
 
-            // Erase all entries from P; Create node P′, Maynot necessary since we use getSlots() to track the valid keys and getSlots() + 1 to track valid children
+            // Erase all entries from P; Create node P′
+
+            // May not necessary since we use getSlots() to track the valid keys and getSlots() + 1 to track valid children
             // P->clear();
             // P->setLeaf(false);
 
 
+            Node* PPrime = new Node();
+            PPrime->setLeaf(P->getLeaf());
 
 
-
-            // Copy Valid keys from 1st half of T to L 
-            // L->setSlots(mDividedByTwoCeiling);
-            // for (unsigned int i = 0; i < L->getSlots(); ++i)
-            // {   
-            //     L->accessKeys()[i] = T->accessKeys()[i]; 
-            // }
-
-            // // Copy Valid keys from 2nd half of T to LPRIME 
-            // LPrime->setSlots(ORDER_M - mDividedByTwoCeiling); // update slots to T.P⌈n∕2⌉+1 onward
-            // for (unsigned int i = 0; i < LPrime->getSlots(); ++i) //ceil(ORDER_M / 2.0); i < ORDER_M; ++i)
-            // {
-            //     LPrime->accessKeys()[i] = T->accessKeys()[i + mDividedByTwoCeiling];
-            // }
+            // Copy Valid keys AND children from 1st half of T to P
+            P->setSlots(mPlusOneDividedByTwoCeiling);
+            // copying keys 
+            for (unsigned int i = 0; i < P->getSlots(); ++i)
+            {   
+                P->accessKeys()[i] = P->accessKeys()[i]; 
+            }
+            // copying children 
+            for (unsigned int i = 0; i < P->getSlots() + 1; ++i)
+            {   
+                P->accessChildren()[i] = P->accessChildren()[i]; 
+            }
 
 
+            // Copy Valid keys  AND children from 2nd half of T to PPRIME 
+            PPrime->setSlots(ORDER_M - mPlusOneDividedByTwoCeiling); // ????????????????????????
+            // copying keys
+            for (unsigned int i = 0; i < PPrime->getSlots(); ++i) //??????????????
+            {
+                PPrime->accessKeys()[i] = T->accessKeys()[i + mPlusOneDividedByTwoCeiling];
+            }
+            // copying children 
+            for (unsigned int i = 0; i < PPrime->getSlots() + 1; ++i) //???????????
+            {
+                PPrime->accessChildren()[i] = T->accessChildren()[i + mPlusOneDividedByTwoCeiling]; //??????????????
+            }
+
+
+            // Let K′′ = T.K⌈(n+1)∕2⌉
+            int KPrimePrime = T->accessKeys()[mPlusOneDividedByTwoCeiling];
             // int KPrime = LPrime->accessKeys()[0]; // KPrime == the smallest key-value in L′
-            // this->InsertInParent(L, KPrime, LPrime);
 
+
+            this->InsertInParent(P, KPrimePrime, PPrime);
 
         }
     }

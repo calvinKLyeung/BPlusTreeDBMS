@@ -49,7 +49,9 @@ public:
     std::string getData();
     void setData(std::string data);
 
-    int getLevel();
+    unsigned int getLevel();
+    void setLevel(unsigned int level);
+
     bool getLeaf();
     void setLeaf(bool leaf);
 

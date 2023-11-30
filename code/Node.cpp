@@ -100,10 +100,16 @@ void Node::setData(std::string data)
     this->data = data;
 }
 
-int Node::getLevel()
+unsigned int Node::getLevel()
 {
     return this->level;
 }
+
+void Node::setLevel(unsigned int level)
+{
+    this->level = level;
+}
+
 
 bool Node::getLeaf()
 {
