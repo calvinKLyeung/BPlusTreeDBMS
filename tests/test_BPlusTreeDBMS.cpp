@@ -376,6 +376,115 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_InsertInInternalNode)
 
 
 
+TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Insert)
+{
+	BPlusTree* myBPlusTree = mkBPlusTree1();
+
+	cout << "Checking what is in Root Node BEFORE INSERT: " << endl; 
+	for (unsigned int i=0; i<GlobalRoot1->getSlots(); ++i)
+	{
+		cout <<	GlobalRoot1->accessKeys()[i] << " " ;
+	}
+	cout << endl;
+
+	bool inserted = myBPlusTree->insert(8);
+
+	cout << "Insert successfully? " << std::boolalpha << inserted << endl;
+
+	Node* newLeafNode = myBPlusTree->find(8);
+
+	cout << "Checking what is in Root Node: " << endl; 
+	Node* myRootNode = myBPlusTree->getRootNode();
+	for (unsigned int i=0; i<myRootNode->getSlots(); ++i)
+	{
+		cout <<	myRootNode->accessKeys()[i] << " " ;
+	}
+	cout << endl;
+
+	cout << "Checking what is in Left Child Pointer of Root Node: " << endl; 
+	for (unsigned int i=0; i<myRootNode->accessChildren()[0]->getSlots(); ++i)
+	{
+		cout <<	myRootNode->accessChildren()[0]->accessKeys()[i] << " " ;
+	}
+	cout << endl;
+
+	cout << "Checking what is in Right Child Pointer of Root Node: " << endl; 
+	for (unsigned int i=0; i<myRootNode->accessChildren()[1]->getSlots(); ++i)
+	{
+		cout <<	myRootNode->accessChildren()[1]->accessKeys()[i] << " " ;
+	}
+	cout << endl;
+
+
+	cout << "Checking what is in Left Child Pointer of Root's Left child: " << endl; 
+	for (unsigned int i=0; i<myRootNode->accessChildren()[0]->accessChildren()[0]->getSlots(); ++i)
+	{
+		cout <<	myRootNode->accessChildren()[0]->accessChildren()[0]->accessKeys()[i] << " " ;
+	}
+	cout << endl;
+
+	cout << "Checking what is in Mid1 Child Pointer of Root's Left child: " << endl; 
+	for (unsigned int i=0; i<myRootNode->accessChildren()[0]->accessChildren()[1]->getSlots(); ++i)
+	{
+		cout <<	myRootNode->accessChildren()[0]->accessChildren()[1]->accessKeys()[i] << " " ;
+	}
+	cout << endl;
+
+
+	cout << "Checking what is in MId2 Child Pointer of Root's Left child: " << endl; 
+	for (unsigned int i=0; i<myRootNode->accessChildren()[0]->accessChildren()[2]->getSlots(); ++i)
+	{
+		cout <<	myRootNode->accessChildren()[0]->accessChildren()[2]->accessKeys()[i] << " " ;
+	}
+	cout << endl;
+
+	cout << "Checking what is in MId2 Child Pointer of Root's Left child: " << endl; 
+	for (unsigned int i=0; i<myRootNode->accessChildren()[0]->accessChildren()[2]->getSlots(); ++i)
+	{
+		cout <<	myRootNode->accessChildren()[0]->accessChildren()[2]->accessKeys()[i] << " " ;
+	}
+	cout << endl;
+
+	cout << "Checking what is in Left Child Pointer of Root's Right child: " << endl; 
+	for (unsigned int i=0; i<myRootNode->accessChildren()[1]->accessChildren()[0]->getSlots(); ++i)
+	{
+		cout <<	myRootNode->accessChildren()[1]->accessChildren()[0]->accessKeys()[i] << " " ;
+	}
+	cout << endl;
+
+	cout << "Checking what is in Mid1 Child Pointer of Root's Right child: " << endl; 
+	for (unsigned int i=0; i<myRootNode->accessChildren()[1]->accessChildren()[1]->getSlots(); ++i)
+	{
+		cout <<	myRootNode->accessChildren()[1]->accessChildren()[1]->accessKeys()[i] << " " ;
+	}
+	cout << endl;
+
+	cout << "Checking what is in Mid2 Child Pointer of Root's Right child: " << endl; 
+	for (unsigned int i=0; i<myRootNode->accessChildren()[1]->accessChildren()[2]->getSlots(); ++i)
+	{
+		cout <<	myRootNode->accessChildren()[1]->accessChildren()[2]->accessKeys()[i] << " " ;
+	}
+	cout << endl;
+
+
+
+
+
+
+
+	delete newLeafNode; 
+
+	for (unsigned int i=0; i<ORDER_M; ++i)
+	{
+		delete GlobalNodeTracker1[i];
+	}
+	delete GlobalRoot1;
+	delete myBPlusTree;
+
+}
+
+
+
 
 
 
