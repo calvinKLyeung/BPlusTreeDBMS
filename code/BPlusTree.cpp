@@ -2,13 +2,13 @@
 
 BPlusTree::BPlusTree()
 {
-
+    this->root = NULL;
 }
 
 
 BPlusTree::~BPlusTree()
 {
-
+    
 }
 
 void BPlusTree::setRoot(Node* node)
@@ -51,7 +51,7 @@ Node* BPlusTree::find(int v)
             unsigned int m = C->getSlots();  // m == index of last non-null pointer in the node, slot IS ALREADY the last pointer as Exclusive End indexing [0, 4)
             C = C->accessChildren()[m]; // Pointer at index m
         }
-        else if (v == C->getKey((unsigned int)i))
+        else if (v == C->getKeyByIndex((unsigned int)i))
         {
             C = C->accessChildren()[i+1];
         }
@@ -123,7 +123,7 @@ std::vector <Node *> BPlusTree::findRange(int lb, int ub) // lb == lower bound, 
             unsigned int m = C->getSlots();
             C = C->accessChildren()[m];
         }
-        else if (lb == C->getKey((unsigned int)i))
+        else if (lb == C->getKeyByIndex((unsigned int)i))
         {
             C = C->accessChildren()[i+1];
         }
@@ -201,7 +201,7 @@ std::vector <Node *> BPlusTree::findRange(int lb, int ub) // lb == lower bound, 
 //     end
 //     return resultSet;
 
-bool BPlusTree::insert(int key)
+bool BPlusTree::insert_content(int key)
 {
     bool ret = false; 
     if (this->getRootNode() == NULL)
@@ -223,7 +223,7 @@ bool BPlusTree::insert(int key)
                 unsigned int m = L->getSlots();
                 L = L->accessChildren()[m];
             }
-            else if (key == L->getKey((unsigned int)i))
+            else if (key == L->getKeyByIndex((unsigned int)i))
             {
                 L = L->accessChildren()[i+1];
             }
@@ -234,11 +234,11 @@ bool BPlusTree::insert(int key)
         }
 
         // L should be at the correct Leaf Node now
-        std::cout << "what is in the leaft node? " << std::endl;
-        for (unsigned int i=0; i<L->getSlots(); ++i)
-        {
-            std::cout << L->accessKeys()[i] << " " ; 
-        }
+        // std::cout << "what is in the leaft node? " << std::endl;
+        // for (unsigned int i=0; i<L->getSlots(); ++i)
+        // {
+        //     std::cout << L->accessKeys()[i] << " " ; 
+        // }
 
 
         if (L->getSlots() < ORDER_M - 1)
@@ -253,18 +253,18 @@ bool BPlusTree::insert(int key)
             this->InsertInLeaf(T, key); // should be OVerFull after InsertInLeaf() ?
 
 
-            std::cout << "what is in the leaft node L? " << std::endl;
-            for (unsigned int i=0; i<L->getSlots(); ++i)
-            {
-                std::cout << L->accessKeys()[i] << " " ; 
-            }
-            std::cout << std::endl; 
-            std::cout << "what is in the tmp leaft node T, should be OVERFULL now? " << std::endl;
-            for (unsigned int i=0; i<T->getSlots(); ++i)
-            {
-                std::cout << T->accessKeys()[i] << " " ; 
-            }
-            std::cout << std::endl; 
+            // std::cout << "what is in the leaft node L? " << std::endl;
+            // for (unsigned int i=0; i<L->getSlots(); ++i)
+            // {
+            //     std::cout << L->accessKeys()[i] << " " ; 
+            // }
+            // std::cout << std::endl; 
+            // std::cout << "what is in the tmp leaft node T, should be OVERFULL now? " << std::endl;
+            // for (unsigned int i=0; i<T->getSlots(); ++i)
+            // {
+            //     std::cout << T->accessKeys()[i] << " " ; 
+            // }
+            // std::cout << std::endl; 
 
 
 
@@ -293,12 +293,12 @@ bool BPlusTree::insert(int key)
             }
 
 
-            std::cout << "what are the Valid Keys from T in the leaft node L? " << std::endl;
-            for (unsigned int i=0; i<L->getSlots(); ++i)
-            {
-                std::cout << L->accessKeys()[i] << " " ; 
-            }
-            std::cout << std::endl; 
+            // std::cout << "what are the Valid Keys from T in the leaft node L? " << std::endl;
+            // for (unsigned int i=0; i<L->getSlots(); ++i)
+            // {
+            //     std::cout << L->accessKeys()[i] << " " ; 
+            // }
+            // std::cout << std::endl; 
 
 
 
@@ -313,23 +313,23 @@ bool BPlusTree::insert(int key)
 
 
 
-            std::cout << "what are the Valid Keys from T in the leaft node LPrime? " << std::endl;
-            for (unsigned int i=0; i<LPrime->getSlots(); ++i)
-            {
-                std::cout << LPrime->accessKeys()[i] << " " ; 
-            }
-            std::cout << std::endl; 
+            // std::cout << "what are the Valid Keys from T in the leaft node LPrime? " << std::endl;
+            // for (unsigned int i=0; i<LPrime->getSlots(); ++i)
+            // {
+            //     std::cout << LPrime->accessKeys()[i] << " " ; 
+            // }
+            // std::cout << std::endl; 
 
 
 
 
             int KPrime = LPrime->accessKeys()[0]; // KPrime == the smallest key-value in L′
 
-            std::cout << "What is KPrime to be promoted? " << KPrime << std::endl; 
+            // std::cout << "What is KPrime to be promoted? " << KPrime << std::endl; 
 
             this->InsertInParent(L, KPrime, LPrime);
 
-
+            delete T; 
         }
     }
     return ret; // NOT DONE YET WITH CHANGING RET STATUS!!!!!!!!!!!!!!!
@@ -422,20 +422,21 @@ void BPlusTree::InsertInParent(Node* N, int KPrime, Node* NPrime)
         R->accessChildren()[1] = NPrime;        // Mid1 pointer 
         this->setRoot(R);
 
-        std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl; 
+        // std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl; 
+
         return; 
     }
     Node* P = this->getParentNode(N); // Set Node* P to the Parent Node of N 
 
 
-    std::cout << std::endl;
-    std::cout << "P at the moment should be the Root node?" << std::endl;
-    for (unsigned int i=0; i < P->getSlots(); ++i)
-	{
-		std::cout << P->accessKeys()[i] << " " ;
-	}
-	std::cout << std::endl;
-    std::cout << std::endl;
+    // std::cout << std::endl;
+    // std::cout << "P at the moment should be the Root node?" << std::endl;
+    // for (unsigned int i=0; i < P->getSlots(); ++i)
+	// {
+	// 	std::cout << P->accessKeys()[i] << " " ;
+	// }
+	// std::cout << std::endl;
+    // std::cout << std::endl;
 
 
 
@@ -453,28 +454,28 @@ void BPlusTree::InsertInParent(Node* N, int KPrime, Node* NPrime)
             InsertInInternalNode(T, N, KPrime, NPrime); // Should be OVERFULL after this line 
 
 
-            std::cout << "What is in P during SPLIT P case?" << std::endl;
-            for (unsigned int i=0; i<P->getSlots(); ++i)
-            {
-                std::cout << P->accessKeys()[i] << " "; 
-            }
-            std::cout << std::endl; 
+            // std::cout << "What is in P during SPLIT P case?" << std::endl;
+            // for (unsigned int i=0; i<P->getSlots(); ++i)
+            // {
+            //     std::cout << P->accessKeys()[i] << " "; 
+            // }
+            // std::cout << std::endl; 
 
-            std::cout << "What is in T during SPLIT P case, after copying from P and inserting KPrime, NPrime?" << std::endl;
-            for (unsigned int i=0; i<T->getSlots(); ++i)
-            {
-                std::cout << T->accessKeys()[i] << " "; 
-            }
-            std::cout << std::endl; 
+            // std::cout << "What is in T during SPLIT P case, after copying from P and inserting KPrime, NPrime?" << std::endl;
+            // for (unsigned int i=0; i<T->getSlots(); ++i)
+            // {
+            //     std::cout << T->accessKeys()[i] << " "; 
+            // }
+            // std::cout << std::endl; 
 
 
 
 
             unsigned int mPlusOneDividedByTwoCeiling = ceil(ORDER_M / 2.0);
 
-            std::cout << "ORDER_M + 1 / 2.0 " << ORDER_M + 1 / 2.0 << std::endl;
-            std::cout << "What is ORDER_M ? " << ORDER_M << std::endl;
-            std::cout << "What is the mPlusOneDividedByTwoCeiling? " << mPlusOneDividedByTwoCeiling << std::endl;
+            // std::cout << "ORDER_M + 1 / 2.0 " << ORDER_M + 1 / 2.0 << std::endl;
+            // std::cout << "What is ORDER_M ? " << ORDER_M << std::endl;
+            // std::cout << "What is the mPlusOneDividedByTwoCeiling? " << mPlusOneDividedByTwoCeiling << std::endl;
 
             // Erase all entries from P; Create node P′
 
@@ -503,20 +504,20 @@ void BPlusTree::InsertInParent(Node* N, int KPrime, Node* NPrime)
 
 
 
-            std::cout << std::endl;
-            std::cout << "What is in P's Keys after copying from tmp T? " << std::endl;
-            for (unsigned int i=0; i<P->getSlots(); ++i)
-            {
-                std::cout << P->accessKeys()[i] << " " ;
-            } 
-            std::cout << std::endl;
+            // std::cout << std::endl;
+            // std::cout << "What is in P's Keys after copying from tmp T? " << std::endl;
+            // for (unsigned int i=0; i<P->getSlots(); ++i)
+            // {
+            //     std::cout << P->accessKeys()[i] << " " ;
+            // } 
+            // std::cout << std::endl;
 
-            std::cout << "What is in P's Children after copying from tmp T? " << std::endl;
-            for (unsigned int i=0; i<P->getSlots()+1; ++i)
-            {
-                std::cout << P->accessChildren()[i] << " " ;
-            } 
-            std::cout << std::endl;
+            // std::cout << "What is in P's Children after copying from tmp T? " << std::endl;
+            // for (unsigned int i=0; i<P->getSlots()+1; ++i)
+            // {
+            //     std::cout << P->accessChildren()[i] << " " ;
+            // } 
+            // std::cout << std::endl;
 
 
 
@@ -538,46 +539,46 @@ void BPlusTree::InsertInParent(Node* N, int KPrime, Node* NPrime)
                 PPrime->accessChildren()[i] = T->accessChildren()[i + mPlusOneDividedByTwoCeiling]; //??????????????
             }
 
-            std::cout << std::endl;
-            std::cout << "What is in PPrime's Keys after copying from tmp T? " << std::endl;
-            for (unsigned int i=0; i<PPrime->getSlots(); ++i)
-            {
-                std::cout << PPrime->accessKeys()[i] << " " ;
-            } 
-            std::cout << std::endl;
+            // std::cout << std::endl;
+            // std::cout << "What is in PPrime's Keys after copying from tmp T? " << std::endl;
+            // for (unsigned int i=0; i<PPrime->getSlots(); ++i)
+            // {
+            //     std::cout << PPrime->accessKeys()[i] << " " ;
+            // } 
+            // std::cout << std::endl;
 
-            std::cout << "What is in PPrime's Children after copying from tmp T? " << std::endl;
-            for (unsigned int i=0; i<PPrime->getSlots()+1; ++i)
-            {
-                std::cout << PPrime->accessChildren()[i] << " " ;
-            } 
-            std::cout << std::endl;
+            // std::cout << "What is in PPrime's Children after copying from tmp T? " << std::endl;
+            // for (unsigned int i=0; i<PPrime->getSlots()+1; ++i)
+            // {
+            //     std::cout << PPrime->accessChildren()[i] << " " ;
+            // } 
+            // std::cout << std::endl;
 
 
             // Let K′′ = T.K⌈(n+1)∕2⌉
             int KPrimePrime = T->accessKeys()[mPlusOneDividedByTwoCeiling - 1];
 
-            std::cout << std::endl;
-            std::cout << "What is the index to get KPrimePrime value? " << mPlusOneDividedByTwoCeiling - 1 << std::endl;
-            std::cout << "What is KPrimePrime now? " << KPrimePrime << std::endl;
+            // std::cout << std::endl;
+            // std::cout << "What is the index to get KPrimePrime value? " << mPlusOneDividedByTwoCeiling - 1 << std::endl;
+            // std::cout << "What is KPrimePrime now? " << KPrimePrime << std::endl;
             // int KPrime = LPrime->accessKeys()[0]; // KPrime == the smallest key-value in L′
             
-            std::cout << std::endl;
-            std::cout << "What is the Root before calling InsertInParent() recirsively? "<< std::endl;
-            for (unsigned int i=0; i<this->getRootNode()->getSlots(); ++i)
-            {
-                std::cout << this->getRootNode()->accessKeys()[i] << " ";
-            }
-            std::cout << std::endl;
+            // std::cout << std::endl;
+            // std::cout << "What is the Root before calling InsertInParent() recirsively? "<< std::endl;
+            // for (unsigned int i=0; i<this->getRootNode()->getSlots(); ++i)
+            // {
+            //     std::cout << this->getRootNode()->accessKeys()[i] << " ";
+            // }
+            // std::cout << std::endl;
 
             Node* rootnode = this->getRootNode();
-            std::cout << "Is Node P the same as Root node? "<< std::endl;
-            std::cout << P << " should have the same address as " << this->getRootNode() << std::endl;
+            // std::cout << "Is Node P the same as Root node? "<< std::endl;
+            // std::cout << P << " should have the same address as " << this->getRootNode() << std::endl;
 
 
 
             this->InsertInParent(P, KPrimePrime, PPrime);
-
+            delete T; 
         }
     }
 
@@ -644,7 +645,7 @@ Node* BPlusTree::getParentNode(Node* N)
                 C = C->accessChildren()[m]; 
             }
         }
-        else if (key == C->getKey((unsigned int) i))
+        else if (key == C->getKeyByIndex((unsigned int) i))
         {
             if (N == C->accessChildren()[i+1])
             {
@@ -689,7 +690,7 @@ Node* BPlusTree::getParentNode(Node* N)
 //             unsigned int m = C->getSlots();  // m == index of last non-null pointer in the node, slot IS ALREADY the last pointer as Exclusive End indexing [0, 4)
 //             C = C->accessChildren()[m]; // Pointer at index m
 //         }
-//         else if (v == C->getKey((unsigned int) i))
+//         else if (v == C->getKeyByIndex((unsigned int) i))
 //         {
 //             C = C->accessChildren()[i+1];
 //         }
@@ -708,7 +709,7 @@ void BPlusTree::InsertInInternalNode(Node* P, Node* N, int KPrime, Node* NPrime)
     int key = N->accessKeys()[0]; // get key of N to find our way to insert KPrime, NPrime after N inside P
     int i = this->IndexOfKiSmallestKeyGeqV(P, key);
 
-    std::cout << "The index i should be ZERO here: " << i << std:: endl; 
+    // std::cout << "The index i should be ZERO here: " << i << std:: endl; 
 
     int index_for_KPrime = -1; 
     int index_for_NPrime = -1;
@@ -725,7 +726,7 @@ void BPlusTree::InsertInInternalNode(Node* P, Node* N, int KPrime, Node* NPrime)
             index_for_NPrime = index_for_KPrime + 1;
         }
     }
-    else if (key == P->getKey((unsigned int) i))
+    else if (key == P->getKeyByIndex((unsigned int) i))
     {
         // P->accessChildren()[i+1] == N
         if (N == P->accessChildren()[i+1])
@@ -764,6 +765,79 @@ void BPlusTree::InsertInInternalNode(Node* P, Node* N, int KPrime, Node* NPrime)
 
 
 }
+
+
+bool BPlusTree::delete_content(int k)
+{
+    bool ret = false; 
+    Node* found_in_node = this->find(k);
+    if (found_in_node != NULL)
+    {
+        this->remove_entry(found_in_node, k);
+        ret = true; 
+    }
+    return ret;
+}
+
+// procedure delete(value K, pointer P)
+//     find the leaf node L that contains (K, P)
+//     delete entry(L, K, P)
+
+
+bool BPlusTree::remove_entry(Node* L, int K)
+{   
+    // delete (K, P) from N ??????? 
+    unsigned int index_of_K = L->getIndexByKey(K);
+    L->accessKeys()[index_of_K] = 0;
+    L->setSlots(L->getSlots() - 1);
+
+
+    // if (N is the root AND N has only one remaining child)
+    if ()
+    {
+
+    }
+
+    return false; 
+}
+
+
+procedure delete entry(node N, value K, pointer P)
+    delete (K, P) from N
+    if (N is the root AND N has only one remaining child)
+        then make the child of N the new root of the tree and delete N
+    else if (N has too few values/pointers) then begin
+        Let N′ be the previous or next child of parent(N)
+        Let K′ be the value between pointers N and N′ in parent(N)
+        if (entries in N and N′ can fit in a single node)
+            then begin /* Coalesce nodes */
+                if (N is a predecessor of N′) then swap variables(N, N′)
+                if (N is not a leaf)
+                    then append K′ and all pointers and values in N to N′
+                else append all (Ki, Pi) pairs in N to N′; set N′.Pn = N.Pn
+                delete entry(parent(N), K′, N); delete node N
+            end
+        else begin /* Redistribution: borrow an entry from N′ */
+            if (N′ is a predecessor of N) then begin
+                if (N is a nonleaf node) then begin
+                    let m be such that N′.Pm is the last pointer in N′
+                    remove (N′.Km−1, N′.Pm) from N′
+                    insert (N′.Pm, K′) as the first pointer and value in N,
+                        by shifting other pointers and values right
+                    replace K′ in parent(N) by N′.Km−1
+                end
+                else begin
+                    let m be such that (N′.Pm, N′.Km) is the last pointer/value
+                        pair in N′
+                    remove (N′.Pm, N′.Km) from N′
+                    insert (N′.Pm, N′.Km) as the first pointer and value in N,
+                        by shifting other pointers and values right
+                    replace K′ in parent(N) by N′.Km
+                end
+            end
+            else … symmetric to the then case …
+        end
+    end
 
 
 

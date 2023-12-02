@@ -123,11 +123,27 @@ void Node::setLeaf(bool leaf)
 }
 
 
-int Node::getKey(unsigned int i)
+int Node::getKeyByIndex(unsigned int i)
 {
     // get the key from keys arr at given index i 
     return this->keys[i];
 }
+
+int Node::getIndexByKey(int key)
+{
+    // not found == -1 
+    int index = -1; 
+    for (unsigned int i=0; i<this->getSlots(); ++i)
+    {
+        if (this->accessKeys()[i] == key)
+        {
+            index = i; 
+            break; 
+        }
+    }
+    return index; 
+}
+
 
 unsigned int Node::getSlots()
 {

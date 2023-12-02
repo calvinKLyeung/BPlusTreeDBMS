@@ -349,18 +349,18 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_InsertInInternalNode)
 
 	myBPlusTree->InsertInInternalNode(P, N, KPrime, NPrime);
 
-	cout << "CURRENT P->accessKeys()[2]: " << P->accessKeys()[2] << endl; 
-	cout << P->accessChildren()[3] << " Should be the same address as " << NPrime << endl;
+	// cout << "CURRENT P->accessKeys()[2]: " << P->accessKeys()[2] << endl; 
+	// cout << P->accessChildren()[3] << " Should be the same address as " << NPrime << endl;
 
 	ASSERT_EQ(P->accessChildren()[3], NPrime);
 
-	cout << P->accessChildren()[3]->accessKeys()[0] << endl; 
-	cout << P->accessChildren()[3]->accessKeys()[1] << endl; 
+	// cout << P->accessChildren()[3]->accessKeys()[0] << endl; 
+	// cout << P->accessChildren()[3]->accessKeys()[1] << endl; 
 
-	cout << "====================" << endl; 
+	// cout << "====================" << endl; 
 
-	cout << NPrime->accessKeys()[0] << endl; 
-	cout << NPrime->accessKeys()[1] << endl; 
+	// cout << NPrime->accessKeys()[0] << endl; 
+	// cout << NPrime->accessKeys()[1] << endl; 
 
 
 	delete NPrime; 
@@ -378,6 +378,8 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_InsertInInternalNode)
 
 TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Insert)
 {
+	// Version 0 BPlusTree test 
+
 	BPlusTree* myBPlusTree = mkBPlusTree1();
 
 	cout << "Checking what is in Root Node BEFORE INSERT: " << endl; 
@@ -387,89 +389,134 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Insert)
 	}
 	cout << endl;
 
-	bool inserted = myBPlusTree->insert(8);
+	bool inserted = myBPlusTree->insert_content(8);
 
 	cout << "Insert successfully? " << std::boolalpha << inserted << endl;
 
 	Node* newLeafNode = myBPlusTree->find(8);
 
-	cout << "Checking what is in Root Node: " << endl; 
+
+
+
+
+
+
+
+	// cout << "Checking what is in Root Node: " << endl; 
 	Node* myRootNode = myBPlusTree->getRootNode();
-	for (unsigned int i=0; i<myRootNode->getSlots(); ++i)
-	{
-		cout <<	myRootNode->accessKeys()[i] << " " ;
-	}
-	cout << endl;
-
-	cout << "Checking what is in Left Child Pointer of Root Node: " << endl; 
-	for (unsigned int i=0; i<myRootNode->accessChildren()[0]->getSlots(); ++i)
-	{
-		cout <<	myRootNode->accessChildren()[0]->accessKeys()[i] << " " ;
-	}
-	cout << endl;
-
-	cout << "Checking what is in Right Child Pointer of Root Node: " << endl; 
-	for (unsigned int i=0; i<myRootNode->accessChildren()[1]->getSlots(); ++i)
-	{
-		cout <<	myRootNode->accessChildren()[1]->accessKeys()[i] << " " ;
-	}
-	cout << endl;
+	// for (unsigned int i=0; i<myRootNode->getSlots(); ++i)
+	// {
+	// 	cout <<	myRootNode->accessKeys()[i] << " " ;
+	// }
+	// cout << endl;
+	ASSERT_EQ(myRootNode->accessKeys()[0], 17);
+	ASSERT_EQ(myRootNode->getSlots(), 1);
 
 
-	cout << "Checking what is in Left Child Pointer of Root's Left child: " << endl; 
-	for (unsigned int i=0; i<myRootNode->accessChildren()[0]->accessChildren()[0]->getSlots(); ++i)
-	{
-		cout <<	myRootNode->accessChildren()[0]->accessChildren()[0]->accessKeys()[i] << " " ;
-	}
-	cout << endl;
-
-	cout << "Checking what is in Mid1 Child Pointer of Root's Left child: " << endl; 
-	for (unsigned int i=0; i<myRootNode->accessChildren()[0]->accessChildren()[1]->getSlots(); ++i)
-	{
-		cout <<	myRootNode->accessChildren()[0]->accessChildren()[1]->accessKeys()[i] << " " ;
-	}
-	cout << endl;
+	// cout << "Checking what is in Left Internal node Child Pointer of Root Node: " << endl; 
+	// for (unsigned int i=0; i<myRootNode->accessChildren()[0]->getSlots(); ++i)
+	// {
+	// 	cout <<	myRootNode->accessChildren()[0]->accessKeys()[i] << " " ;
+	// }
+	// cout << endl;
+	ASSERT_EQ(myRootNode->accessChildren()[0]->getKeyByIndex(0), 5);
+	ASSERT_EQ(myRootNode->accessChildren()[0]->getKeyByIndex(1), 13);
+	ASSERT_EQ(myRootNode->accessChildren()[0]->getSlots(), 2);
 
 
-	cout << "Checking what is in MId2 Child Pointer of Root's Left child: " << endl; 
-	for (unsigned int i=0; i<myRootNode->accessChildren()[0]->accessChildren()[2]->getSlots(); ++i)
-	{
-		cout <<	myRootNode->accessChildren()[0]->accessChildren()[2]->accessKeys()[i] << " " ;
-	}
-	cout << endl;
 
-	cout << "Checking what is in MId2 Child Pointer of Root's Left child: " << endl; 
-	for (unsigned int i=0; i<myRootNode->accessChildren()[0]->accessChildren()[2]->getSlots(); ++i)
-	{
-		cout <<	myRootNode->accessChildren()[0]->accessChildren()[2]->accessKeys()[i] << " " ;
-	}
-	cout << endl;
+	// cout << "Checking what is in Right Child Pointer of Root Node: " << endl; 
+	// for (unsigned int i=0; i<myRootNode->accessChildren()[1]->getSlots(); ++i)
+	// {
+	// 	cout <<	myRootNode->accessChildren()[1]->accessKeys()[i] << " " ;
+	// }
+	// cout << endl;
 
-	cout << "Checking what is in Left Child Pointer of Root's Right child: " << endl; 
-	for (unsigned int i=0; i<myRootNode->accessChildren()[1]->accessChildren()[0]->getSlots(); ++i)
-	{
-		cout <<	myRootNode->accessChildren()[1]->accessChildren()[0]->accessKeys()[i] << " " ;
-	}
-	cout << endl;
+	ASSERT_EQ(myRootNode->accessChildren()[1]->getKeyByIndex(0), 24);
+	ASSERT_EQ(myRootNode->accessChildren()[1]->getKeyByIndex(1), 30);
+	ASSERT_EQ(myRootNode->accessChildren()[1]->getSlots(), 2);
 
-	cout << "Checking what is in Mid1 Child Pointer of Root's Right child: " << endl; 
-	for (unsigned int i=0; i<myRootNode->accessChildren()[1]->accessChildren()[1]->getSlots(); ++i)
-	{
-		cout <<	myRootNode->accessChildren()[1]->accessChildren()[1]->accessKeys()[i] << " " ;
-	}
-	cout << endl;
 
-	cout << "Checking what is in Mid2 Child Pointer of Root's Right child: " << endl; 
-	for (unsigned int i=0; i<myRootNode->accessChildren()[1]->accessChildren()[2]->getSlots(); ++i)
-	{
-		cout <<	myRootNode->accessChildren()[1]->accessChildren()[2]->accessKeys()[i] << " " ;
-	}
-	cout << endl;
+
+	// cout << "Checking what is in Left Child Pointer of Root's Left child: " << endl; 
+	// for (unsigned int i=0; i<myRootNode->accessChildren()[0]->accessChildren()[0]->getSlots(); ++i)
+	// {
+	// 	cout <<	myRootNode->accessChildren()[0]->accessChildren()[0]->accessKeys()[i] << " " ;
+	// }
+	// cout << endl;
+
+	ASSERT_EQ(myRootNode->accessChildren()[0]->accessChildren()[0]->getKeyByIndex(0), 2);
+	ASSERT_EQ(myRootNode->accessChildren()[0]->accessChildren()[0]->getKeyByIndex(1), 3);
+	ASSERT_EQ(myRootNode->accessChildren()[0]->accessChildren()[0]->getSlots(), 2);
+
+
+	// cout << "Checking what is in Mid1 Child Pointer of Root's Left child: " << endl; 
+	// for (unsigned int i=0; i<myRootNode->accessChildren()[0]->accessChildren()[1]->getSlots(); ++i)
+	// {
+	// 	cout <<	myRootNode->accessChildren()[0]->accessChildren()[1]->accessKeys()[i] << " " ;
+	// }
+	// cout << endl;
+
+	ASSERT_EQ(myRootNode->accessChildren()[0]->accessChildren()[1]->getKeyByIndex(0), 5);
+	ASSERT_EQ(myRootNode->accessChildren()[0]->accessChildren()[1]->getKeyByIndex(1), 7);
+	ASSERT_EQ(myRootNode->accessChildren()[0]->accessChildren()[1]->getKeyByIndex(2), 8);
+	ASSERT_EQ(myRootNode->accessChildren()[0]->accessChildren()[1]->getSlots(), 3);
 
 
 
 
+	// cout << "Checking what is in MId2 Child Pointer of Root's Left child: " << endl; 
+	// for (unsigned int i=0; i<myRootNode->accessChildren()[0]->accessChildren()[2]->getSlots(); ++i)
+	// {
+	// 	cout <<	myRootNode->accessChildren()[0]->accessChildren()[2]->accessKeys()[i] << " " ;
+	// }
+	// cout << endl;
 
+
+	ASSERT_EQ(myRootNode->accessChildren()[0]->accessChildren()[2]->getKeyByIndex(0), 14);
+	ASSERT_EQ(myRootNode->accessChildren()[0]->accessChildren()[2]->getKeyByIndex(1), 16);
+	ASSERT_EQ(myRootNode->accessChildren()[0]->accessChildren()[2]->getSlots(), 2);
+
+
+	// cout << "Checking what is in Left Child Pointer of Root's Right child: " << endl; 
+	// for (unsigned int i=0; i<myRootNode->accessChildren()[1]->accessChildren()[0]->getSlots(); ++i)
+	// {
+	// 	cout <<	myRootNode->accessChildren()[1]->accessChildren()[0]->accessKeys()[i] << " " ;
+	// }
+	// cout << endl;
+
+	ASSERT_EQ(myRootNode->accessChildren()[1]->accessChildren()[0]->getKeyByIndex(0), 19);
+	ASSERT_EQ(myRootNode->accessChildren()[1]->accessChildren()[0]->getKeyByIndex(1), 20);
+	ASSERT_EQ(myRootNode->accessChildren()[1]->accessChildren()[0]->getKeyByIndex(2), 22);
+	ASSERT_EQ(myRootNode->accessChildren()[1]->accessChildren()[0]->getSlots(), 3);
+
+
+
+	// cout << "Checking what is in Mid1 Child Pointer of Root's Right child: " << endl; 
+	// for (unsigned int i=0; i<myRootNode->accessChildren()[1]->accessChildren()[1]->getSlots(); ++i)
+	// {
+	// 	cout <<	myRootNode->accessChildren()[1]->accessChildren()[1]->accessKeys()[i] << " " ;
+	// }
+	// cout << endl;
+
+	ASSERT_EQ(myRootNode->accessChildren()[1]->accessChildren()[1]->getKeyByIndex(0), 24);
+	ASSERT_EQ(myRootNode->accessChildren()[1]->accessChildren()[1]->getKeyByIndex(1), 27);
+	ASSERT_EQ(myRootNode->accessChildren()[1]->accessChildren()[1]->getKeyByIndex(2), 29);
+	ASSERT_EQ(myRootNode->accessChildren()[1]->accessChildren()[1]->getSlots(), 3);
+
+
+	// cout << "Checking what is in Mid2 Child Pointer of Root's Right child: " << endl; 
+	// for (unsigned int i=0; i<myRootNode->accessChildren()[1]->accessChildren()[2]->getSlots(); ++i)
+	// {
+	// 	cout <<	myRootNode->accessChildren()[1]->accessChildren()[2]->accessKeys()[i] << " " ;
+	// }
+	// cout << endl;
+
+	ASSERT_EQ(myRootNode->accessChildren()[1]->accessChildren()[2]->getKeyByIndex(0), 33);
+	ASSERT_EQ(myRootNode->accessChildren()[1]->accessChildren()[2]->getKeyByIndex(1), 34);
+	ASSERT_EQ(myRootNode->accessChildren()[1]->accessChildren()[2]->getKeyByIndex(2), 38);
+	ASSERT_EQ(myRootNode->accessChildren()[1]->accessChildren()[2]->getKeyByIndex(3), 39);
+	ASSERT_EQ(myRootNode->accessChildren()[1]->accessChildren()[2]->getSlots(), 4);
 
 
 	delete newLeafNode; 
@@ -480,6 +527,95 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Insert)
 	}
 	delete GlobalRoot1;
 	delete myBPlusTree;
+
+
+
+
+	// Version 1 BPlusTree test 
+	// Building BPlusTree from scratch, root == NULL
+	//             		   [7]
+	//       	[3, 5]		      [9, 11]
+	// [1, 2] [3, 4] [5, 6]   [7, 8] [9, 10] [11, 12, 13, 14]
+	BPlusTree* myBPlusTree1 = new BPlusTree;
+
+	// Insert [1 to 14]
+	for (unsigned int i=1; i<15; ++i)
+	{
+		myBPlusTree1->insert_content(i); 
+	}
+
+	Node* myRootNode1 = myBPlusTree1->getRootNode();
+
+	// Check Root Node 
+	ASSERT_EQ(myRootNode1->accessKeys()[0], 7);
+	ASSERT_EQ(myRootNode1->getSlots(), 1);
+
+	// Check Left of Root node 
+	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessKeys()[0], 3);
+	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessKeys()[1], 5);
+	ASSERT_EQ(myRootNode1->accessChildren()[0]->getSlots(), 2);
+
+
+	// CHeck Mid1 of Root Node 
+	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessKeys()[0], 9);
+	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessKeys()[1], 11);
+	ASSERT_EQ(myRootNode1->accessChildren()[1]->getSlots(), 2);
+
+
+	// CHeck Left of Left of Root Node 
+	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[0]->accessKeys()[0], 1);
+	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[0]->accessKeys()[1], 2);
+	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[0]->getSlots(), 2);
+
+	// CHeck Mid1 of Left of Root Node 
+	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[1]->accessKeys()[0], 3);
+	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[1]->accessKeys()[1], 4);
+	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[1]->getSlots(), 2);
+
+	// CHeck Mid2 of Left of Root Node 
+	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[2]->accessKeys()[0], 5);
+	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[2]->accessKeys()[1], 6);
+	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[2]->getSlots(), 2);
+
+
+
+	// CHeck Left of Mid1 of Root Node 
+	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[0]->accessKeys()[0], 7);
+	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[0]->accessKeys()[1], 8);
+	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[0]->getSlots(), 2);
+
+	// CHeck Mid1 of Mid1 of Root Node 
+	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[1]->accessKeys()[0], 9);
+	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[1]->accessKeys()[1], 10);
+	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[1]->getSlots(), 2);
+
+	// CHeck Mid2 of Mid1 of Root Node 
+	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[2]->accessKeys()[0], 11);
+	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[2]->accessKeys()[1], 12);
+	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[2]->accessKeys()[2], 13);
+	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[2]->accessKeys()[3], 14);
+	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[2]->getSlots(), 4);
+
+
+
+
+
+
+
+
+
+	cout << "What is in myRootNode1 ? " << endl; 
+	cout << myRootNode1->getKeyByIndex(0) << endl; 
+
+
+
+
+
+	delete myBPlusTree1;
+
+
+
+
 
 }
 
@@ -506,8 +642,8 @@ BPlusTree* mkBPlusTree1()
 	int arr1[ORDER_M] = {2, 3, 5, 7};
 	Node* myNodeLeft = new Node("left", 1, true, 4, arr1);
 
-	int arr2[ORDER_M] = {14, 15, 16};
-	Node* myNodeMid1 = new Node("mid1", 1, true, 3, arr2);
+	int arr2[ORDER_M] = {14, 16};
+	Node* myNodeMid1 = new Node("mid1", 1, true, 2, arr2);
 
 	int arr3[ORDER_M] = {19, 20, 22};
 	Node* myNodeMid2 = new Node("mid2", 1, true, 3, arr3);

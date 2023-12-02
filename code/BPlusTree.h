@@ -37,12 +37,19 @@ public:
 
     std::vector <Node *> findRange(int lb, int ub);
 
-    bool insert(int key);
+    // insert
+    bool insert_content(int key);
     void InsertInLeaf(Node* L, int key);
     void InsertInParent(Node* N, int KPrime, Node* NPrime);
     Node* getParentNode(Node* N);
-
     void InsertInInternalNode(Node* P, Node* N, int KPrime, Node* NPrime);
+
+    // delete 
+    bool delete_content(int k);
+    bool remove_entry(Node* L, int K);
+
+
+
 
 };
 

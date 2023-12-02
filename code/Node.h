@@ -55,7 +55,8 @@ public:
     bool getLeaf();
     void setLeaf(bool leaf);
 
-    int getKey(unsigned int i);
+    int getKeyByIndex(unsigned int i);
+    int getIndexByKey(int key);
 
     unsigned int getSlots();
     void setSlots(unsigned int slots);
