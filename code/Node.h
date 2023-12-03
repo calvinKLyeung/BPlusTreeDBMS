@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <cmath>
 
 // using namespace std;
 
@@ -58,9 +59,14 @@ public:
     int getKeyByIndex(unsigned int i);
     int getIndexByKey(int key);
 
+    int getIndexByChildPointer(Node* child);
+
     unsigned int getSlots();
     void setSlots(unsigned int slots);
 
+    unsigned int getNumOfChildren();
+    Node* getTheRemainingChild();
+    bool hasTooFewValuesOrPointers();
 
     void setPrev(Node* node);
     Node* getPrev();

@@ -144,6 +144,21 @@ int Node::getIndexByKey(int key)
     return index; 
 }
 
+int Node::getIndexByChildPointer(Node* child)
+{   
+    int index = -1;
+    for (unsigned int i = 0; i < this->getSlots() + 1; ++i)
+    {
+        if (this->accessChildren()[i] == child)
+        {
+            index = i;
+            break;
+        }
+    }
+    return index; 
+}
+
+
 
 unsigned int Node::getSlots()
 {
@@ -154,6 +169,59 @@ void Node::setSlots(unsigned int slots)
 {
     this->slots = slots;
 }
+
+unsigned int Node::getNumOfChildren()
+{   
+    unsigned int ret = 0; 
+    for (unsigned int i=0; i < this->getSlots() + 1; ++i)
+    {
+        if (this->accessChildren()[i] != NULL)
+        {
+            ret++; 
+        }
+    }
+    return ret; 
+}
+
+
+Node* Node::getTheRemainingChild()
+{
+    for(unsigned int i=0; i < this->getSlots() + 1; ++i)
+    {
+        if (this->accessChildren()[i] != NULL)
+        {
+            return this->accessChildren()[i];
+        }
+    }
+}
+
+bool Node::hasTooFewValuesOrPointers()
+{
+    
+    bool ret = false;
+
+    // if non-leaf internal nodes 
+    if (this->getLeaf() != true) 
+    {
+        if (this->getNumOfChildren() < (unsigned int)ceil(ORDER_M / 2.0))
+        {
+            ret = true; 
+        }
+    }
+    // else if leaf nodes 
+    else
+    {
+        if (this->getSlots() < (unsigned int)ceil((ORDER_M - 1) / 2.0))
+        {
+            ret = true;
+        }
+    }
+    return ret; 
+}
+
+
+
+
 
 
 void Node::setPrev(Node* node)

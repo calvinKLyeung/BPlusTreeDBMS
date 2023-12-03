@@ -389,7 +389,7 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Insert)
 	}
 	cout << endl;
 
-	bool inserted = myBPlusTree->insert_content(8);
+	bool inserted = myBPlusTree->Insert(8);
 
 	cout << "Insert successfully? " << std::boolalpha << inserted << endl;
 
@@ -541,7 +541,7 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Insert)
 	// Insert [1 to 14]
 	for (unsigned int i=1; i<15; ++i)
 	{
-		myBPlusTree1->insert_content(i); 
+		myBPlusTree1->Insert(i); 
 	}
 
 	Node* myRootNode1 = myBPlusTree1->getRootNode();
@@ -678,7 +678,7 @@ BPlusTree* mkBPlusTree1()
 	myNodeRoot->accessChildren()[4] = myNodeRight;
 
 	// set Root 
-	myBPlusTree->setRoot(myNodeRoot);
+	myBPlusTree->setRootNode(myNodeRoot);
 
 
 	// Global GlobalNodeTracker1 ForTesting
@@ -768,7 +768,7 @@ BPlusTree* mkBPlusTree2()
 	mylevel1_mid1->accessChildren()[2] = mylevel2_5;
 
 	// set Root 
-	myBPlusTree->setRoot(myNodeRoot);
+	myBPlusTree->setRootNode(myNodeRoot);
 
 
 	// Global GlobalNodeTracker1 ForTesting
