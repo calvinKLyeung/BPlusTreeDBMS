@@ -567,6 +567,22 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Insert)
 	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[0]->accessKeys()[1], 2);
 	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[0]->getSlots(), 2);
 
+
+	cout << "Is the Node leaf?"<< endl; 
+	cout << std::boolalpha << myRootNode1->accessChildren()[0]->accessChildren()[0]->getLeaf() << endl;
+
+
+	cout << "Are the Leafs connected? " << endl; 
+	if (myRootNode1->accessChildren()[0]->accessChildren()[0]->getNext() != NULL)
+	{
+		cout << "Next is NOT NULL!" << endl; 
+	}
+	else
+	{
+		cout << "Not connected yet : ((((((((" << endl; 
+	}
+
+
 	// CHeck Mid1 of Left of Root Node 
 	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[1]->accessKeys()[0], 3);
 	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[1]->accessKeys()[1], 4);
