@@ -66,7 +66,7 @@ public:
 
     unsigned int getNumOfChildren();
     Node* getTheRemainingChild();
-    bool hasTooFewValuesOrPointers();
+    bool hasTooFewValuesOrPointersRemain();
 
     void setPrev(Node* node);
     Node* getPrev();

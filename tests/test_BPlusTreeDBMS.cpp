@@ -638,6 +638,71 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Insert)
 
 
 
+TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Delete)
+{
+	BPlusTree* myBPlusTree = mkBPlusTree1();
+
+	myBPlusTree->Insert(8); 
+
+	cout << endl;
+	cout << "8 should be in Mid1 of Left of Root" << endl;
+	for (unsigned int i=0; i < myBPlusTree->getRootNode()->accessChildren()[0]->accessChildren()[1]->getSlots(); ++i)
+	{
+		cout << myBPlusTree->getRootNode()->accessChildren()[0]->accessChildren()[1]->accessKeys()[i] << " "; 
+	}
+	cout << endl;
+
+
+	myBPlusTree->Delete(19);
+	cout << endl;
+	cout << "19's node should only remain 20, 22" << endl;
+	for (unsigned int i=0; i < myBPlusTree->getRootNode()->accessChildren()[1]->accessChildren()[0]->getSlots(); ++i)
+	{
+		cout << myBPlusTree->getRootNode()->accessChildren()[1]->accessChildren()[0]->accessKeys()[i] << " "; 
+	}
+	cout << endl;
+
+	// Problem in Delete 20 
+	myBPlusTree->Delete(20);
+
+	cout << endl;
+	cout << "Mid1 of Root should now have 27, 30" << endl;
+	for (unsigned int i=0; i < myBPlusTree->getRootNode()->accessChildren()[1]->getSlots(); ++i)
+	{
+		cout << myBPlusTree->getRootNode()->accessChildren()[1]->accessKeys()[i] << " "; 
+	}
+	cout << endl;
+
+
+
+
+
+
+
+
+
+
+	// cout << endl;
+	// cout << "Left of Mid1 of Root" << endl;
+	// for (unsigned int i=0; i < myBPlusTree->getRootNode()->accessChildren()[1]->accessChildren()[0]->getSlots(); ++i)
+	// {
+	// 	cout << myBPlusTree->getRootNode()->accessChildren()[1]->accessChildren()[0]->accessKeys()[i] << " "; 
+	// }
+	// cout << endl;
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
 
 
 
@@ -801,6 +866,9 @@ BPlusTree* mkBPlusTree2()
 
 	return myBPlusTree; 
 }
+
+
+
 
 
 

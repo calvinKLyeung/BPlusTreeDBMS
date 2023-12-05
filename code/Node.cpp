@@ -195,7 +195,7 @@ Node* Node::getTheRemainingChild()
     }
 }
 
-bool Node::hasTooFewValuesOrPointers()
+bool Node::hasTooFewValuesOrPointersRemain()
 {
     
     bool ret = false;
