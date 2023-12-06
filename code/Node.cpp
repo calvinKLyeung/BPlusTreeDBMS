@@ -200,7 +200,7 @@ bool Node::hasTooFewValuesOrPointersRemain()
     
     bool ret = false;
 
-    // if non-leaf internal nodes 
+    // if non-leaf internal nodes, has children < ⌈ORDER_M / 2⌉
     if (this->getLeaf() != true) 
     {
         if (this->getNumOfChildren() < (unsigned int)ceil(ORDER_M / 2.0))
@@ -208,7 +208,7 @@ bool Node::hasTooFewValuesOrPointersRemain()
             ret = true; 
         }
     }
-    // else if leaf nodes 
+    // else if leaf nodes, has Keys <  ⌈(ORDER_M - 1) / 2⌉
     else
     {
         if (this->getSlots() < (unsigned int)ceil((ORDER_M - 1) / 2.0))

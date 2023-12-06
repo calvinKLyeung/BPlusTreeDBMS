@@ -50,8 +50,8 @@ public:
     bool getPrevOrNextChildOfParentOfN(Node* P, Node* N, Node* &NPrime);
     int findIndexOfKPrime(Node* P, Node* N, Node* NPrime, bool retrieved_prev_child);
     void swap_variables(Node* &N, Node* &NPrime);
-    void appendKPrimeAndNToNPrime(int KPrime, Node* N, Node* &NPrime);
-    void appendNToNPrime(Node* N, Node* &NPrime);
+    void appendKPrimeAndNToNPrime(Node* &NPrime, int KPrime, Node* N);
+    void appendNToNPrime(Node* &NPrime, Node* N);
 
 
 
