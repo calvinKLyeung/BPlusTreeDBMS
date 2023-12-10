@@ -204,6 +204,8 @@ std::vector <Node *> BPlusTree::findRange(int lb, int ub) // lb == lower bound, 
 bool BPlusTree::Insert(int key)
 {
     bool ret = false; 
+
+    // if (tree is empty) create an empty leaf node L, which is also the root
     if (this->getRootNode() == NULL)
     {
         int arr[] = {key};
@@ -211,6 +213,7 @@ bool BPlusTree::Insert(int key)
         this->setRootNode(new_root_node);
         ret = true; 
     }
+    // else Find the leaf node L that should contain key value K
     else
     {
         // walk to the leaf node L that should contain key value K
@@ -240,12 +243,14 @@ bool BPlusTree::Insert(int key)
         //     std::cout << L->accessKeys()[i] << " " ; 
         // }
 
-
+        // if (L has less than n − 1 key values)
         if (L->getSlots() < ORDER_M - 1)
         {
             this->InsertInLeaf(L, key);
         }
-        else  /* L has n − 1 key values already, split it */
+
+        // else begin /* L has n − 1 key values already, split it */
+        else  
         {
             // Create NEW node L′
             Node* LPrime = new Node();
@@ -281,8 +286,17 @@ bool BPlusTree::Insert(int key)
 
             LPrime->setNext(L->getNext()); // set LPrime next pointer to point to L next 
             L->setNext(LPrime); // set next pointer of L to point to LPrime 
-            (LPrime->getNext())->setPrev(LPrime); // Node of L's original Next pointer to pointer prev to LPrime
             LPrime->setPrev(L); // set LPrime's prev pointer to L
+
+            // Extra step:
+            // In case there exist node in LPrime->getNext()
+            // then set the Prev pointer of LPrime->getNext() to point to LPrime
+            if (LPrime->getNext() != NULL)
+            {
+                (LPrime->getNext())->setPrev(LPrime);
+            }
+            
+   
 
 
 
@@ -786,6 +800,7 @@ bool BPlusTree::Delete(int k)
 bool BPlusTree::delete_entry(Node* N, int K, Node* pointer)
 {   
 
+    // Removing the element 
 
     // delete key-pointer pair (K, P) from N
     unsigned int index_of_K = N->getIndexByKey(K);
@@ -841,13 +856,7 @@ bool BPlusTree::delete_entry(Node* N, int K, Node* pointer)
 
 
 
-    
-
-
-
-
-
-
+    // ROOT case 
 
     // if (N is the root AND N has only one remaining child)
     // N->getNumOfChildren() == 1 == N->getSlots() == 0 by the B+Tree Invariant 
@@ -858,6 +867,8 @@ bool BPlusTree::delete_entry(Node* N, int K, Node* pointer)
         delete N; 
     }
 
+
+    // NON ROOT case 
 
     // else if (N has too few values/pointers) then begin
     else if (N->hasTooFewValuesOrPointersRemain() == true)
@@ -1372,6 +1383,13 @@ void BPlusTree::appendKPrimeAndNToNPrime(Node* &NPrime, int KPrime, Node* N)
     for (unsigned int i = 0; i < N->getSlots() + 1; ++i)
     {
         NPrime->accessChildren()[i + NPrime->getSlots()] = N->accessChildren()[i];
+        // if the children are Leaf nodes AND the Leaf node are NOT out of the bounded index 
+        if (NPrime->accessChildren()[i + NPrime->getSlots()]->getLeaf() == true && (i + NPrime->getSlots() - 1) >= 0)
+        {
+            // Update Next and Prev Pointers in Leaf Nodes 
+            NPrime->accessChildren()[(i + NPrime->getSlots() - 1)]->setNext(NPrime->accessChildren()[i + NPrime->getSlots()]);
+            NPrime->accessChildren()[i + NPrime->getSlots()]->setPrev(NPrime->accessChildren()[(i + NPrime->getSlots() - 1)]);
+        }
     }
     // 1 for KPrime 
     NPrime->setSlots(N->getSlots() + NPrime->getSlots());

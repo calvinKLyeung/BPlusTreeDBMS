@@ -14,6 +14,8 @@ Node::Node() {
     {   
         this->children[i] = NULL;
     }
+    this->next = NULL;
+    this->prev = NULL;
 
 
 }
@@ -40,6 +42,9 @@ Node::Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slo
     // {
     //     children[i] = _children[i];
     // }
+    this->next = NULL;
+    this->prev = NULL;
+
 }
 
 Node::Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slots, 

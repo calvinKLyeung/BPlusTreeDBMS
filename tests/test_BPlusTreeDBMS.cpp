@@ -538,81 +538,381 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Insert)
 	// [1, 2] [3, 4] [5, 6]   [7, 8] [9, 10] [11, 12, 13, 14]
 	BPlusTree* myBPlusTree_Insert_1 = new BPlusTree;
 
-	// Insert [1 to 14]
-	for (unsigned int i=1; i<15; ++i)
-	{
-		myBPlusTree_Insert_1->Insert(i); 
-	}
-
-	Node* myRootNode1 = myBPlusTree_Insert_1->getRootNode();
-
-	// Check Root Node 
-	ASSERT_EQ(myRootNode1->accessKeys()[0], 7);
-	ASSERT_EQ(myRootNode1->getSlots(), 1);
-
-	// Check Left of Root node 
-	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessKeys()[0], 3);
-	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessKeys()[1], 5);
-	ASSERT_EQ(myRootNode1->accessChildren()[0]->getSlots(), 2);
+	myBPlusTree_Insert_1->Insert(1); 
 
 
-	// CHeck Mid1 of Root Node 
-	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessKeys()[0], 9);
-	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessKeys()[1], 11);
-	ASSERT_EQ(myRootNode1->accessChildren()[1]->getSlots(), 2);
+	// Check Root Node after Insert(1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[0], 1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getSlots(), 1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getNext(), nullptr);
 
+	myBPlusTree_Insert_1->Insert(2); 
 
-	// CHeck Left of Left of Root Node 
-	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[0]->accessKeys()[0], 1);
-	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[0]->accessKeys()[1], 2);
-	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[0]->getSlots(), 2);
+	// Check Root Node after Insert(2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[0], 1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[1], 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getNext(), nullptr);
 
+	myBPlusTree_Insert_1->Insert(3); 
 
-	cout << "Is the Node leaf?"<< endl; 
-	cout << std::boolalpha << myRootNode1->accessChildren()[0]->accessChildren()[0]->getLeaf() << endl;
-
-
-	cout << "Are the Leafs connected? " << endl; 
-	if (myRootNode1->accessChildren()[0]->accessChildren()[0]->getNext() != NULL)
-	{
-		cout << "Next is NOT NULL!" << endl; 
-	}
-	else
-	{
-		cout << "Not connected yet : ((((((((" << endl; 
-	}
-
-
-	// CHeck Mid1 of Left of Root Node 
-	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[1]->accessKeys()[0], 3);
-	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[1]->accessKeys()[1], 4);
-	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[1]->getSlots(), 2);
-
-	// CHeck Mid2 of Left of Root Node 
-	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[2]->accessKeys()[0], 5);
-	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[2]->accessKeys()[1], 6);
-	ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[2]->getSlots(), 2);
+	// Check Root Node after Insert(3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[0], 1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[1], 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[2], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getSlots(), 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getNext(), nullptr);
 
 
 
-	// CHeck Left of Mid1 of Root Node 
-	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[0]->accessKeys()[0], 7);
-	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[0]->accessKeys()[1], 8);
-	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[0]->getSlots(), 2);
+	myBPlusTree_Insert_1->Insert(4); 
 
-	// CHeck Mid1 of Mid1 of Root Node 
-	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[1]->accessKeys()[0], 9);
-	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[1]->accessKeys()[1], 10);
-	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[1]->getSlots(), 2);
-
-	// CHeck Mid2 of Mid1 of Root Node 
-	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[2]->accessKeys()[0], 11);
-	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[2]->accessKeys()[1], 12);
-	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[2]->accessKeys()[2], 13);
-	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[2]->accessKeys()[3], 14);
-	ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[2]->getSlots(), 4);
+	// Check Root Node after Insert(4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[0], 1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[1], 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[2], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[3], 4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getSlots(), 4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getNext(), nullptr);
 
 
+	myBPlusTree_Insert_1->Insert(5); 
+
+
+	// after Insert(5);
+	// Check Root Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getSlots(), 1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getNext(), nullptr);
+	// Check Root -> Left Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[0], 1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[1], 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]);
+	// Check Root -> Mid1 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[1], 4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[2], 5);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getSlots(), 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getNext(), nullptr);
+
+
+	myBPlusTree_Insert_1->Insert(6); 
+
+
+	// after Insert(6);
+	// Check Root Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getSlots(), 1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getNext(), nullptr);
+	// Check Root -> Left Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[0], 1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[1], 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]);
+	// Check Root -> Mid1 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[1], 4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[2], 5);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[3], 6);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getSlots(), 4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getNext(), nullptr);
+
+
+	myBPlusTree_Insert_1->Insert(7); 
+
+
+	// after Insert(7);
+	// Check Root Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[1], 5);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getNext(), nullptr);
+	// Check Root -> Left Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[0], 1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[1], 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]);
+	// Check Root -> Mid1 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[1], 4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]);
+	// Check Root -> Mid2 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->accessKeys()[0], 5);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->accessKeys()[1], 6);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->accessKeys()[2], 7);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getSlots(), 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getNext(), nullptr);
+
+
+	myBPlusTree_Insert_1->Insert(8); 
+
+
+	// after Insert(8);
+	// Check Root Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[1], 5);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getNext(), nullptr);
+	// Check Root -> Left Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[0], 1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[1], 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]);
+	// Check Root -> Mid1 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[1], 4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]);
+	// Check Root -> Mid2 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->accessKeys()[0], 5);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->accessKeys()[1], 6);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->accessKeys()[2], 7);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->accessKeys()[3], 8);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getSlots(), 4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getNext(), nullptr);
+
+
+	myBPlusTree_Insert_1->Insert(9); 
+	// after Insert(9);
+	// Check Root Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[1], 5);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[2], 7);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getSlots(), 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getNext(), nullptr);
+	// Check Root -> Left Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[0], 1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[1], 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]);
+	// Check Root -> Mid1 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[1], 4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]);
+	// Check Root -> Mid2 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->accessKeys()[0], 5);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->accessKeys()[1], 6);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]);
+	// Check Root -> Mid3 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->accessKeys()[0], 7);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->accessKeys()[1], 8);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->accessKeys()[2], 9);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->getSlots(), 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->getNext(), nullptr);
+
+
+	myBPlusTree_Insert_1->Insert(10); 
+	// after Insert(10);
+	// Check Root Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[1], 5);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[2], 7);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getSlots(), 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getNext(), nullptr);
+	// Check Root -> Left Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[0], 1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[1], 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]);
+	// Check Root -> Mid1 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[1], 4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]);
+	// Check Root -> Mid2 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->accessKeys()[0], 5);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->accessKeys()[1], 6);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]);
+	// Check Root -> Mid3 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->accessKeys()[0], 7);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->accessKeys()[1], 8);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->accessKeys()[2], 9);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->accessKeys()[3], 10);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->getSlots(), 4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->getNext(), nullptr);
+
+
+
+	myBPlusTree_Insert_1->Insert(11); 
+	// after Insert(11);
+	// Check Root Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[1], 5);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[2], 7);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[3], 9);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getSlots(), 4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getNext(), nullptr);
+	// Check Root -> Left Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[0], 1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[1], 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]);
+	// Check Root -> Mid1 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[1], 4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]);
+	// Check Root -> Mid2 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->accessKeys()[0], 5);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->accessKeys()[1], 6);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]);
+	// Check Root -> Mid3 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->accessKeys()[0], 7);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->accessKeys()[1], 8);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[4]);
+	// Check Root -> Right Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[4]->accessKeys()[0], 9);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[4]->accessKeys()[1], 10);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[4]->accessKeys()[2], 11);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[4]->getSlots(), 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[4]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[4]->getNext(), nullptr);
+
+
+	myBPlusTree_Insert_1->Insert(12); 
+	// after Insert(12);
+	// Check Root Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[1], 5);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[2], 7);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[3], 9);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getSlots(), 4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getNext(), nullptr);
+	// Check Root -> Left Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[0], 1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[1], 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]);
+	// Check Root -> Mid1 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[1], 4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]);
+	// Check Root -> Mid2 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->accessKeys()[0], 5);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->accessKeys()[1], 6);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]);
+	// Check Root -> Mid3 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->accessKeys()[0], 7);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->accessKeys()[1], 8);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[2]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[4]);
+	// Check Root -> Right Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[4]->accessKeys()[0], 9);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[4]->accessKeys()[1], 10);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[4]->accessKeys()[2], 11);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[4]->accessKeys()[3], 12);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[4]->getSlots(), 4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[4]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[3]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[4]->getNext(), nullptr);
+
+
+	myBPlusTree_Insert_1->Insert(13); 
+	// after Insert(13);
+	// Check Root Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessKeys()[0], 7);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getSlots(), 1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->getNext(), nullptr);
+
+	// Check Root -> Left Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessKeys()[1], 5);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->getNext(), nullptr);
+	// Check Root -> Mid1 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[0], 9);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessKeys()[1], 11);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->getNext(), nullptr);
+
+
+
+	// Check Root -> Left -> Left Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[0]->accessKeys()[0], 1);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[0]->accessKeys()[1], 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[0]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[0]->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[0]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[1]);
+	// Check Root -> Left -> Mid1 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[1]->accessKeys()[0], 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[1]->accessKeys()[1], 4);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[1]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[1]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[0]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[1]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[2]);
+	// Check Root -> Left -> Mid2 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[2]->accessKeys()[0], 5);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[2]->accessKeys()[1], 6);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[2]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[2]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[1]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[2]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[0]);
+	// Check Root -> Mid1 -> Left Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[0]->accessKeys()[0], 7);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[0]->accessKeys()[1], 8);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[0]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[0]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[0]->accessChildren()[2]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[0]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[1]);
+	// Check Root -> Mid1 -> Mid1 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[1]->accessKeys()[0], 9);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[1]->accessKeys()[1], 10);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[1]->getSlots(), 2);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[1]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[0]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[1]->getNext(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[2]);
+	// Check Root -> Mid1 -> Mid2 Node
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[2]->accessKeys()[0], 11);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[2]->accessKeys()[1], 12);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[2]->accessKeys()[2], 13);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[2]->getSlots(), 3);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[2]->getPrev(), myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[1]);
+	ASSERT_EQ(myBPlusTree_Insert_1->getRootNode()->accessChildren()[1]->accessChildren()[2]->getNext(), nullptr);
 
 
 
@@ -620,8 +920,119 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Insert)
 
 
 
-	cout << "What is in myRootNode1 ? " << endl; 
-	cout << myRootNode1->getKeyByIndex(0) << endl; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	// Insert [1 to 14] to a B+ Tree 
+	// for (unsigned int i=3; i<15; ++i)
+	// {
+	// 	myBPlusTree_Insert_1->Insert(i); 
+	// }
+
+	// Node* myRootNode1 = myBPlusTree_Insert_1->getRootNode();
+
+	// // Check Root Node 
+	// ASSERT_EQ(myRootNode1->accessKeys()[0], 7);
+	// ASSERT_EQ(myRootNode1->getSlots(), 1);
+
+	// // Check Left of Root node 
+	// ASSERT_EQ(myRootNode1->accessChildren()[0]->accessKeys()[0], 3);
+	// ASSERT_EQ(myRootNode1->accessChildren()[0]->accessKeys()[1], 5);
+	// ASSERT_EQ(myRootNode1->accessChildren()[0]->getSlots(), 2);
+
+
+	// // CHeck Mid1 of Root Node 
+	// ASSERT_EQ(myRootNode1->accessChildren()[1]->accessKeys()[0], 9);
+	// ASSERT_EQ(myRootNode1->accessChildren()[1]->accessKeys()[1], 11);
+	// ASSERT_EQ(myRootNode1->accessChildren()[1]->getSlots(), 2);
+
+
+	// // CHeck Left of Left of Root Node 
+	// ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[0]->accessKeys()[0], 1);
+	// ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[0]->accessKeys()[1], 2);
+	// ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[0]->getSlots(), 2);
+
+
+	// // CHeck Mid1 of Left of Root Node 
+	// ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[1]->accessKeys()[0], 3);
+	// ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[1]->accessKeys()[1], 4);
+	// ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[1]->getSlots(), 2);
+
+	// // CHeck Mid2 of Left of Root Node 
+	// ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[2]->accessKeys()[0], 5);
+	// ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[2]->accessKeys()[1], 6);
+	// ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[2]->getSlots(), 2);
+
+
+
+	// // CHeck Left of Mid1 of Root Node 
+	// ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[0]->accessKeys()[0], 7);
+	// ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[0]->accessKeys()[1], 8);
+	// ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[0]->getSlots(), 2);
+
+	// // CHeck Mid1 of Mid1 of Root Node 
+	// ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[1]->accessKeys()[0], 9);
+	// ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[1]->accessKeys()[1], 10);
+	// ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[1]->getSlots(), 2);
+
+	// // CHeck Mid2 of Mid1 of Root Node 
+	// ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[2]->accessKeys()[0], 11);
+	// ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[2]->accessKeys()[1], 12);
+	// ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[2]->accessKeys()[2], 13);
+	// ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[2]->accessKeys()[3], 14);
+	// ASSERT_EQ(myRootNode1->accessChildren()[1]->accessChildren()[2]->getSlots(), 4);
+
+
+
+	// Check Sibling of Leafs 
+
+	// Left 
+
+	// cout << "What Keys are in myRootNode1->accessChildren()[0]->accessChildren()[0]->getPrev()???" << endl; 
+	// for (unsigned int i=0; i<myRootNode1->accessChildren()[0]->accessChildren()[0]->getPrev()->getSlots(); ++i)
+	// {
+	// 	cout << myRootNode1->accessChildren()[0]->accessChildren()[0]->accessKeys()[i] << " "; 
+	// }
+	// cout << endl;
+
+	// ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[0]->getPrev(), nullptr);
+	// ASSERT_EQ(myRootNode1->accessChildren()[0]->accessChildren()[0]->getNext(), myRootNode1->accessChildren()[0]->accessChildren()[1]);
+	
+
+
+
+
+
+	// // Mid1 
+	// ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[1]->getPrev(), myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[0]);
+	// ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[1]->getNext(), myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[2]);
+
+	// // Mid2 
+	// ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[2]->getPrev(), myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[1]);
+	// ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[2]->getNext(), myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[3]);
+
+	// // Mid3 
+	// ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[3]->getPrev(), myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[2]);
+	// ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[3]->getNext(), myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[4]);
+
+	// // Right 
+	// ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[4]->getPrev(), myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[3]);
+	// ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[4]->getNext(), nullptr);
+
+
 
 
 
@@ -720,15 +1131,6 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_DeleteDefaultTestCases)
 	// Problem in Delete 20 
 	myBPlusTree_DeleteDefaultTestCases->Delete(20);
 
-	// cout << endl;
-	// cout << "Mid1 of Root should now have 27, 30" << endl;
-	// for (unsigned int i=0; i < myBPlusTree->getRootNode()->accessChildren()[1]->getSlots(); ++i)
-	// {
-	// 	cout << myBPlusTree->getRootNode()->accessChildren()[1]->accessKeys()[i] << " "; 
-	// }
-	// cout << endl;
-
-	// Do We hafve the correct TREE after removing 20? 
 	// ROOT 
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->getSlots(), 1);
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessKeys()[0], 17);
@@ -802,33 +1204,56 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_DeleteDefaultTestCases)
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[0]->accessKeys()[0], 2);
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[0]->accessKeys()[1], 3);
 
-	// Left of Root 
+	// Mid1 of Root 
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[1]->getSlots(), 3);
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[1]->accessKeys()[0], 5);
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[1]->accessKeys()[1], 7);
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[1]->accessKeys()[2], 8);
 
-	// Left of Root 
+	// Mid2 of Root 
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[2]->getSlots(), 2);
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[2]->accessKeys()[0], 14);
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[2]->accessKeys()[1], 16);
 
-	// Left of Root 
+	// Mid3 of Root 
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[3]->getSlots(), 3);
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[3]->accessKeys()[0], 22);
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[3]->accessKeys()[1], 27);
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[3]->accessKeys()[2], 29);
 
-	// Left of Root 
+	// Right of Root 
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[4]->getSlots(), 4);
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[4]->accessKeys()[0], 33);
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[4]->accessKeys()[1], 34);
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[4]->accessKeys()[2], 38);
 	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[4]->accessKeys()[3], 39);
 
+	// Check Sibling of Leafs 
+	// Left 
+	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[0]->getPrev(), nullptr);
+	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[0]->getNext(), myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[1]);
+	
+	// Mid1 
+	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[1]->getPrev(), myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[0]);
+	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[1]->getNext(), myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[2]);
+
+	// Mid2 
+	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[2]->getPrev(), myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[1]);
+	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[2]->getNext(), myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[3]);
+
+	// Mid3 
+	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[3]->getPrev(), myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[2]);
+	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[3]->getNext(), myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[4]);
+
+	// Right 
+	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[4]->getPrev(), myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[3]);
+	ASSERT_EQ(myBPlusTree_DeleteDefaultTestCases->getRootNode()->accessChildren()[4]->getNext(), nullptr);
+
 	delete myBPlusTree_DeleteDefaultTestCases; 
 
 }
+
+
 
 
 TEST_F(test_BPlusTreeDBMS, TestBPlusTree_DeleteExtraTestCases)
@@ -981,6 +1406,11 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_DeleteExtraTestCases)
 // Helper functions 
 BPlusTree* mkBPlusTree1()
 {
+	//						  [13, 17, 24, 30]			
+	//[2, 3, 5, 7]   [14, 16]	[19, 20, 22]	[24, 27, 29]	[33, 34, 38, 39]
+
+
+
 	// Test BPlusTree Reference: https://web.stanford.edu/class/cs346/2015/notes/Blink.pdf
 	BPlusTree* myBPlusTree = new BPlusTree; 
 	
@@ -1018,7 +1448,7 @@ BPlusTree* mkBPlusTree1()
 	myNodeMid2->setNext(myNodeMid3);
 	// set Mid3 
 	myNodeMid3->setPrev(myNodeMid2);
-	myNodeMid3->setNext(myNodeLeft);
+	myNodeMid3->setNext(myNodeRight);
 	// set Left
 	myNodeRight->setPrev(myNodeMid3);
 
@@ -1048,6 +1478,11 @@ BPlusTree* mkBPlusTree1()
 
 BPlusTree* mkBPlusTree2()
 {
+	//						  [17]			
+	//
+
+
+
 	// Test BPlusTree Reference: https://web.stanford.edu/class/cs346/2015/notes/Blink.pdf
 	BPlusTree* myBPlusTree = new BPlusTree; 
 	
