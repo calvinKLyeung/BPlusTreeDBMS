@@ -38,10 +38,11 @@ Node::Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slo
     {
         keys[i] = _keys[i];
     }
-    // for (unsigned int i=0; i<_slots + 1;++i)
-    // {
-    //     children[i] = _children[i];
-    // }
+
+    for (unsigned int i = 0; i < ORDER_M + 1; ++i)
+    {   
+        this->children[i] = NULL;
+    }
     this->next = NULL;
     this->prev = NULL;
 
