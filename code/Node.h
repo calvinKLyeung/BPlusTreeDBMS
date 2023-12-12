@@ -12,7 +12,7 @@
 
 class Node {
 private:
-    std::string data;
+    std::string node_identifier;
     unsigned int level;
     bool leaf;
 
@@ -23,7 +23,9 @@ private:
 
     // NOT STANDARD PRACTICE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     int keys[ORDER_M];  // ORDER_M - 1 == max keys 
-    Node* children[ORDER_M + 1]; // ORDER_M == may children 
+    Node* children[ORDER_M + 1]; // ORDER_M == max children 
+
+    std::string values[ORDER_M]; // ORDER_M - 1 == max string data, since key and value are 1 to 1
 
     Node* prev;
     Node* next;
@@ -47,8 +49,8 @@ public:
 
     void clear();
 
-    std::string getData();
-    void setData(std::string data);
+    std::string getNodeIdentifier();
+    void setNodeIdentifier(std::string data);
 
     unsigned int getLevel();
     void setLevel(unsigned int level);
@@ -76,6 +78,7 @@ public:
     // const int * accessKeys() const;
     int* accessKeys();
     Node** accessChildren();
+    std::string* accessValues();
 
 
 

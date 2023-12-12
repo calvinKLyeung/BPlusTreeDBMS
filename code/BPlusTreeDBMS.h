@@ -26,8 +26,10 @@ public:
   ~BPlusTreeDBMS();
 
   int BPlusTreeDBMSFunc();
-  bool test_true();
-  bool test_false();
+  bool Create(int key, std::string value);
+  bool Read(int key);
+  bool Update(int key, std::string value);
+  bool Delete(int key);
 
     
     

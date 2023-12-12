@@ -2,7 +2,7 @@
 
 Node::Node() {
     // DONE FOR YOU
-    this->data = "";
+    this->node_identifier = "";
     this->level = 0; 
     this->leaf = true; 
     this->slots = 0; 
@@ -22,15 +22,15 @@ Node::Node() {
 
 
 
-Node::Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slots, 
+Node::Node(std::string _node_identifier, unsigned int _level, bool _leaf, unsigned int _slots, 
             int _keys[])
             :
-            data{_data},
+            node_identifier{_node_identifier},
             level{_level},
             leaf{_leaf},
             slots{_slots}
 {
-    // this->data = _data;
+    // this->node_identifier = _node_identifier;
     // this->level = _level;
     // this->leaf = _leaf;
     // this->slots = _slots;
@@ -48,10 +48,10 @@ Node::Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slo
 
 }
 
-Node::Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slots, 
+Node::Node(std::string _node_identifier, unsigned int _level, bool _leaf, unsigned int _slots, 
             int _keys[], Node* _children[ORDER_M + 1])
             :
-            data{_data},
+            node_identifier{_node_identifier},
             level{_level},
             leaf{_leaf},
             slots{_slots}
@@ -81,7 +81,7 @@ Node::~Node() {
 
 void Node::clear()
 {
-    this->data = "";
+    this->node_identifier = "";
     this->level = 0; 
     this->leaf = true; 
     this->slots = 0; 
@@ -96,14 +96,14 @@ void Node::clear()
 }
 
 
-std::string Node::getData() {
+std::string Node::getNodeIdentifier() {
     // DONE FOR YOU
-    return data;
+    return node_identifier;
 }
 
-void Node::setData(std::string data)
+void Node::setNodeIdentifier(std::string node_identifier)
 {
-    this->data = data;
+    this->node_identifier = node_identifier;
 }
 
 unsigned int Node::getLevel()
@@ -271,11 +271,18 @@ Node** Node::accessChildren()
     return this->children;
 }
 
+std::string* Node::accessValues()
+{
+    // allow access to the private keys[] arr 
+    return this->values; 
+}
+
+
 
 // overloading operator << lets you put a Node object into an output
 // stream.
 std::ostream &operator << (std::ostream& out, Node node) {
     // DONE FOR YOU
-    out << node.data;
+    out << node.node_identifier;
     return out;
 }

@@ -97,7 +97,7 @@ Node* BPlusTree::find(int v)
 int BPlusTree::IndexOfKiSmallestKeyGeqV(Node* curr_node, int v)
 {
     // return index of K_{i} which is the smallest key >= v 
-    // std::cout << "Where are We? : " << curr_node->getData() << std::endl;
+    // std::cout << "Where are We? : " << curr_node->getNodeIdentifier() << std::endl;
     // std::cout << "What is SLots size: " << curr_node->getSlots() << std::endl;
     for (unsigned int i = 0; i < curr_node->getSlots(); ++i)
     {
@@ -254,7 +254,7 @@ bool BPlusTree::Insert(int key)
         {
             // Create NEW node L′
             Node* LPrime = new Node();
-            Node* T = new Node(L->getData(), L->getLevel(), L->getLeaf(), L->getSlots(), L->accessKeys(), L->accessChildren()); 
+            Node* T = new Node(L->getNodeIdentifier(), L->getLevel(), L->getLeaf(), L->getSlots(), L->accessKeys(), L->accessChildren()); 
             this->InsertInLeaf(T, key); // should be OVerFull after InsertInLeaf() ?
 
 
@@ -468,7 +468,7 @@ void BPlusTree::InsertInParent(Node* N, int KPrime, Node* NPrime)
         }
         else // Split P and promote!!!
         {
-            Node* T = new Node(P->getData(), P->getLevel(), P->getLeaf(), P->getSlots(), P->accessKeys(), P->accessChildren()); 
+            Node* T = new Node(P->getNodeIdentifier(), P->getLevel(), P->getLeaf(), P->getSlots(), P->accessKeys(), P->accessChildren()); 
             InsertInInternalNode(T, N, KPrime, NPrime); // Should be OVERFULL after this line 
 
 
@@ -876,7 +876,7 @@ bool BPlusTree::delete_entry(Node* N, int K, Node* pointer)
         Node* NPrime = NULL; // to be passed by reference!! 
         // Check whether N is Left OR Mid1 child of P 
         // Let N′ be the previous or next child of parent(N) 
-        bool prev_true_next_false = this->getPrevOrNextChildOfParentOfN(Parent, N, NPrime); // NPrime is Pass by Reference!!!!!
+        bool prev_true_next_false = this->getPrevOrNextChildFromParentOfN(Parent, N, NPrime); // NPrime is Pass by Reference!!!!!
         
 
 
@@ -1296,9 +1296,59 @@ bool BPlusTree::delete_entry(Node* N, int K, Node* pointer)
 
 
 
-bool BPlusTree::getPrevOrNextChildOfParentOfN(Node* P, Node* N, Node* &NPrime) // NPrime is Pass by Reference!!!!!
+bool BPlusTree::getPrevOrNextChildFromParentOfN(Node* P, Node* N, Node* &NPrime) // NPrime is Pass by Reference!!!!!
 {
     bool ret;
+    // int index_of_N = P->getIndexByChildPointer(N);
+    // // check + 1 Children slot on the Right is Valid index
+    // // just in case, also make use the Valid index is NOT accessing NULL
+    // // check if stealing from sibiling will NOT break invariant 
+    // if ((index_of_N + 1) <= (int)P->getSlots() && P->accessChildren()[index_of_N + 1] != NULL
+    // && (P->accessChildren()[index_of_N + 1]->getSlots() - 1) < ceil((ORDER_M - 1) / 2.0))
+    // {
+    //     NPrime = P->accessChildren()[index_of_N + 1];
+    //     ret = true; 
+    // }
+    // // If right is Not good sibiling to steal from 
+    // // check the left sibiling 
+    // else if ((index_of_N - 1) >= 0 && P->accessChildren()[index_of_N - 1] != NULL
+    // && (P->accessChildren()[index_of_N - 1]->getSlots() - 1) < ceil((ORDER_M - 1) / 2.0))
+    // {
+    //     NPrime = P->accessChildren()[index_of_N - 1];
+    //     ret = true; 
+    // }
+    // // if CANNOT steal from both Right or Left,
+    // // then access Left if N is the Last Child of P
+    // // Or access Right if N is NOT the Last Child of P
+    // else
+    // {
+    //     // if N == Last Child of P
+    //     // NPrime = Previous Child
+    //     if (P->accessChildren()[P->getSlots()] == N)
+    //     {
+    //         NPrime = P->accessChildren()[P->getSlots() - 1];
+    //         ret = true; // true == retrieved Prev Child  
+    //     }
+    //     // else if N != Last Child of P
+    //     // NPrime = Next Child 
+    //     else
+    //     {
+    //         for (unsigned int i=0; i < P->getSlots();++i)
+    //         {
+    //             if (P->accessChildren()[i] == N)
+    //             {
+    //                 NPrime = P->accessChildren()[i + 1];
+    //                 ret = false; // false = retrieved Next Child 
+    //                 break;
+    //             }
+    //         }
+    //     }
+
+    // }
+
+
+
+
     // if N == Last Child of P
     // NPrime = Previous Child
     if (P->accessChildren()[P->getSlots()] == N)

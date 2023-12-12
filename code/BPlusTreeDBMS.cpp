@@ -1,5 +1,7 @@
 #include "BPlusTreeDBMS.h"
 
+
+
 // constructor, initialize class variables and pointers here if need.
 BPlusTreeDBMS::BPlusTreeDBMS(){
   // Your code here
@@ -16,14 +18,30 @@ int BPlusTreeDBMS::BPlusTreeDBMSFunc()
   return 2;
 }
 
-bool BPlusTreeDBMS::test_true()
+bool BPlusTreeDBMS::Create(int key, std::string value)
 {
-  return true;
+  bool ret = false; 
+  return ret;
 }
 
-bool BPlusTreeDBMS::test_false()
+bool BPlusTreeDBMS::Read(int key)
 {
-  return false; 
+  bool ret = false; 
+  return ret; 
+}
+
+
+bool BPlusTreeDBMS::Update(int key, std::string value)
+{
+  bool ret = false; 
+  return ret; 
+}
+
+
+bool BPlusTreeDBMS::Delete(int key)
+{
+  bool ret = false; 
+  return ret; 
 }
 
 
