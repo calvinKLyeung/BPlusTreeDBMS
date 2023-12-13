@@ -41,9 +41,11 @@ public:
     Node();
     Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slots, 
         int _keys[]);
+    Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slots, 
+        int _keys[], std::string _values[]);
 
     Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slots, 
-            int _keys[], Node* _children[]);
+            int _keys[], std::string _values[], Node* _children[]);
 
     ~Node();
 

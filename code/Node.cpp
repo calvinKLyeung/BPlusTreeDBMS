@@ -14,16 +14,42 @@ Node::Node() {
     {   
         this->children[i] = NULL;
     }
+    for (unsigned int i = 0; i < ORDER_M; ++i)
+    {
+        this->values[i] = "";
+    }
     this->next = NULL;
     this->prev = NULL;
 
 
 }
 
+Node::Node(std::string _node_identifier, unsigned int _level, bool _leaf, unsigned int _slots, 
+            int _keys[])
+            :
+            node_identifier{_node_identifier},
+            level{_level},
+            leaf{_leaf},
+            slots{_slots}
+{
+     for (unsigned int i=0; i<_slots;++i)
+    {
+        keys[i] = _keys[i];
+    }
+
+    for (unsigned int i = 0; i < ORDER_M + 1; ++i)
+    {   
+        this->children[i] = NULL;
+    }
+    this->next = NULL;
+    this->prev = NULL;
+}
+
+
 
 
 Node::Node(std::string _node_identifier, unsigned int _level, bool _leaf, unsigned int _slots, 
-            int _keys[])
+            int _keys[], std::string _values[])
             :
             node_identifier{_node_identifier},
             level{_level},
@@ -43,13 +69,18 @@ Node::Node(std::string _node_identifier, unsigned int _level, bool _leaf, unsign
     {   
         this->children[i] = NULL;
     }
+
+    for (unsigned int i=0; i<_slots;++i)
+    {
+        values[i] = _values[i];
+    }
     this->next = NULL;
     this->prev = NULL;
 
 }
 
 Node::Node(std::string _node_identifier, unsigned int _level, bool _leaf, unsigned int _slots, 
-            int _keys[], Node* _children[ORDER_M + 1])
+            int _keys[], std::string _values[], Node* _children[ORDER_M + 1])
             :
             node_identifier{_node_identifier},
             level{_level},
@@ -64,6 +95,10 @@ Node::Node(std::string _node_identifier, unsigned int _level, bool _leaf, unsign
     for (unsigned int i=0; i<_slots + 1;++i)
     {
         children[i] = _children[i];
+    }
+    for (unsigned int i=0; i<_slots;++i)
+    {
+        values[i] = _values[i];
     }
 }
 

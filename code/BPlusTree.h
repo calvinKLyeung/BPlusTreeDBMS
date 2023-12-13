@@ -27,6 +27,8 @@ public:
 
     BPlusTree();
     ~BPlusTree();
+    void DestroyRecursive(Node* node); 
+
     void setRootNode(Node* node);
     Node* getRootNode();
     //Node** getRoot();
@@ -38,8 +40,8 @@ public:
     std::vector <Node *> findRange(int lb, int ub);
 
     // insert
-    bool Insert(int key);
-    void InsertInLeaf(Node* L, int key);
+    bool Insert(int key, std::string value);
+    void InsertInLeaf(Node* L, int key, std::string value);
     void InsertInParent(Node* N, int KPrime, Node* NPrime);
     Node* getParentNode(Node* N);
     void InsertInInternalNode(Node* P, Node* N, int KPrime, Node* NPrime);
