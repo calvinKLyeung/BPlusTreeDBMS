@@ -1,7 +1,7 @@
 #include "Node.h"
 
 Node::Node() {
-    // DONE FOR YOU
+
     this->node_identifier = "";
     this->level = 0; 
     this->leaf = true; 
@@ -10,14 +10,15 @@ Node::Node() {
     {   
         this->keys[i] = 0;
     }
-    for (unsigned int i = 0; i < ORDER_M + 1; ++i)
-    {   
-        this->children[i] = NULL;
-    }
     for (unsigned int i = 0; i < ORDER_M; ++i)
     {
         this->values[i] = "";
     }
+    for (unsigned int i = 0; i < ORDER_M + 1; ++i)
+    {   
+        this->children[i] = NULL;
+    }
+
     this->next = NULL;
     this->prev = NULL;
 
@@ -64,16 +65,17 @@ Node::Node(std::string _node_identifier, unsigned int _level, bool _leaf, unsign
     {
         keys[i] = _keys[i];
     }
+    for (unsigned int i=0; i<_slots;++i)
+    {
+        values[i] = _values[i];
+    }
 
     for (unsigned int i = 0; i < ORDER_M + 1; ++i)
     {   
         this->children[i] = NULL;
     }
 
-    for (unsigned int i=0; i<_slots;++i)
-    {
-        values[i] = _values[i];
-    }
+
     this->next = NULL;
     this->prev = NULL;
 
@@ -92,14 +94,15 @@ Node::Node(std::string _node_identifier, unsigned int _level, bool _leaf, unsign
     {
         keys[i] = _keys[i];
     }
-    for (unsigned int i=0; i<_slots + 1;++i)
-    {
-        children[i] = _children[i];
-    }
     for (unsigned int i=0; i<_slots;++i)
     {
         values[i] = _values[i];
     }
+    for (unsigned int i=0; i<_slots + 1;++i)
+    {
+        children[i] = _children[i];
+    }
+
 }
 
 

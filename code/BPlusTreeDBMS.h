@@ -9,13 +9,22 @@
 
 // using namespace std;
 
-struct node {
-  int data;               // data: the value of this node
-  std::shared_ptr<node> next;  // next: pointer to the next node in the list, or NULL if this is the last node.
-};
+
+
 
 
 class BPlusTreeDBMS {
+
+private:
+  BPlusTree* _bplustree = NULL;
+
+
+  // you can add add more private member variables and member functions here if you need
+
+
+
+
+
 public:
   // constructor, initialize class variables and pointers here if need.
   // Initially set top pointer to a null shared_ptr of node
@@ -25,21 +34,19 @@ public:
   // freeing memory and you can leave this blank
   ~BPlusTreeDBMS();
 
-  int BPlusTreeDBMSFunc();
+
   bool Create(int key, std::string value);
-  bool Read(int key);
+  bool ReadByKey(int key);
+  bool ReadByRange(int lower_bound, int upper_bound);
   bool Update(int key, std::string value);
   bool Delete(int key);
 
-    
-    
+  BPlusTree* getBPlusTree();
 
-private:
-  std::shared_ptr<node> top_ptr_;
+      
+      
 
-  // you can add add more private member variables and member functions here if you need
-    
-    
+
     
 };
 

@@ -134,7 +134,7 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Find){
 
 	
 	
-	Node* found_node = myBPlusTree_Find->find(16);
+	Node* found_node = myBPlusTree_Find->Find(16);
 	// cout << found_node << endl;
 	// cout << "What is in found_node" << endl;
 	// for (unsigned int i=0; i<ORDER_M; ++i)
@@ -148,17 +148,17 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Find){
 	// }
 
 
-	// ASSERT_EQ(GlobalNodeTracker1[0], myBPlusTree->find(2)); 
-	ASSERT_EQ(GlobalNodeTracker1[1], myBPlusTree_Find->find(16)); 
-	ASSERT_EQ(GlobalNodeTracker1[2], myBPlusTree_Find->find(20)); 
-	ASSERT_EQ(GlobalNodeTracker1[3], myBPlusTree_Find->find(27)); 
-	ASSERT_EQ(GlobalNodeTracker1[4], myBPlusTree_Find->find(39)); 
+	// ASSERT_EQ(GlobalNodeTracker1[0], myBPlusTree->Find(2)); 
+	ASSERT_EQ(GlobalNodeTracker1[1], myBPlusTree_Find->Find(16)); 
+	ASSERT_EQ(GlobalNodeTracker1[2], myBPlusTree_Find->Find(20)); 
+	ASSERT_EQ(GlobalNodeTracker1[3], myBPlusTree_Find->Find(27)); 
+	ASSERT_EQ(GlobalNodeTracker1[4], myBPlusTree_Find->Find(39)); 
 
-	ASSERT_NE(GlobalNodeTracker1[4], myBPlusTree_Find->find(7)); 
-	ASSERT_NE(GlobalNodeTracker1[3], myBPlusTree_Find->find(14)); 
-	ASSERT_NE(GlobalNodeTracker1[2], myBPlusTree_Find->find(30)); 
-	ASSERT_NE(GlobalNodeTracker1[1], myBPlusTree_Find->find(13)); 
-	ASSERT_NE(GlobalNodeTracker1[0], myBPlusTree_Find->find(17)); 
+	ASSERT_NE(GlobalNodeTracker1[4], myBPlusTree_Find->Find(7)); 
+	ASSERT_NE(GlobalNodeTracker1[3], myBPlusTree_Find->Find(14)); 
+	ASSERT_NE(GlobalNodeTracker1[2], myBPlusTree_Find->Find(30)); 
+	ASSERT_NE(GlobalNodeTracker1[1], myBPlusTree_Find->Find(13)); 
+	ASSERT_NE(GlobalNodeTracker1[0], myBPlusTree_Find->Find(17)); 
 
     
 	// for (unsigned int i=0; i<ORDER_M; ++i)
@@ -175,7 +175,7 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_FindRange){
 
 	BPlusTree* myBPlusTree_FindRange = mkBPlusTree1();
 
-	std::vector <Node *> resultSet = myBPlusTree_FindRange->findRange(15, 28);
+	std::vector <Node *> resultSet = myBPlusTree_FindRange->FindRange(15, 28);
 
 	// for(auto node : resultSet) 
 	// {
@@ -433,7 +433,7 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Insert)
 
 	cout << "Insert successfully? " << std::boolalpha << inserted << endl;
 
-	Node* newLeafNode = myBPlusTree_Insert->find(8);
+	Node* newLeafNode = myBPlusTree_Insert->Find(8);
 
 
 
@@ -2168,7 +2168,7 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_DeleteOneToNineteenTestCases)
 	ASSERT_EQ(myBPlusTree_OneToNineteen->getRootNode()->accessChildren()[1]->accessChildren()[2]->getNext(), nullptr);
 	
 
-	Node* found14 = myBPlusTree_OneToNineteen->find(14); 
+	Node* found14 = myBPlusTree_OneToNineteen->Find(14); 
 
 	cout << "What is FOUND in 14" << endl; 
 	for (unsigned int i = 0; i < found14->getSlots(); ++i)
@@ -2427,6 +2427,28 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_DeleteOneToNineteenTestCases)
 	ASSERT_EQ(myBPlusTree_OneToNineteen->getRootNode(), nullptr);
 
 	cout << "This means ASSERT_EQ(myBPlusTree_OneToNineteen->getRootNode(), nullptr); Passes!!!!" << endl;
+
+
+
+}
+
+
+TEST_F(test_BPlusTreeDBMS, TestBPlusTreeDBMS_CRUD)
+{
+	BPlusTreeDBMS* myDBMS = new BPlusTreeDBMS;
+	myDBMS->Create(1, "testing 001");
+
+	ASSERT_EQ(myDBMS->ReadByKey(1), true);
+	ASSERT_EQ(myDBMS->Update(1, "Update 001"), true);
+	myDBMS->ReadByKey(1);
+	myDBMS->Delete(1);
+
+	if (myDBMS->getBPlusTree()->getRootNode() == NULL)
+	{
+		cout << "The Root node should be NULL!" << endl; 
+	}
+
+
 
 
 

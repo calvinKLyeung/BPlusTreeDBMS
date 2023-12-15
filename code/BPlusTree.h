@@ -33,11 +33,11 @@ public:
     Node* getRootNode();
     //Node** getRoot();
 
-    Node* find(int v);
+    Node* Find(int v);
     int IndexOfKiSmallestKeyGeqV(Node* curr_node, int v);
     // int test(Node* curr_node, int v);
 
-    std::vector <Node *> findRange(int lb, int ub);
+    std::vector <Node *> FindRange(int lb, int ub);
 
     // insert
     bool Insert(int key, std::string value);
@@ -51,7 +51,7 @@ public:
     bool delete_entry(Node* N, int K, Node* pointer);
     bool getPrevOrNextChildFromParentOfN(Node* P, Node* N, Node* &NPrime);
     int findIndexOfKPrime(Node* P, Node* N, Node* NPrime, bool retrieved_prev_child);
-    void swap_variables(Node* &N, Node* &NPrime);
+    void swap_pointers(Node* &N, Node* &NPrime);
     void appendKPrimeAndNToNPrime(Node* &NPrime, int KPrime, Node* N);
     void appendNToNPrime(Node* &NPrime, Node* N);
 
