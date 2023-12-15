@@ -50,7 +50,7 @@ bool BPlusTreeDBMS::ReadByKey(int key)
     if ((result_node = this->_bplustree->Find(key)) != NULL)
     {
       // read from the node 
-      std::cout << "Key : Values pair found with the given key" << std::endl;
+      std::cout << " ----- Key : Values pair found with the given key ----- " << std::endl;
       std::cout << key << " : " << result_node->accessValues()[result_node->getIndexByKey(key)] << std::endl;
 
 
@@ -77,15 +77,19 @@ bool BPlusTreeDBMS::ReadByRange(int lower_bound, int upper_bound)
     std::vector <Node *> result_vect; 
     if ((result_vect = this->_bplustree->FindRange(lower_bound, upper_bound)).size() != 0)
     {
-      std::cout << "Key : Values pairs found in the given range" << std::endl;
+      std::cout << " ----- Key : Values pairs found in the given range ----- " << std::endl;
+
       for (unsigned int i = 0 ; i < result_vect.size(); ++i)
       {
-
         unsigned int slots_of_ith_node = result_vect.at(i)->getSlots();
 
         for(unsigned int j = 0; j < slots_of_ith_node; ++j)
         {
-          std::cout << result_vect.at(i)->accessKeys()[j] << " : " << result_vect.at(i)->accessValues()[j] << std::endl;
+          int key = result_vect.at(i)->accessKeys()[j];
+          if (key >= lower_bound && key <= upper_bound)
+          {
+            std::cout << key << " : " << result_vect.at(i)->accessValues()[j] << std::endl;
+          }
         }
       }
       std::cout << std::endl;
@@ -144,6 +148,7 @@ bool BPlusTreeDBMS::Delete(int key)
     if (deleted == true)
     {
       std::cout << "Deleted successfully. " << std::endl;
+      ret = true; 
     }
     else
     {

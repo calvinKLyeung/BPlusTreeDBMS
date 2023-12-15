@@ -134,7 +134,7 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Find){
 
 	
 	
-	Node* found_node = myBPlusTree_Find->Find(16);
+	// Node* found_node = myBPlusTree_Find->Find(16);
 	// cout << found_node << endl;
 	// cout << "What is in found_node" << endl;
 	// for (unsigned int i=0; i<ORDER_M; ++i)
@@ -433,7 +433,7 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Insert)
 
 	cout << "Insert successfully? " << std::boolalpha << inserted << endl;
 
-	Node* newLeafNode = myBPlusTree_Insert->Find(8);
+	// Node* newLeafNode = myBPlusTree_Insert->Find(8);
 
 
 
@@ -2436,12 +2436,12 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_DeleteOneToNineteenTestCases)
 TEST_F(test_BPlusTreeDBMS, TestBPlusTreeDBMS_CRUD)
 {
 	BPlusTreeDBMS* myDBMS = new BPlusTreeDBMS;
-	myDBMS->Create(1, "testing 001");
+	ASSERT_EQ(myDBMS->Create(1, "testing 001"), true);
 
 	ASSERT_EQ(myDBMS->ReadByKey(1), true);
 	ASSERT_EQ(myDBMS->Update(1, "Update 001"), true);
-	myDBMS->ReadByKey(1);
-	myDBMS->Delete(1);
+	ASSERT_EQ(myDBMS->ReadByKey(1), true);
+	ASSERT_EQ(myDBMS->Delete(1), true);
 
 	if (myDBMS->getBPlusTree()->getRootNode() == NULL)
 	{
@@ -2449,6 +2449,37 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTreeDBMS_CRUD)
 	}
 
 
+	myDBMS->Create(1300, "Computer Science 1: Starting Computing");
+	myDBMS->Create(2270, "Computer Science 2: Data Structures");
+	myDBMS->Create(2400, "Computer Systems");
+	myDBMS->Create(2824, "Discrete Structures");
+	myDBMS->Create(3104, "Algorithms");
+	myDBMS->Create(3155, "Principles of Programming Languages");
+	myDBMS->Create(3308, "Software Development Methods and Tools");
+	myDBMS->Create(1000, "Computer Science as a Field of Work and Study");
+	myDBMS->Create(2820, "Linear Algebra with Computer Science Applications");
+	myDBMS->Create(3022, "Introduction to Data Science with Probability and Statistics");
+	myDBMS->Create(3112, "Professional Development in Computer Science");
+	myDBMS->Create(3202, "Introduction to Artificial Intelligence");
+	myDBMS->Create(3287, "Design and Analysis of Database Systems");
+	myDBMS->Create(3302, "Introduction to Robotics");
+	myDBMS->Create(3403, "Introduction to CyberSecurity for a Converged World");
+	myDBMS->Create(3702, "Cognitive Science");
+	myDBMS->Create(3753, "Design and Analysis of Operating Systems");
+	myDBMS->Create(4122, "Information Visualization");
+	myDBMS->Create(4253, "Datacenter Scale Computing - Methods, Systems and Techniques");
+	myDBMS->Create(4502, "Data Mining");
+	myDBMS->Create(4622, "Machine Learning");
+	myDBMS->Create(4830, "Special Topics in Applied Computer Science");
+	myDBMS->Create(4900, "Upper Division, Undergraduate Level Independent Study");
+
+	myDBMS->ReadByRange(0000, 1000);
+	myDBMS->ReadByRange(1000, 2000);
+	myDBMS->ReadByRange(2000, 3000);
+	myDBMS->ReadByRange(3000, 4000);
+	myDBMS->ReadByRange(4000, 5000);
+
+	myDBMS->ReadByKey(2824); 
 
 
 

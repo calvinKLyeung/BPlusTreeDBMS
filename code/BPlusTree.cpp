@@ -189,7 +189,12 @@ std::vector <Node *> BPlusTree::FindRange(int lb, int ub) // lb == lower bound, 
             retVect.push_back(C);
             C = C->getNext();
         }
-        retVect.push_back(C); 
+        // the last C->getNext() might be == NULL
+        if (C != NULL)
+        {
+            retVect.push_back(C); 
+        }
+
     }
     return retVect; // return empty vector if the BPlusTree is NULL OR found nothing within range 
 }
