@@ -1,12 +1,12 @@
-# B+Tree implementation with CRUD operations as "Mini Database"
+# Mini Database with B+Tree 
 
 ## Running the program
-1. go to build dir by cd build/
+1. go to build dir by ==cd build/==
 
 
 ## FAQ
-### Why Mini Database?
-
+### What Mini Database?
+A data storing structure implemented with B+Tree and support basic CRUN operations. 
 
 ### What is an B+Tree?
 
