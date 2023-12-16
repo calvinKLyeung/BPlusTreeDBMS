@@ -1,7 +1,7 @@
 # Mini Database with B+Tree 
 
 ## Running the program
-1. go to build dir by ==cd build/==
+1. go to build dir by ```cd build/```
 
 
 ## FAQ
