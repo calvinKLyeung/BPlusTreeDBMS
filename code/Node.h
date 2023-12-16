@@ -37,7 +37,7 @@ private:
 
 
 public:
-    // Public Node members in this block are implemented for you.
+    // Constructors 
     Node();
     Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slots, 
         int _keys[]);
@@ -47,6 +47,7 @@ public:
     Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slots, 
             int _keys[], std::string _values[], Node* _children[]);
 
+    // Destructor 
     ~Node();
 
     void clear();
@@ -84,16 +85,8 @@ public:
 
 
 
-    // Have you ever wondered when you say cout << "hello world!" << endl; what <<
-    // means? how is it implemented? these are operator methods that you can
-    // define for your classes. Bellow is an example on how you can define <<
-    // operator for this class and here we choose to define it as passing the data
-    // of current node in string formate to the stream, which could later be like
-    // Node mynode;
-    // cout << mynode;
-    // and that would print the data of the node.
-    // you can define similar operators like +,-,* for you classes and define what
-    // it means to sum two of this class's objects.
+    // overloading operator << lets you put a Node object into an output
+    // stream.
     friend std::ostream &operator<<(std::ostream &out, Node node);
 
 

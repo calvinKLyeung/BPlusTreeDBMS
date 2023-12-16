@@ -16,7 +16,7 @@ BPlusTreeDBMS::~BPlusTreeDBMS(){
 bool BPlusTreeDBMS::Create(int key, std::string value)
 {
 
-  bool ret;
+  bool ret = false;
   
   if (this->_bplustree == NULL)
   {
@@ -26,7 +26,7 @@ bool BPlusTreeDBMS::Create(int key, std::string value)
 
     ret = true;
   }
-  else if (this->_bplustree != NULL && this->_bplustree->Find(key) == NULL)
+  else if (this->_bplustree != NULL)
   {
     this->_bplustree->Insert(key, value);
     std::cout << "Created successfully. " << key << " : " << value << " is now in the database." << std::endl; 
@@ -35,12 +35,11 @@ bool BPlusTreeDBMS::Create(int key, std::string value)
     ret = true; 
     
   }
-  else if (this->_bplustree != NULL && this->_bplustree->Find(key) != NULL)
+  else // if (this->_bplustree != NULL && this->_bplustree->Find(key) != NULL)
   {
     std::cout << "Unable to create. Given key already exist in record!" << std::endl; 
-    ret = false;
   }
-  std::cout << std::endl; 
+
   return ret; 
 
 }
@@ -70,13 +69,15 @@ bool BPlusTreeDBMS::ReadByKey(int key)
   {
     std::cout << "Database is empty. Unable to read anything with the given key. " << std::endl;
   }
-  std::cout << std::endl; 
+
   return ret; 
 }
 
 bool BPlusTreeDBMS::ReadByRange(int lower_bound, int upper_bound)
 {
   bool ret = false; 
+  
+  
   if (this->_bplustree != NULL)
   {
     std::vector <Node *> result_vect; 
@@ -100,17 +101,17 @@ bool BPlusTreeDBMS::ReadByRange(int lower_bound, int upper_bound)
 
       ret = true;
     }
-    else
-    {
-      // tell the user the range of keys is NOT in the database
-      std::cout << "Given range of keys is not in the database." << std::endl;
-    }
+    // else
+    // {
+    //   // tell the user the range of keys is NOT in the database
+    //   std::cout << "Given range of keys is not in the database." << std::endl;
+    // }
   }
   else
   {
     std::cout << "Database is empty. Unable to read anything with the given range of keys. " << std::endl;
   }
-  std::cout << std::endl; 
+
   return ret; 
 }
 
@@ -139,7 +140,7 @@ bool BPlusTreeDBMS::Update(int key, std::string value)
   {
     std::cout << "Database is empty. Unable to update anything with the given key : value pair. " << std::endl;
   }
-  std::cout << std::endl; 
+
   return ret; 
 }
 
@@ -166,7 +167,6 @@ bool BPlusTreeDBMS::Delete(int key)
     std::cout << "Database is empty. Unable to delete anything." << std::endl;
   }
 
-  std::cout << std::endl; 
 
   return ret; 
 }

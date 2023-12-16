@@ -82,7 +82,7 @@ Node::Node(std::string _node_identifier, unsigned int _level, bool _leaf, unsign
 }
 
 Node::Node(std::string _node_identifier, unsigned int _level, bool _leaf, unsigned int _slots, 
-            int _keys[], std::string _values[], Node* _children[ORDER_M + 1])
+            int _keys[], std::string _values[], Node* _children[])
             :
             node_identifier{_node_identifier},
             level{_level},
@@ -237,6 +237,7 @@ Node* Node::getTheRemainingChild()
             return this->accessChildren()[i];
         }
     }
+    return NULL;
 }
 
 bool Node::hasTooFewValuesOrPointersRemain()
@@ -320,7 +321,11 @@ std::string* Node::accessValues()
 // overloading operator << lets you put a Node object into an output
 // stream.
 std::ostream &operator << (std::ostream& out, Node node) {
-    // DONE FOR YOU
-    out << node.node_identifier;
+    for (unsigned int i = 0; i < node.getSlots(); ++i)
+    {
+        out << node.accessKeys()[i] << " : " << node.accessValues()[i] << "\n"; 
+    }
+
+    // out << node.node_identifier;
     return out;
 }

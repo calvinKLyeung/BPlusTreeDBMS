@@ -27,16 +27,18 @@ void BPlusTree::DestroyRecursive(Node* node)
         if (node->accessChildren()[i] != NULL)
         {
             DestroyRecursive(node->accessChildren()[i]);
-        }
-    }
-    for (unsigned int i=0; i < node->getSlots() + 1; ++i)
-    {
-        if (node->accessChildren()[i] != NULL)
-        {
             delete node->accessChildren()[i];
             node->accessChildren()[i] = NULL;
         }
     }
+    // for (unsigned int i=0; i < node->getSlots() + 1; ++i)
+    // {
+    //     if (node->accessChildren()[i] != NULL)
+    //     {
+    //         delete node->accessChildren()[i];
+    //         node->accessChildren()[i] = NULL;
+    //     }
+    // }
     delete node; 
 
 }
@@ -56,13 +58,6 @@ Node* BPlusTree::getRootNode()
     return this->root;
 }
 
-// Node** BPlusTree::getRoot()
-// {
-//     // return the root pointer of pointer of node as is 
-//     return this->root; 
-// }
-
-
 
 Node* BPlusTree::Find(int v)
 {
@@ -72,37 +67,34 @@ Node* BPlusTree::Find(int v)
    if (this->getRootNode() != NULL)
    {
 
-        Node* C = this->getRootNode();
+        Node* curr_node = this->getRootNode();
 
         // while loop to traverse the B+Tree 
-        while (C != NULL && C->getLeaf() != true)
+        while (curr_node != NULL && curr_node->getLeaf() != true)
         {
-            // std::cout << "??????????????????????????" << std::endl;
-            // std::cout << "v is now: " << v << std::endl;
-            int i = this->IndexOfKiSmallestKeyGeqV(C, v);
-            // std::cout << "IndexOfKiSmallestKeyGeqV: " << i << std::endl;
-            // unsigned int i = C->getArrayPointer()[0]; // get first num in keys arr
+
+            int i = this->IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(curr_node, v);
 
             if (i == -1) // -1 == there is no such number i where K_{i} is smallest number such that v ≤ C.Ki
             {
-                unsigned int m = C->getSlots();  // m == index of last non-null pointer in the node, slot IS ALREADY the last pointer as Exclusive End indexing [0, 4)
-                C = C->accessChildren()[m]; // Pointer at index m
+                unsigned int m = curr_node->getSlots();  // m == index of last non-null pointer in the node, slot IS ALREADY the last pointer as Exclusive End indexing [0, 4)
+                curr_node = curr_node->accessChildren()[m]; // Pointer at index m
             }
-            else if (v == C->getKeyByIndex((unsigned int)i))
+            else if (v == curr_node->getKeyByIndex((unsigned int)i))
             {
-                C = C->accessChildren()[i+1];
+                curr_node = curr_node->accessChildren()[i+1];
             }
             else // v < C.Ki  v strightly smaller than K_{i}
             {
-                C = C->accessChildren()[i];
+                curr_node = curr_node->accessChildren()[i];
             }
         }
         // iterate through each key in the Leaf Node 
-        for (unsigned int i=0; i<C->getSlots(); ++i)
+        for (unsigned int i=0; i<curr_node->getSlots(); ++i)
         {
-            if (C->accessKeys()[i] == v)
+            if (curr_node->accessKeys()[i] == v)
             {
-                ret = C;
+                ret = curr_node;
                 // return C->accessChildren()[i]; // return Pi, a pointer that point to the Actual Disk?????
             }
         }
@@ -111,88 +103,64 @@ Node* BPlusTree::Find(int v)
 }
 
 
-
-// /* Assumes no duplicate keys, and returns pointer to the record with
-// * search key value v if such a record exists, and null otherwise */
-//     Set C = root node
-//     while (C is not a leaf node) begin
-//         Let i = smallest number such that v ≤ C.Ki
-//         if there is no such number i 
-//         then begin
-//             Let Pm = last non-null pointer in the node
-//             Set C = C.Pm
-//         end
-//         else if (v = C.Ki) then Set C = C.Pi+1
-//         else Set C = C.Pi /* v < C.Ki */
-//     end
-//     /* C is a leaf node */
-//     if for some i, Ki = v
-//         then return Pi
-//         else return null ; /* No record with key value v exists*/
-
-
-int BPlusTree::IndexOfKiSmallestKeyGeqV(Node* curr_node, int v)
+int BPlusTree::IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(Node* curr_node, int given_key)
 {
     // return index of K_{i} which is the smallest key >= v 
-    // std::cout << "Where are We? : " << curr_node->getNodeIdentifier() << std::endl;
-    // std::cout << "What is SLots size: " << curr_node->getSlots() << std::endl;
     for (unsigned int i = 0; i < curr_node->getSlots(); ++i)
     {
-        if (v <= curr_node->accessKeys()[i])
+        if (given_key <= curr_node->accessKeys()[i])
         {   
-            // std::cout << "V is :" << v << std::endl;
-            // std::cout << "V <= THE NUM is : " << curr_node->accessKeys()[i] << std::endl;
             return i; 
         }
     }
     return -1; 
 }
 
-std::vector <Node *> BPlusTree::FindRange(int lb, int ub) // lb == lower bound, ub == upper bound 
+std::vector <Node *> BPlusTree::FindRange(int lower_bound, int upper_bound)
 {
     // return a vector of pointer to nodes 
     std::vector <Node *> retVect; 
     if (this->getRootNode() != NULL)
     {
 
-    
-        Node* C = this->getRootNode(); 
-        while (C != NULL && C->getLeaf() != true)
+        Node* curr_node = this->getRootNode(); 
+        // walk to the Leaf node first, following the lower bound 
+        while (curr_node != NULL && curr_node->getLeaf() != true)
         {
-            int i = this->IndexOfKiSmallestKeyGeqV(C, lb);
+            int i = this->IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(curr_node, lower_bound);
             if (i == -1)   // -1 ==  there is no such number i such that lb <= C.Ki
             {
-                unsigned int m = C->getSlots();
-                C = C->accessChildren()[m];
+                unsigned int m = curr_node->getSlots();
+                curr_node = curr_node->accessChildren()[m];
             }
-            else if (lb == C->getKeyByIndex((unsigned int)i))
+            else if (lower_bound == curr_node->getKeyByIndex((unsigned int)i))
             {
-                C = C->accessChildren()[i+1];
+                curr_node = curr_node->accessChildren()[i+1];
             }
             else
             {
-                C = C->accessChildren()[i]; // where lb < C.Ki
+                curr_node = curr_node->accessChildren()[i]; // where lb < C.Ki
             }
         }
 
         // if i != -1 == key exists or within range of current leaf node 
-        int i; // = this->IndexOfKiSmallestKeyGeqV(C, lb);  
+        int i; // = this->IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(C, lb);  
         // else, walk right to valid leaf node 
-        while(C != NULL && -1 == (i = this->IndexOfKiSmallestKeyGeqV(C, lb)))
+        while(curr_node != NULL && -1 == (i = this->IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(curr_node, lower_bound)))
         {
-            C = C->getNext(); // access the next sibling on the right
+            curr_node = curr_node->getNext(); // access the next sibling on the right
         }
 
         int j; // = this->test(C, ub);
-        while(C != NULL && -1 == (j = IndexOfKiSmallestKeyGeqV(C, ub))) //this->test(C, ub)))
+        while(curr_node != NULL && -1 == (j = this->IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(curr_node, upper_bound))) 
         {
-            retVect.push_back(C);
-            C = C->getNext();
+            retVect.push_back(curr_node);
+            curr_node = curr_node->getNext();
         }
         // the last C->getNext() might be == NULL
-        if (C != NULL)
+        if (curr_node != NULL)
         {
-            retVect.push_back(C); 
+            retVect.push_back(curr_node); 
         }
 
     }
@@ -201,59 +169,12 @@ std::vector <Node *> BPlusTree::FindRange(int lb, int ub) // lb == lower bound, 
 
 
 
-// int BPlusTree::test(Node* curr_node, int v)
-// {
-
-//     for (unsigned int i = 0; i < curr_node->getSlots(); ++i)
-//     {
-//         if (v <= curr_node->accessKeys()[i])
-//         {   
-//             return i; 
-//         }
-//     }
-//     return -1; 
-// }
-
-
-
-// function FindRange(lb, ub)
-// /* Returns all records with search key value V such that lb ≤ V ≤ ub. */
-//     Set resultSet = {};
-//     Set C = root node
-//     while (C is not a leaf node) begin
-//         Let i = smallest number such that lb ≤ C.Ki
-//         if there is no such number i then begin
-//             Let Pm = last non-null pointer in the node
-//             Set C = C.Pm
-//         end
-//         else if (lb = C.Ki) then Set C = C.Pi+1
-//         else Set C = C.Pi /* lb < C.Ki */
-//     end
-//     /* C is a leaf node */
-//     Let i be the least value such that Ki ≥ lb
-//     if there is no such i
-//         then Set i = 1 + number of keys in C; /* To force move to next leaf ?????????????????????*/
-//     Set done = false;
-//     while (not done) begin
-//         Let n = number of keys in C.
-//         if ( i ≤ n and C.Ki ≤ ub) then begin
-//             Add C.Pi to resultSet
-//             Set i = i + 1
-//         end
-//         else if (i ≤ n and C.Ki > ub)
-//             then Set done = true;
-//         else if (i > n and C.Pn+1 is not null)
-//             then Set C = C.Pn+1, and i = 1 /* Move to next leaf */
-//         else Set done = true; /* No more leaves to the right */
-//     end
-//     return resultSet;
-
 bool BPlusTree::Insert(int key, std::string value)
 {
     bool ret = false; 
     
 
-    // if (tree is empty) create an empty leaf node L, which is also the root
+    // if (tree is empty) create an empty leaf node to become the root node 
     if (this->getRootNode() == NULL)
     {
         int arr_keys[] = {key};
@@ -264,333 +185,255 @@ bool BPlusTree::Insert(int key, std::string value)
 
         ret = true; 
     }
-    // else Find the leaf node L that should contain key value K
+    // else if (tree is NOT empty) Find the corresponding leaf node L that should contain key value K
     else
     {
         // walk to the leaf node L that should contain key value K
-        Node* L = this->getRootNode(); 
-        while (L->getLeaf() != true)
+        Node* Leaf = this->getRootNode(); 
+        while (Leaf->getLeaf() != true)
         {
-            int i = this->IndexOfKiSmallestKeyGeqV(L, key);
+            int i = this->IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(Leaf, key);
             if (i == -1)   // -1 ==  there is no such number i such that lb <= C.Ki
             {
-                unsigned int m = L->getSlots();
-                L = L->accessChildren()[m];
+                unsigned int m = Leaf->getSlots();
+                Leaf = Leaf->accessChildren()[m];
             }
-            else if (key == L->getKeyByIndex((unsigned int)i))
+            else if (key == Leaf->getKeyByIndex((unsigned int)i))
             {
-                L = L->accessChildren()[i+1];
+                Leaf = Leaf->accessChildren()[i+1];
             }
             else
             {
-                L = L->accessChildren()[i]; // where lb < C.Ki
+                Leaf = Leaf->accessChildren()[i]; // where lb < C.Ki
             }
         }
 
-        // L should be at the correct Leaf Node now
-        // std::cout << "what is in the leaft node? " << std::endl;
-        // for (unsigned int i=0; i<L->getSlots(); ++i)
-        // {
-        //     std::cout << L->accessKeys()[i] << " " ; 
-        // }
-
-        // if (L has less than n − 1 key values)
-        if (L->getSlots() < ORDER_M - 1)
+        // if (L has less than n − 1 key values), which means there are still sapce for the new key
+        if (Leaf->getSlots() < ORDER_M - 1)
         {
-            this->InsertInLeaf(L, key, value);
+            this->InsertInLeaf(Leaf, key, value);
         }
 
         // else begin /* L has n − 1 key values already, split it */
         else  
         {
             // Create NEW node L′
-            Node* LPrime = new Node();
-            Node* T = new Node(L->getNodeIdentifier(), L->getLevel(), L->getLeaf(), L->getSlots(), L->accessKeys(), L->accessValues(), L->accessChildren()); 
-            this->InsertInLeaf(T, key, value); // should be OVerFull after InsertInLeaf() ?
+            Node* LeafPrime = new Node();
+            Node* tmp_node = new Node(Leaf->getNodeIdentifier(), Leaf->getLevel(), Leaf->getLeaf(), Leaf->getSlots(), Leaf->accessKeys(), Leaf->accessValues(), Leaf->accessChildren()); 
+            this->InsertInLeaf(tmp_node, key, value); // should be OverFull after this line
 
 
+            LeafPrime->setNext(Leaf->getNext()); // set LPrime next pointer to point to L next 
+            Leaf->setNext(LeafPrime); // set next pointer of L to point to LPrime 
+            LeafPrime->setPrev(Leaf); // set LPrime's prev pointer to L
 
 
-            // Modified the following:
-            // Set L′.Pn = L.Pn; Set L.Pn = L′
-            // SKipped the following 
-            // Erase L.P1 through L.Kn−1 from L
-
-            // Meaningless since Our Leaf Nodes' children are NULL by set up 
-            // LPrime->accessChildren()[ORDER_M] = L->accessChildren()[ORDER_M]; 
-            // Not inCompatible to our own design!!!
-            // L->accessChildren()[ORDER_M] = LPrime; 
-
-            LPrime->setNext(L->getNext()); // set LPrime next pointer to point to L next 
-            L->setNext(LPrime); // set next pointer of L to point to LPrime 
-            LPrime->setPrev(L); // set LPrime's prev pointer to L
             // In case there exist node in LPrime->getNext()
             // then set the Prev pointer of LPrime->getNext() to point to LPrime
-            if (LPrime->getNext() != NULL)
+            if (LeafPrime->getNext() != NULL)
             {
-                (LPrime->getNext())->setPrev(LPrime);
+                (LeafPrime->getNext())->setPrev(LeafPrime);
             }
             
-   
-
-
-
-            unsigned int mDividedByTwoCeiling = ceil((ORDER_M - 1) / 2.0); // through T.K⌈n∕2⌉
+            
+            unsigned int midIndexOfKeysArray = ceil((ORDER_M - 1) / 2.0); // through T.K⌈n∕2⌉
 
             // Copy Valid Keys from 1st half of T to L 
-            L->setSlots(mDividedByTwoCeiling);
-            for (unsigned int i = 0; i < L->getSlots(); ++i)
+            Leaf->setSlots(midIndexOfKeysArray);
+            for (unsigned int i = 0; i < Leaf->getSlots(); ++i)
             {   
-                L->accessKeys()[i] = T->accessKeys()[i]; 
+                Leaf->accessKeys()[i] = tmp_node->accessKeys()[i]; 
             }
             // Copy Valid Values from 1st half of T to L
-            for (unsigned int i = 0; i < L->getSlots(); ++i)
+            for (unsigned int i = 0; i < Leaf->getSlots(); ++i)
             {   
-                L->accessValues()[i] = T->accessValues()[i]; 
+                Leaf->accessValues()[i] = tmp_node->accessValues()[i]; 
             }
 
-
-            // std::cout << "what are the Valid Keys from T in the leaft node L? " << std::endl;
-            // for (unsigned int i=0; i<L->getSlots(); ++i)
-            // {
-            //     std::cout << L->accessKeys()[i] << " " ; 
-            // }
-            // std::cout << std::endl; 
 
 
 
             // Copy Valid Keys from 2nd half of T to LPRIME 
-            LPrime->setSlots(ORDER_M - mDividedByTwoCeiling); // update slots to T.P⌈n∕2⌉+1 onward
-            for (unsigned int i = 0; i < LPrime->getSlots(); ++i) //ceil(ORDER_M / 2.0); i < ORDER_M; ++i)
+            LeafPrime->setSlots(ORDER_M - midIndexOfKeysArray); // update slots to T.P⌈n∕2⌉+1 onward
+            for (unsigned int i = 0; i < LeafPrime->getSlots(); ++i) 
             {
-                LPrime->accessKeys()[i] = T->accessKeys()[i + mDividedByTwoCeiling];
+                LeafPrime->accessKeys()[i] = tmp_node->accessKeys()[i + midIndexOfKeysArray];
             }
             // Copy Valid Values from 2nd half of T to LPRIME 
-            for (unsigned int i = 0; i < LPrime->getSlots(); ++i) //ceil(ORDER_M / 2.0); i < ORDER_M; ++i)
+            for (unsigned int i = 0; i < LeafPrime->getSlots(); ++i) 
             {
-                LPrime->accessValues()[i] = T->accessValues()[i + mDividedByTwoCeiling];
+                LeafPrime->accessValues()[i] = tmp_node->accessValues()[i + midIndexOfKeysArray];
             }
 
-
-
-            // std::cout << "what are the Valid Keys from T in the leaft node LPrime? " << std::endl;
-            // for (unsigned int i=0; i<LPrime->getSlots(); ++i)
-            // {
-            //     std::cout << LPrime->accessKeys()[i] << " " ; 
-            // }
-            // std::cout << std::endl; 
 
 
             // =============== InsertInParent() does NOT need the value but only the key as reference ===============
 
-            int KPrime = LPrime->accessKeys()[0]; // KPrime == the smallest key-value in L′
+            int KeyPrime = LeafPrime->accessKeys()[0]; // KPrime == the smallest key-value in L′, which is the first Key
 
-            // std::cout << "What is KPrime to be promoted? " << KPrime << std::endl; 
+            this->InsertInParent(Leaf, KeyPrime, LeafPrime);
 
-            this->InsertInParent(L, KPrime, LPrime);
-
-            delete T; 
+            delete tmp_node; 
         }
 
         ret = true; 
     }
-    return ret; // NOT DONE YET WITH CHANGING RET STATUS!!!!!!!!!!!!!!!
+    return ret; 
 
 }
 
 
 // TESTED
-void BPlusTree::InsertInLeaf(Node* L, int key, std::string value)
+void BPlusTree::InsertInLeaf(Node* Leaf, int key, std::string value)
 {
-    // std::cout << "First Key in L:" << std::endl; 
-    // std::cout << L->accessKeys()[0] << std::endl; 
-    if (key < L->accessKeys()[0])
+    // if (key smaller than everything in Keys)
+    if (key < Leaf->accessKeys()[0])
     {
         
         // move existing keys in L down by 1 slot to the right 
-        for (int i = L->getSlots() - 1; i >= 0; --i)
+        for (int i = (Leaf->getSlots() - 1); i >= 0; --i)
         {   
-            L->accessKeys()[i+1] = L->accessKeys()[i];
+            Leaf->accessKeys()[i+1] = Leaf->accessKeys()[i];
         }
         // move existing values in L down by 1 slot to the right 
-        for (int i = L->getSlots() - 1; i >= 0; --i)
+        for (int i = (Leaf->getSlots() - 1); i >= 0; --i)
         {   
-            L->accessValues()[i+1] = L->accessValues()[i];
+            Leaf->accessValues()[i+1] = Leaf->accessValues()[i];
         }
         // insert Key and Value to index 0
-        L->accessKeys()[0] = key;
-        L->accessValues()[0] = value; 
-        L->setSlots(L->getSlots() + 1);
+        Leaf->accessKeys()[0] = key;
+        Leaf->accessValues()[0] = value; 
+        Leaf->setSlots(Leaf->getSlots() + 1);
     }
+    // else if (key is greater [Not necessary equal to since key in our B+Tree is unique] than any one of the keys)
     else
     {
         // Let Ki be the highest value Key in L that is less than or equal to K
-        int Ki_index = -1; 
-        for (int i = L->getSlots() - 1; i >= 0; --i)
+        int index_of_ith_key = -1; 
+        for (int i = Leaf->getSlots() - 1; i >= 0; --i)
         {
-            if ((L->accessKeys()[i] <= key))
+            if ((Leaf->accessKeys()[i] <= key))
             {
-                Ki_index = i;
+                index_of_ith_key = i;
                 break; 
             }
         }
-        if (Ki_index != -1) // just in case? 
+        if (index_of_ith_key != -1) // just in case? 
         {
             // move Keys down 1 slot to the right for key to slot into [i+1]
-            for (int i = L->getSlots() - 1; i >= (Ki_index + 1); --i)
+            for (int i = (Leaf->getSlots() - 1); i >= (index_of_ith_key + 1); --i)
             {
-                L->accessKeys()[i+1] = L->accessKeys()[i];
+                Leaf->accessKeys()[i+1] = Leaf->accessKeys()[i];
             }
             // move Values down 1 slot to the right for key to slot into [i+1]
-            for (int i = L->getSlots() - 1; i >= (Ki_index + 1); --i)
+            for (int i = (Leaf->getSlots() - 1); i >= (index_of_ith_key + 1); --i)
             {
-                L->accessValues()[i+1] = L->accessValues()[i];
+                Leaf->accessValues()[i+1] = Leaf->accessValues()[i];
             }
-            // // insert Key and Value to index Ki_index + 1
-            L->accessKeys()[Ki_index + 1] = key; 
-            L->accessValues()[Ki_index + 1] = value; 
-            L->setSlots(L->getSlots() + 1);
+            // // insert Key and Value to index index_of_ith_key + 1
+            Leaf->accessKeys()[index_of_ith_key + 1] = key; 
+            Leaf->accessValues()[index_of_ith_key + 1] = value; 
+            Leaf->setSlots(Leaf->getSlots() + 1);
         }
+        // else if (index_of_ith_key == -1), then EVERYTHING blow up :  (
     }
 }
 
 
 
 
-// NOT TESTED YET!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
-void BPlusTree::InsertInParent(Node* N, int KPrime, Node* NPrime)
+// TESTED !!!!!!!!!!!!!!!!!!!!!!!!!! 
+void BPlusTree::InsertInParent(Node* N, int KeyPrime, Node* NPrime)
 {
+    // if (N == Root)
     if (this->getRootNode() == N)
     {
 
-        int arr[] = {KPrime}; 
-        Node* R = new Node("rootR", 0, false, 1, arr);
+        int arr[] = {KeyPrime}; 
+        Node* new_root_node = new Node("rootR", 0, false, 1, arr); // Leaf = false 
 
-
-        R->accessChildren()[0] = N;             // Left pointer 
-        R->accessChildren()[1] = NPrime;        // Mid1 pointer 
+        new_root_node->accessChildren()[0] = N;             // Left pointer 
+        new_root_node->accessChildren()[1] = NPrime;        // Mid1 pointer 
         
-        this->setRootNode(R);
-
-        // std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" << std::endl; 
+        this->setRootNode(new_root_node);
 
         return; 
     }
 
 
-
-
-    Node* P = this->getParentNode(N); // Set Node* P to the Parent Node of N 
-    if (P != NULL)
+    Node* Parent = this->getParentNode(N); // Set Node* P to the Parent Node of N 
+    if (Parent != NULL)
     {
         // if P still have space for key-value and child pointer 
-        if (P->getSlots() < ORDER_M - 1)
+        if (Parent->getSlots() < ORDER_M - 1)
         {
             // then insert (K′, N′) in P just after N
-            InsertInInternalNode(P, N, KPrime, NPrime);
+            this->InsertInInternalNode(Parent, N, KeyPrime, NPrime);
         }
         else // Split P and promote!!!
         {
-            Node* T = new Node(P->getNodeIdentifier(), P->getLevel(), P->getLeaf(), P->getSlots(), P->accessKeys(), P->accessValues(), P->accessChildren()); 
-            InsertInInternalNode(T, N, KPrime, NPrime); // Should be OVERFULL after this line 
+            Node* tmp_node = new Node(Parent->getNodeIdentifier(), Parent->getLevel(), Parent->getLeaf(), Parent->getSlots(), Parent->accessKeys(), Parent->accessValues(), Parent->accessChildren()); 
+            this->InsertInInternalNode(tmp_node, N, KeyPrime, NPrime); // Should be OVERFULL after this line 
 
 
+            unsigned int midIndexOfChildrenArray = ceil(ORDER_M / 2.0);
 
 
-
-            unsigned int mPlusOneDividedByTwoCeiling = ceil(ORDER_M / 2.0);
-
-            // std::cout << "ORDER_M + 1 / 2.0 " << ORDER_M + 1 / 2.0 << std::endl;
-            // std::cout << "What is ORDER_M ? " << ORDER_M << std::endl;
-            // std::cout << "What is the mPlusOneDividedByTwoCeiling? " << mPlusOneDividedByTwoCeiling << std::endl;
-
-            // Erase all entries from P; Create node P′
-
-            // May not necessary since we use getSlots() to track the valid keys and getSlots() + 1 to track valid children
-            // P->clear();
-            // P->setLeaf(false);
-
-
-            Node* PPrime = new Node();
-            PPrime->setLeaf(P->getLeaf()); // set PPrime to have the SAME leaf status as P 
+            // new ParentPrime node as the node to store the splitted half from Parent 
+            Node* ParentPrime = new Node();
+            ParentPrime->setLeaf(Parent->getLeaf()); // set PPrime to have the SAME leaf status as P 
 
 
             // Copy Valid keys AND children from 1st half of T to P
-            P->setSlots(mPlusOneDividedByTwoCeiling - 1);
+            Parent->setSlots(midIndexOfChildrenArray - 1);
             // copying keys 
-            for (unsigned int i = 0; i < P->getSlots(); ++i)
+            for (unsigned int i = 0; i < Parent->getSlots(); ++i)
             {   
-                P->accessKeys()[i] = T->accessKeys()[i]; 
+                Parent->accessKeys()[i] = tmp_node->accessKeys()[i]; 
             }
             // copying children 
-            for (unsigned int i = 0; i < P->getSlots() + 1; ++i)
+            for (unsigned int i = 0; i < Parent->getSlots() + 1; ++i)
             {   
-                P->accessChildren()[i] = T->accessChildren()[i]; 
+                Parent->accessChildren()[i] = tmp_node->accessChildren()[i]; 
             }
 
             // Reset out of bound children to NULL???????????????????????
-            for (unsigned int i = P->getSlots() + 1; i <= ORDER_M + 1; ++i)
+            for (unsigned int i = Parent->getSlots() + 1; i <= ORDER_M + 1; ++i)
             {   
-                P->accessChildren()[i] = NULL; 
+                Parent->accessChildren()[i] = NULL; 
             }
-
-
-
-
-            // std::cout << std::endl;
-            // std::cout << "What is in P's Keys after copying from tmp T? " << std::endl;
-            // for (unsigned int i=0; i<P->getSlots(); ++i)
-            // {
-            //     std::cout << P->accessKeys()[i] << " " ;
-            // } 
-            // std::cout << std::endl;
-
-            // std::cout << "What is in P's Children after copying from tmp T? " << std::endl;
-            // for (unsigned int i=0; i<P->getSlots()+1; ++i)
-            // {
-            //     std::cout << P->accessChildren()[i] << " " ;
-            // } 
-            // std::cout << std::endl;
-
-
-
 
 
 
 
 
             // Copy Valid keys  AND children from 2nd half of T to PPRIME 
-            PPrime->setSlots(ORDER_M - mPlusOneDividedByTwoCeiling); // ????????????????????????
+            ParentPrime->setSlots(ORDER_M - midIndexOfChildrenArray); 
             // copying keys
-            for (unsigned int i = 0; i < PPrime->getSlots(); ++i) //??????????????
+            for (unsigned int i = 0; i < ParentPrime->getSlots(); ++i)
             {
-                PPrime->accessKeys()[i] = T->accessKeys()[i + mPlusOneDividedByTwoCeiling];
+                ParentPrime->accessKeys()[i] = tmp_node->accessKeys()[i + midIndexOfChildrenArray];
             }
             // copying children 
-            for (unsigned int i = 0; i < PPrime->getSlots() + 1; ++i) //???????????
+            for (unsigned int i = 0; i < ParentPrime->getSlots() + 1; ++i) 
             {
-                PPrime->accessChildren()[i] = T->accessChildren()[i + mPlusOneDividedByTwoCeiling]; //??????????????
+                ParentPrime->accessChildren()[i] = tmp_node->accessChildren()[i + midIndexOfChildrenArray];
             }
             // Reset out of bound children to NULL 
-            for (unsigned int i = PPrime->getSlots() + 1; i <= ORDER_M + 1; ++i) //???????????
+            for (unsigned int i = ParentPrime->getSlots() + 1; i <= ORDER_M + 1; ++i)
             {
-                PPrime->accessChildren()[i] = NULL;
+                ParentPrime->accessChildren()[i] = NULL;
             }
 
 
 
 
             // Let K′′ = T.K⌈(n+1)∕2⌉
-            int KPrimePrime = T->accessKeys()[mPlusOneDividedByTwoCeiling - 1];
+            int KPrimePrime = tmp_node->accessKeys()[midIndexOfChildrenArray - 1];
 
+            this->InsertInParent(Parent, KPrimePrime, ParentPrime);
 
-            //Node* rootnode = this->getRootNode();  USELESS!!!!!!!!
-
-
-
-
-            this->InsertInParent(P, KPrimePrime, PPrime);
-            delete T; 
+            delete tmp_node; 
         }
     }
 
@@ -600,69 +443,65 @@ void BPlusTree::InsertInParent(Node* N, int KPrime, Node* NPrime)
 
 
 // Briefly TESTED 
-Node* BPlusTree::getParentNode(Node* N)
+Node* BPlusTree::getParentNode(Node* N) // find the Parent node of the given node N 
 {
-    Node* C = this->getRootNode(); // C start from Root node of the BPlusTree 
+    Node* curr_node = this->getRootNode(); // C start from Root node of the BPlusTree 
 
     // use 1st key in node N as guidance to traverse
     int key = N->accessKeys()[0]; 
 
     bool found = false; 
 
-    while(C->getLeaf() != true && found == false)
+    while(curr_node->getLeaf() != true && found == false)
     {
-
-        // Base Case: 
-        // if 1 of the child of C == N, C node is Parent of N
-        // for (unsigned int i = 0; i < C->getSlots() + 1; ++i)
-        // {
-        //     if (C->accessChildren()[i] == N)
-        //     {
-        //         return C; 
-        //     }
-        // }
         
-        int i = this->IndexOfKiSmallestKeyGeqV(C, key);
-        // else follow the key as guidence to the next level of node 
+        int i = this->IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(curr_node, key);
 
-        // Sub If cases == Base case
+        //  if (SmallestKey... not found == -1)
         if (i == -1)
         {
-            unsigned int m = C->getSlots();
-            if (N == C->accessChildren()[m])
+            unsigned int m = curr_node->getSlots();
+            // 
+            if (N == curr_node->accessChildren()[m])
             {
                 found = true;  
             }
             else
             {
-                C = C->accessChildren()[m]; 
+                // access 1 level lower 
+                curr_node = curr_node->accessChildren()[m]; 
             }
         }
-        else if (key == C->getKeyByIndex((unsigned int) i))
+        // else if (the key is equal to the ith key in curr_node)
+        else if (key == curr_node->getKeyByIndex((unsigned int) i))
         {
-            if (N == C->accessChildren()[i+1])
+            // access the [i + 1] child, which is the Child on the Right of the Key
+            if (N == curr_node->accessChildren()[i+1])
             {
                 found = true;  
             }
             else
             {
-                C = C->accessChildren()[i+1]; 
+                // access 1 level lower 
+                curr_node = curr_node->accessChildren()[i+1]; 
             }
         }
         else
         {
-            if (N == C->accessChildren()[i])
+            // access the [i] child, which is the Child on the Left of the Key
+            if (N == curr_node->accessChildren()[i])
             {
                 found = true; 
             }
             else
             {
-                C = C->accessChildren()[i]; 
+                // access 1 level lower 
+                curr_node = curr_node->accessChildren()[i]; 
             }
         }
     }
 
-    return found == true ? C : NULL;  // if Parent Node is found, return C, else return NULL 
+    return found == true ? curr_node : NULL;  // if Parent Node is found, return C, else return NULL 
 
 }
 
@@ -672,66 +511,61 @@ Node* BPlusTree::getParentNode(Node* N)
 
 // then insert (K′, N′) in P just after N
 // INSERT given KPrime key-value and NPrime Node to the Parent node P right after where N is !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-void BPlusTree::InsertInInternalNode(Node* P, Node* N, int KPrime, Node* NPrime) // P == Parent of N, KPrime == the smallest key-value in N′
+void BPlusTree::InsertInInternalNode(Node* Parent, Node* N, int KeyPrime, Node* NPrime) // P == Parent of N, KPrime == the smallest key-value in N′
 {
 
     int key = N->accessKeys()[0]; // get key of N to find our way to insert KPrime, NPrime after N inside P
-    int i = this->IndexOfKiSmallestKeyGeqV(P, key);
+    int i = this->IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(Parent, key);
 
-    // std::cout << "The index i should be ZERO here: " << i << std:: endl; 
-
-    int index_for_KPrime = -1; 
+    int index_for_KeyPrime = -1; 
     int index_for_NPrime = -1;
 
     // then insert (K′, N′) in P just after N
     if (i == -1)
     {
-        unsigned int m = P->getSlots();
+        unsigned int m = Parent->getSlots();
 
         // P->accessChildren()[m] == N
-        if (N == P->accessChildren()[m])
+        if (N == Parent->accessChildren()[m])
         {
-            index_for_KPrime = m;
-            index_for_NPrime = index_for_KPrime + 1;
+            index_for_KeyPrime = m;
+            index_for_NPrime = index_for_KeyPrime + 1;
         }
     }
-    else if (key == P->getKeyByIndex((unsigned int) i))
+    else if (key == Parent->getKeyByIndex((unsigned int) i))
     {
         // P->accessChildren()[i+1] == N
-        if (N == P->accessChildren()[i+1])
+        if (N == Parent->accessChildren()[i+1])
         {
-            index_for_KPrime = i + 1;
-            index_for_NPrime = index_for_KPrime + 1;
+            index_for_KeyPrime = i + 1;
+            index_for_NPrime = index_for_KeyPrime + 1;
         }
     }
     else
     {
         // P->accessChildren()[i] == N
-        if (N == P->accessChildren()[i])
+        if (N == Parent->accessChildren()[i])
         {
-            index_for_KPrime = i;
-            index_for_NPrime = index_for_KPrime + 1;
+            index_for_KeyPrime = i;
+            index_for_NPrime = index_for_KeyPrime + 1;
         }
     }
 
     // move keys down by 1 slot to the right 
-    for (int i = P->getSlots()-1;  i >=index_for_KPrime; --i)
+    for (int i = Parent->getSlots()-1;  i >=index_for_KeyPrime; --i)
     {
-        P->accessKeys()[i+1] = P->accessKeys()[i];
+        Parent->accessKeys()[i+1] = Parent->accessKeys()[i];
     }
 
     // move Children down by 1 slot to the right 
-    for (int i = P->getSlots();  i >= index_for_NPrime; --i)
+    for (int i = Parent->getSlots();  i >= index_for_NPrime; --i)
     {
-        P->accessChildren()[i+1] = P->accessChildren()[i];
+        Parent->accessChildren()[i+1] = Parent->accessChildren()[i];
     }
 
-
-
-    P->setSlots(P->getSlots() + 1);
-    P->accessKeys()[index_for_KPrime] = KPrime;
-    P->accessChildren()[index_for_NPrime] = NPrime;
-
+    Parent->accessKeys()[index_for_KeyPrime] = KeyPrime;
+    Parent->accessChildren()[index_for_NPrime] = NPrime;
+    Parent->setSlots(Parent->getSlots() + 1);
 
 }
 
@@ -1226,7 +1060,7 @@ bool BPlusTree::delete_entry(Node* N, int K, Node* pointer)
 
 bool BPlusTree::getPrevOrNextChildFromParentOfN(Node* P, Node* N, Node* &NPrime) // NPrime is Pass by Reference!!!!!
 {
-    bool ret;
+    bool ret = false;
     // int index_of_N = P->getIndexByChildPointer(N);
     // // check + 1 Children slot on the Right is Valid index
     // // just in case, also make use the Valid index is NOT accessing NULL
@@ -1293,7 +1127,7 @@ bool BPlusTree::getPrevOrNextChildFromParentOfN(Node* P, Node* N, Node* &NPrime)
             if (P->accessChildren()[i] == N)
             {
                 NPrime = P->accessChildren()[i + 1];
-                ret = false; // false = retrieved Next Child 
+                //ret = false; // false = retrieved Next Child 
                 break;
             }
         }
@@ -1304,7 +1138,7 @@ bool BPlusTree::getPrevOrNextChildFromParentOfN(Node* P, Node* N, Node* &NPrime)
 int BPlusTree::findIndexOfKPrime(Node* P, Node* N, Node* NPrime, bool prev_true_next_false)
 {
     // Let K′ be the value between pointers N and N′ in parent(N)
-    int index_of_KPrime; 
+    int index_of_KPrime = -1; 
     // if prev_true_next_false == true, KPrime == same index as NPrime 
     if (prev_true_next_false == true)
     {

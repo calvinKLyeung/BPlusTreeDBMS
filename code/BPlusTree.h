@@ -12,10 +12,6 @@
 
 // using namespace std;
 
-// #define WHITE 1
-// #define GRAY 2
-// #define BLACK 3
-
 
 class BPlusTree {
 private:
@@ -26,27 +22,31 @@ private:
 public:
 
     BPlusTree();
+
+
     ~BPlusTree();
     void DestroyRecursive(Node* node); 
 
     void setRootNode(Node* node);
     Node* getRootNode();
-    //Node** getRoot();
 
+    int IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(Node* curr_node, int given_key);
+
+
+    // Find by Key 
     Node* Find(int v);
-    int IndexOfKiSmallestKeyGeqV(Node* curr_node, int v);
-    // int test(Node* curr_node, int v);
 
-    std::vector <Node *> FindRange(int lb, int ub);
+    // Find by Range Scan 
+    std::vector <Node *> FindRange(int lower_bound, int upper_bound);
 
-    // insert
+    // Insert
     bool Insert(int key, std::string value);
-    void InsertInLeaf(Node* L, int key, std::string value);
+    void InsertInLeaf(Node* Leaf, int key, std::string value);
     void InsertInParent(Node* N, int KPrime, Node* NPrime);
     Node* getParentNode(Node* N);
-    void InsertInInternalNode(Node* P, Node* N, int KPrime, Node* NPrime);
+    void InsertInInternalNode(Node* Parent, Node* N, int KeyPrime, Node* NPrime);
 
-    // delete 
+    // Delete 
     bool Delete(int k);
     bool delete_entry(Node* N, int K, Node* pointer);
     bool getPrevOrNextChildFromParentOfN(Node* P, Node* N, Node* &NPrime);
