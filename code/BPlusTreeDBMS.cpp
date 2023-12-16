@@ -22,20 +22,25 @@ bool BPlusTreeDBMS::Create(int key, std::string value)
   {
     this->_bplustree = new BPlusTree;
     this->_bplustree->Insert(key, value);
-
+    std::cout << "Created successfully. " << key << " : " << value << " is now in the database." << std::endl; 
 
     ret = true;
   }
   else if (this->_bplustree != NULL && this->_bplustree->Find(key) == NULL)
   {
     this->_bplustree->Insert(key, value);
+    std::cout << "Created successfully. " << key << " : " << value << " is now in the database." << std::endl; 
+
+
+    ret = true; 
+    
   }
   else if (this->_bplustree != NULL && this->_bplustree->Find(key) != NULL)
   {
-    std::cout << "Record already exist!" << std::endl; 
+    std::cout << "Unable to create. Given key already exist in record!" << std::endl; 
     ret = false;
   }
-
+  std::cout << std::endl; 
   return ret; 
 
 }
@@ -50,9 +55,8 @@ bool BPlusTreeDBMS::ReadByKey(int key)
     if ((result_node = this->_bplustree->Find(key)) != NULL)
     {
       // read from the node 
-      std::cout << " ----- Key : Values pair found with the given key ----- " << std::endl;
+      std::cout << " ----- Key : Value pair found with the given key ----- " << std::endl;
       std::cout << key << " : " << result_node->accessValues()[result_node->getIndexByKey(key)] << std::endl;
-
 
       ret = true;
     } 
@@ -66,6 +70,7 @@ bool BPlusTreeDBMS::ReadByKey(int key)
   {
     std::cout << "Database is empty. Unable to read anything with the given key. " << std::endl;
   }
+  std::cout << std::endl; 
   return ret; 
 }
 
@@ -92,7 +97,6 @@ bool BPlusTreeDBMS::ReadByRange(int lower_bound, int upper_bound)
           }
         }
       }
-      std::cout << std::endl;
 
       ret = true;
     }
@@ -106,6 +110,7 @@ bool BPlusTreeDBMS::ReadByRange(int lower_bound, int upper_bound)
   {
     std::cout << "Database is empty. Unable to read anything with the given range of keys. " << std::endl;
   }
+  std::cout << std::endl; 
   return ret; 
 }
 
@@ -120,7 +125,7 @@ bool BPlusTreeDBMS::Update(int key, std::string value)
     {
       result_node->accessValues()[result_node->getIndexByKey(key)] = value;
       std::cout << "Updated successfully." << std::endl;
-      std::cout << key << " : " << result_node->accessValues()[result_node->getIndexByKey(key)] << std::endl;
+      //std::cout << key << " : " << result_node->accessValues()[result_node->getIndexByKey(key)] << std::endl;
 
       ret = true; 
     }
@@ -134,6 +139,7 @@ bool BPlusTreeDBMS::Update(int key, std::string value)
   {
     std::cout << "Database is empty. Unable to update anything with the given key : value pair. " << std::endl;
   }
+  std::cout << std::endl; 
   return ret; 
 }
 
@@ -160,7 +166,7 @@ bool BPlusTreeDBMS::Delete(int key)
     std::cout << "Database is empty. Unable to delete anything." << std::endl;
   }
 
-
+  std::cout << std::endl; 
 
   return ret; 
 }

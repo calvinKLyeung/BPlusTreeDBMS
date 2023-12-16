@@ -2473,13 +2473,21 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTreeDBMS_CRUD)
 	myDBMS->Create(4830, "Special Topics in Applied Computer Science");
 	myDBMS->Create(4900, "Upper Division, Undergraduate Level Independent Study");
 
-	myDBMS->ReadByRange(0000, 1000);
-	myDBMS->ReadByRange(1000, 2000);
-	myDBMS->ReadByRange(2000, 3000);
-	myDBMS->ReadByRange(3000, 4000);
-	myDBMS->ReadByRange(4000, 5000);
+	myDBMS->ReadByRange(0000, 999);
+	myDBMS->ReadByRange(1000, 1999);
+	myDBMS->ReadByRange(2000, 2999);
+	myDBMS->ReadByRange(3000, 3999);
+	myDBMS->ReadByRange(4000, 4999);
+	myDBMS->ReadByRange(5000, 7000);
+
+
+	myDBMS->Create(4830, "Special Topics in Computer Science: Current Topics in Computer Science: Advances in Datacenter Networking and Cloud Computing");
+	myDBMS->Update(4830, "Special Topics in Computer Science: Current Topics in Computer Science: Advances in Datacenter Networking and Cloud Computing");
 
 	myDBMS->ReadByKey(2824); 
+	myDBMS->ReadByKey(4830);
+	ASSERT_EQ(myDBMS->ReadByKey(2822), false);
+	ASSERT_EQ(myDBMS->ReadByKey(4831), false);
 
 
 

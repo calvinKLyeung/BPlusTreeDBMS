@@ -431,8 +431,6 @@ void BPlusTree::InsertInLeaf(Node* L, int key, std::string value)
             if ((L->accessKeys()[i] <= key))
             {
                 Ki_index = i;
-                std::cout << "Found where to insert 7, which should  be index 1???" << std::endl;
-                std::cout << Ki_index << std::endl;
                 break; 
             }
         }
@@ -586,7 +584,7 @@ void BPlusTree::InsertInParent(Node* N, int KPrime, Node* NPrime)
             int KPrimePrime = T->accessKeys()[mPlusOneDividedByTwoCeiling - 1];
 
 
-            Node* rootnode = this->getRootNode();
+            //Node* rootnode = this->getRootNode();  USELESS!!!!!!!!
 
 
 
