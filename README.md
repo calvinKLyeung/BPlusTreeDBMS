@@ -1,7 +1,10 @@
 # Mini Database with B+Tree 
 
 ## Running the program
-1. go to build dir by ```cd build/```
+1. Go to build dir by ```cd build/```
+2. Run ```cmake ..```
+3. Run ```make```
+4. Run ```./run_app```
 
 
 ## FAQ
