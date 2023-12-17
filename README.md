@@ -5,23 +5,23 @@
 This project plan to implement a mini database CRUD operations with B+Tree data structure and practice memory management with plane points. <br> 
 
 **B+Tree on paper** <br>
-B+Tree is a commonly seen datastructure in databases. Unlike hash table which stores key-value pairs in unordered array and only allows single key lookup, B+ tree stores values in sorted order with indices and supports data retrieval lookup by index and range scan which speeds up query execution. Unlike B-tree which stores data in each node at every level which requires back-and-forth traversal, B+tree stores pointers or data in the linked leaf nodes only which allows range scans and sequential access along the leaf 
+B+Tree is a commonly seen data structure in databases. Unlike hash table which stores key-value pairs in unordered array and only allows single key lookup, B+ tree stores values in sorted order with indices and supports data retrieval lookup by index and range scan which speeds up query execution. Unlike B-tree which stores data in each node at every level which requires back-and-forth traversal, B+tree stores pointers or data in the linked leaf nodes only which allows range scans and sequential access along the leaf 
 nodes at the bottom level. The self-balancing nature of B+tree allows O(log n) time complexity for traverse. The fact that all data are store only in the linked leaf nodes at the bottom allows range scans and sequential access along the leaf nodes in O(n) complexity. <br>
  
 **B+Tree invariants**
-- M-way search tree, within each node there can be upto M-paths to other nodes (Max children = order M)
+- M-way search tree, within each node there can be up to M-paths to other nodes (Max children = order M)
 - Perfectly balanced, where ALL leaf nodes are in the same level and reachable with O(log n) complexity
 - Every node other than root must be At Least half full ⌈(ORDER_M - 1) / 2⌉ keys and ⌈(ORDER_M)/  2⌉ children
 - Every inner node with k keys must has k+1 non-null children nodes
 - Root node can hold fewer than ⌈(ORDER_M - 1) / 2⌉ pointers, however, it must hold at least two pointers, unless the tree consists of only one node
 
 **B+Tree implementation** <br> 
-I was not able to figure out how to assign pointers to point to persistent storage in the harddisk. Therefore, I decided to store the data within the Leaf Nodes in heap memory instead. It turns out implementing a data structure from scratch, like designing my own test cases with expected input and output values, is way more tricky than I thought. Also, Memory allocation and management with plane pointer for more than a few lines of code is way more difficult than expected. Right now the so called B+Tree database feels like a associative array in practice but with the item in sorted order. <br>
+I was not able to figure out how to assign pointers to point to persistent storage in the hard disk. Therefore, I decided to store the data within the Leaf Nodes in heap memory instead. It turns out implementing a data structure from scratch, like designing my own test cases with expected input and output values, is way more tricky than I thought. Also, Memory allocation and management with plane pointer for more than a few lines of code is way more difficult than expected. Right now, the so called B+Tree database feels like a associative array in practice but with the item in sorted order. <br>
 
 **Memory Leaks Status** <br>
-I thought the project might be a good chance to practice pointer and memory management. <br> 
-And decided to use the normal pointer instead of the smart pointer. <br>
-But ended up in infinite loop of memory leaks debugging. <br>   
+I thought the project might be a good chance to practice pointer and memory management.
+And decided to use the normal pointer instead of the smart pointer. 
+But ended up in an infinite loop of memory leaks debugging. <br>   
 
 main.cpp <br> 
 ```
@@ -58,18 +58,20 @@ Follow the below steps to set up and run the program:
 4. Run ```make```
 5. Run ```./run_app``` 
 
+The demo uses the CRUD operations to store the CSPB courses in the B+Tree. The course code number serves as the index key and the course title serves as the content string value. <br>
 You can modify the function calls in main.cpp to use the CRUD <br>
+
 
 
 ## BPlusTreeDBMS Class
 How to use the CRUD operations: <br>
-- ```Create(int, string)```: Create new record in the B+Tree with the given key and value. It invokes  ```Insert(int, string)``` of the ```BPlusTree``` class. 
+- ```Create(int, string)```: Create new record in the B+Tree with the given key and value. It invokes ```Insert(int, string)``` of the ```BPlusTree``` class. 
 
 - ```ReadByKey(int)```: Read record from B+Tree using the given key. It invokes ```Find(int)``` of the ```BPlusTree``` class and print out the key:value pair retrieved from the B+Tree.<br>
 
-- ```ReadByRange(int, int)```: Read record from B+Tree with the given range of index from lower bound to upper bound inclusively. It invokes ```FindRange(int, int)``` of the ```BPlusTree``` class and print out all the key:value pairs reocrd within the range index. 
+- ```ReadByRange(int, int)```: Read record from B+Tree with the given range of index from lower bound to upper bound inclusively. It invokes ```FindRange(int, int)``` of the ```BPlusTree``` class and prints out all the key:value pairs reocrd within the range index. 
 
-- ```Update(int, string)```: Find the record with the given key and replace value with the new one. It invokes the  ```Find(int)``` of the ```BPlusTree``` class and modify the value stored in the B+Tree Leaf node. <br> 
+- ```Update(int, string)```: Find the record with the given key and replace value with the new one. It invokes the ```Find(int)``` of the ```BPlusTree``` class and modifies the value stored in the B+Tree Leaf node. <br> 
 
 - ```Delete(int)```: Delete the key and the corresponding value in the B+Tree. It invokes ```Delete(int)``` of the ```BPlusTree``` class to perform the B+Tree traverse, deletion, and balancing mechanism. <br>
 
@@ -82,7 +84,7 @@ Major functions of the B+Tree: <br>
 
 - ```Insert(int key, std::string value)```: Insert the key:value pair to the corresponding leaf node while also maintaining the self-balanced condition of the B+Tree by splitting nodes and promoting key to upper level. 
 
-- ```Delete(int key)```: Delete the key and the corresponding value from the B+Tree. It go to the leaf node to delete the key:value pair while also maintaining the self-balanced condition of the B+Tree by splitting and merging nodes. 
+- ```Delete(int key)```: Delete the key and the corresponding value from the B+Tree. It goes to the leaf node to delete the key:value pair while also maintaining the self-balanced condition of the B+Tree by splitting and merging nodes. 
 
 ## Node Class
 What is in a node: <br> 
