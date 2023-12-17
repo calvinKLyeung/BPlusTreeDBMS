@@ -27,16 +27,17 @@ bool BPlusTreeDBMS::Create(int key, std::string value)
   }
   else if (this->_bplustree != NULL)
   {
-    this->_bplustree->Insert(key, value);
-    std::cout << "Created successfully. " << key << " : " << value << " is now in the database." << std::endl; 
-
-
-    ret = true; 
+    if (this->_bplustree->Find(key) == NULL)
+    {
+      this->_bplustree->Insert(key, value);
+      std::cout << "Created successfully. " << key << " : " << value << " is now in the database." << std::endl; 
+      ret = true; 
+    }
+    else
+    {
+      std::cout << "Unable to create. Given key already exist in record!" << std::endl;
+    }
     
-  }
-  else // if (this->_bplustree != NULL && this->_bplustree->Find(key) != NULL)
-  {
-    std::cout << "Unable to create. Given key already exist in record!" << std::endl; 
   }
 
   return ret; 

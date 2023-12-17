@@ -44,6 +44,10 @@ void demo_with_CSPB_courses()
 	myDBMS->ReadByRange(3000, 3999);
 	myDBMS->ReadByRange(4000, 4999);
 
+
+
+
+
 	// scanning empty range 
 
 	std::cout << std::endl;
@@ -67,11 +71,15 @@ void demo_with_CSPB_courses()
 	myDBMS->ReadByKey(4831); 
 
 
+
 	// unable to create record since the key 4830 already exists, and key must be unique
 	std::cout << std::endl;
 	std::cout << " =============== Demo: Key collision, Create failed =============== " << std::endl;
-	myDBMS->Create(4830, "Distributed Computing");
 	myDBMS->Create(2270, "Data Structures and Algorithms");
+	myDBMS->Create(4830, "Distributed Computing");
+
+	myDBMS->ReadByKey(2270);
+	myDBMS->ReadByKey(4830);
 
 
 	// update key : value 
@@ -79,113 +87,38 @@ void demo_with_CSPB_courses()
 	std::cout << " =============== Demo: Update content =============== " << std::endl;
 	myDBMS->Update(2824, "Discrete Structures	Credits: 3");
 	myDBMS->Update(4830, "Special Topics in Computer Science: Current Topics in Computer Science: Advances in Datacenter Networking and Cloud Computing");
+	// read updated records
+	myDBMS->ReadByKey(2824); 
+	myDBMS->ReadByKey(4830);
+
 
 	// update non-existing key
 	std::cout << std::endl;
 	std::cout << " =============== Demo: Key does not exist, Update failed =============== " << std::endl;
 	myDBMS->Update(3101, "History of Computing and Information");
 	myDBMS->Update(4214, "Big Data Architecture");
-
-
-	// read updated records
-	myDBMS->ReadByKey(2824); 
-	myDBMS->ReadByKey(4830);
-
 	// read record by non-existent key
 	myDBMS->ReadByKey(3101); 
 	myDBMS->ReadByKey(4214);
 
 
+
 	// Delete 
+	std::cout << std::endl;
+	std::cout << " =============== Demo: Delete key:value with given key =============== " << std::endl;
+	myDBMS->Delete(3302);
 	myDBMS->Delete(4253);
 
 	// try to read the delete key 
-	myDBMS->ReadByKey(4253);
+	myDBMS->ReadByRange(0, 5000);
 
 	delete myDBMS;
 }
 
-// void printMenu()
-// {
-//     // main menu
-// 	std::cout << "============================================================" << std::endl;
-//     std::cout << "• 1: Create" << std::endl;
-//     std::cout << "• 2: Read" << std::endl;
-//     std::cout << "• 3: Update" << std::endl;
-//     std::cout << "• 4: Delete" << std::endl;
-//     std::cout << "• 5: Demo" << std::endl;
-//     std::cout << "• 0: Quit" << std::endl;
-//     std::cout << "============================================================" << std::endl;
-// }
-
-// void invalidInput()
-// {
-//     std::cout << "Invalid choice. Choose 0-5." << std::endl;
-// }
-// void printHelp()
-// {
-//     // std::cout << "Help - your aim is to make money. Analyse the market and make bit and offers." << std::endl;
-//     std::cout << " -------------------- Help -------------------- " << std::endl;
-//     std::cout << "Create: create new key : value pair record in the database" << std::endl;
-//     std::cout << "and offers. " << std::endl;
-// }
-
-
-
-// void processUserOption(int userOption, )
-// {
-//     // map from ints to function pointers
-//     std::map<int,void(*)()> menu;
-//     // connect 1 to the printHelp function
-//     menu[0] = invalidInput;
-//     menu[1] = printHelp;
-//     menu[2] = printMarketStats;
-//     menu[3] = enterOffer;
-//     menu[4] = enterBid;
-//     menu[5] = printWallet;
-//     menu[6] = goToNextTimeFrame;
-
-//     if (userOption < 0 || userOption > 5)
-//     {
-//         userOption = 0;
-//     }
-
-
-//     // call option [userOption]
-//     menu[userOption]();
-// }
-
-// int getUserOpetion()
-// {
-//     int userOption;
-//     std::cout << "Type in 1-6" << std::endl;
-//     std::cin >> userOption;
-//     std::cout << "Your choice: " << userOption << std::endl;
-//     return userOption;
-// }
-
-
-
 
 int main (int argc, const char * argv[])
 {
-  // no argv[1] given
-    
 	demo_with_CSPB_courses();
-
-
-
-	// while (true)
-    // {
-    //     // print menu
-    //     printMenu();
-
-    //     // get user input
-    //     int userOption = getUserOpetion();
-
-    //     // process user input
-    //     processUserOption(userOption); 
-    // }
 
 	return 0;
 }

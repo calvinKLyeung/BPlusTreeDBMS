@@ -591,7 +591,8 @@ bool BPlusTree::Delete(int key)
 
 
 bool BPlusTree::delete_entry(Node* N, int key, Node* pointer)
-{   
+{
+    
     // delete key-pointer pair (K, P) from N
     unsigned int index_of_key = N->getIndexByKey(key);
     for (unsigned int i = index_of_key; i < N->getSlots(); ++i)
@@ -605,6 +606,7 @@ bool BPlusTree::delete_entry(Node* N, int key, Node* pointer)
         for (unsigned int i = index_of_key; i < N->getSlots(); ++i)
         {   
             N->accessValues()[i] = N->accessValues()[i+1]; 
+
         }
     }
 
@@ -663,7 +665,18 @@ bool BPlusTree::delete_entry(Node* N, int key, Node* pointer)
     // as Root is NOT bounded by to have at least ⌈(ORDER_M - 1) / 2⌉ Keys
         if (N->hasTooFewRemainingValuesOrPointers() == true)
         {
+
+
             Node* Parent = this->getParentNode(N); 
+
+
+
+            // for (unsigned int i = 0; i <Parent->getSlots(); i++)
+            // {
+            //     std::cout << Parent->accessKeys()[i] << std::endl;
+            // }
+            // std::cout << std::endl;
+
 
             Node* NPrime = NULL;
             // Check whether N is Left OR Mid1 child of P 
@@ -887,8 +900,8 @@ bool BPlusTree::delete_entry(Node* N, int key, Node* pointer)
 
                         // remove (N′.Value_m, N′.Km) from N′
                         // 
-                        NPrime->accessKeys()[m] = 0;
-                        NPrime->accessValues()[m] = "";
+                        // NPrime->accessKeys()[m] = 0;
+                        // NPrime->accessValues()[m] = "";
 
                         for (unsigned int i = m; i<NPrime->getSlots(); ++i)
                         {
@@ -1023,10 +1036,14 @@ void BPlusTree::appendNToNPrime(Node* &NPrime, Node* N)
     // NPrime_slots for reference 
     int NPrime_slots = NPrime->getSlots();
 
-    // append keys from N to NPrime 
+    // append keys AND values from N to NPrime 
     for(unsigned int i = 0; i < N->getSlots(); ++i)
     {   
         NPrime->accessKeys()[i + NPrime_slots] = N->accessKeys()[i];
+    }
+    for(unsigned int i = 0; i < N->getSlots(); ++i)
+    {   
+        NPrime->accessValues()[i + NPrime_slots] = N->accessValues()[i];
     }
     NPrime->setSlots(N->getSlots() + NPrime->getSlots());
 }
