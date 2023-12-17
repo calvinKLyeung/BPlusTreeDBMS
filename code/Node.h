@@ -61,7 +61,7 @@ public:
     bool getLeaf();
     void setLeaf(bool leaf);
 
-    int getKeyByIndex(unsigned int i);
+    int getKeyByIndex(int i);
     int getIndexByKey(int key);
 
     int getIndexByChildPointer(Node* child);
@@ -71,7 +71,7 @@ public:
 
     unsigned int getNumOfChildren();
     Node* getTheRemainingChild();
-    bool hasTooFewValuesOrPointersRemain();
+    bool hasTooFewRemainingValuesOrPointers();
 
     void setPrev(Node* node);
     Node* getPrev();

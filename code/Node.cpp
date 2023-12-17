@@ -167,7 +167,7 @@ void Node::setLeaf(bool leaf)
 }
 
 
-int Node::getKeyByIndex(unsigned int i)
+int Node::getKeyByIndex(int i)
 {
     // get the key from keys arr at given index i 
     return this->keys[i];
@@ -240,7 +240,7 @@ Node* Node::getTheRemainingChild()
     return NULL;
 }
 
-bool Node::hasTooFewValuesOrPointersRemain()
+bool Node::hasTooFewRemainingValuesOrPointers()
 {
     
     bool ret = false;

@@ -99,17 +99,17 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_IndexOfKiSmallestKeyGeqV){
 	Node myNode("test001", 0, true, 4, arr_keys, arr_values);
 	BPlusTree myBPlusTree_IndexOfKiSmallestKeyGeqV; 
 
-	// cout << "i should be 0: " << myBPlusTree.IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(&myNode, 1) << endl;
-	ASSERT_EQ(0, myBPlusTree_IndexOfKiSmallestKeyGeqV.IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(&myNode, 1));
+	// cout << "i should be 0: " << myBPlusTree.IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(&myNode, 1) << endl;
+	ASSERT_EQ(0, myBPlusTree_IndexOfKiSmallestKeyGeqV.IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(&myNode, 1));
 
-	// cout << "i should be 1: " << myBPlusTree.IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(&myNode, 2) << endl;
-	ASSERT_EQ(1, myBPlusTree_IndexOfKiSmallestKeyGeqV.IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(&myNode, 2));
+	// cout << "i should be 1: " << myBPlusTree.IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(&myNode, 2) << endl;
+	ASSERT_EQ(1, myBPlusTree_IndexOfKiSmallestKeyGeqV.IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(&myNode, 2));
 
-	// cout << "i should be -1: " << myBPlusTree.IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(&myNode, 12) << endl;
-	ASSERT_EQ(-1, myBPlusTree_IndexOfKiSmallestKeyGeqV.IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(&myNode, 12));
+	// cout << "i should be -1: " << myBPlusTree.IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(&myNode, 12) << endl;
+	ASSERT_EQ(-1, myBPlusTree_IndexOfKiSmallestKeyGeqV.IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(&myNode, 12));
 
-	// cout << "i should be 3: " << myBPlusTree.IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(&myNode, 4) << endl;
-	ASSERT_NE(4, myBPlusTree_IndexOfKiSmallestKeyGeqV.IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(&myNode, 4));
+	// cout << "i should be 3: " << myBPlusTree.IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(&myNode, 4) << endl;
+	ASSERT_NE(4, myBPlusTree_IndexOfKiSmallestKeyGeqV.IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(&myNode, 4));
 
 
 	// Node(std::string _data, unsigned int _level, bool _leaf, unsigned int _slots, int _keys[ORDER_M], Node* _children[ORDER_M + 1]);

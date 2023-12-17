@@ -30,7 +30,7 @@ public:
     void setRootNode(Node* node);
     Node* getRootNode();
 
-    int IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(Node* curr_node, int given_key);
+    int IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(Node* curr_node, int given_key);
 
 
     // Find by Key 
@@ -47,8 +47,8 @@ public:
     void InsertInInternalNode(Node* Parent, Node* N, int KeyPrime, Node* NPrime);
 
     // Delete 
-    bool Delete(int k);
-    bool delete_entry(Node* N, int K, Node* pointer);
+    bool Delete(int key);
+    bool delete_entry(Node* N, int key, Node* pointer);
     bool getPrevOrNextChildFromParentOfN(Node* P, Node* N, Node* &NPrime);
     int findIndexOfKPrime(Node* P, Node* N, Node* NPrime, bool retrieved_prev_child);
     void swap_pointers(Node* &N, Node* &NPrime);

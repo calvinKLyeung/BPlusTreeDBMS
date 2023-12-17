@@ -73,7 +73,7 @@ Node* BPlusTree::Find(int v)
         while (curr_node != NULL && curr_node->getLeaf() != true)
         {
 
-            int i = this->IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(curr_node, v);
+            int i = this->IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(curr_node, v);
 
             if (i == -1) // -1 == there is no such number i where K_{i} is smallest number such that v ≤ C.Ki
             {
@@ -103,7 +103,7 @@ Node* BPlusTree::Find(int v)
 }
 
 
-int BPlusTree::IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(Node* curr_node, int given_key)
+int BPlusTree::IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(Node* curr_node, int given_key)
 {
     // return index of K_{i} which is the smallest key >= v 
     for (unsigned int i = 0; i < curr_node->getSlots(); ++i)
@@ -127,7 +127,7 @@ std::vector <Node *> BPlusTree::FindRange(int lower_bound, int upper_bound)
         // walk to the Leaf node first, following the lower bound 
         while (curr_node != NULL && curr_node->getLeaf() != true)
         {
-            int i = this->IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(curr_node, lower_bound);
+            int i = this->IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(curr_node, lower_bound);
             if (i == -1)   // -1 ==  there is no such number i such that lb <= C.Ki
             {
                 unsigned int m = curr_node->getSlots();
@@ -144,15 +144,15 @@ std::vector <Node *> BPlusTree::FindRange(int lower_bound, int upper_bound)
         }
 
         // if i != -1 == key exists or within range of current leaf node 
-        int i; // = this->IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(C, lb);  
+        int i; // = this->IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(C, lb);  
         // else, walk right to valid leaf node 
-        while(curr_node != NULL && -1 == (i = this->IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(curr_node, lower_bound)))
+        while(curr_node != NULL && -1 == (i = this->IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(curr_node, lower_bound)))
         {
             curr_node = curr_node->getNext(); // access the next sibling on the right
         }
 
         int j; // = this->test(C, ub);
-        while(curr_node != NULL && -1 == (j = this->IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(curr_node, upper_bound))) 
+        while(curr_node != NULL && -1 == (j = this->IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(curr_node, upper_bound))) 
         {
             retVect.push_back(curr_node);
             curr_node = curr_node->getNext();
@@ -192,7 +192,7 @@ bool BPlusTree::Insert(int key, std::string value)
         Node* Leaf = this->getRootNode(); 
         while (Leaf->getLeaf() != true)
         {
-            int i = this->IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(Leaf, key);
+            int i = this->IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(Leaf, key);
             if (i == -1)   // -1 ==  there is no such number i such that lb <= C.Ki
             {
                 unsigned int m = Leaf->getSlots();
@@ -214,7 +214,7 @@ bool BPlusTree::Insert(int key, std::string value)
             this->InsertInLeaf(Leaf, key, value);
         }
 
-        // else begin /* L has n − 1 key values already, split it */
+        // else if (L does NOT have enough space for 1 more key)  /* L has n − 1 key values already, split it */
         else  
         {
             // Create NEW node L′
@@ -342,7 +342,7 @@ void BPlusTree::InsertInLeaf(Node* Leaf, int key, std::string value)
 
 
 
-// TESTED !!!!!!!!!!!!!!!!!!!!!!!!!! 
+// TESTED 
 void BPlusTree::InsertInParent(Node* N, int KeyPrime, Node* NPrime)
 {
     // if (N == Root)
@@ -455,7 +455,7 @@ Node* BPlusTree::getParentNode(Node* N) // find the Parent node of the given nod
     while(curr_node->getLeaf() != true && found == false)
     {
         
-        int i = this->IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(curr_node, key);
+        int i = this->IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(curr_node, key);
 
         //  if (SmallestKey... not found == -1)
         if (i == -1)
@@ -510,17 +510,18 @@ Node* BPlusTree::getParentNode(Node* N) // find the Parent node of the given nod
 
 
 // then insert (K′, N′) in P just after N
-// INSERT given KPrime key-value and NPrime Node to the Parent node P right after where N is !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// INSERT given KPrime key-value and Child node NPrime Node to the Parent node P right after where N is !
 void BPlusTree::InsertInInternalNode(Node* Parent, Node* N, int KeyPrime, Node* NPrime) // P == Parent of N, KPrime == the smallest key-value in N′
 {
 
     int key = N->accessKeys()[0]; // get key of N to find our way to insert KPrime, NPrime after N inside P
-    int i = this->IndexOfSmallestKeyGreaterThanOrEqualToGivenKey(Parent, key);
+    int i = this->IndexOfSmallestKeyInCurrNodeGreaterThanOrEqualToGivenKey(Parent, key);
 
     int index_for_KeyPrime = -1; 
     int index_for_NPrime = -1;
 
-    // then insert (K′, N′) in P just after N
+    // insert (K′, N′) in P right after N
+    // if (i is -1, means key is Smaller Than ALL Keys) then insert KPrime, NPrime at the end 
     if (i == -1)
     {
         unsigned int m = Parent->getSlots();
@@ -532,7 +533,7 @@ void BPlusTree::InsertInInternalNode(Node* Parent, Node* N, int KeyPrime, Node* 
             index_for_NPrime = index_for_KeyPrime + 1;
         }
     }
-    else if (key == Parent->getKeyByIndex((unsigned int) i))
+    else if (key == Parent->getKeyByIndex(i))
     {
         // P->accessChildren()[i+1] == N
         if (N == Parent->accessChildren()[i+1])
@@ -541,7 +542,7 @@ void BPlusTree::InsertInInternalNode(Node* Parent, Node* N, int KeyPrime, Node* 
             index_for_NPrime = index_for_KeyPrime + 1;
         }
     }
-    else
+    else // ?
     {
         // P->accessChildren()[i] == N
         if (N == Parent->accessChildren()[i])
@@ -563,6 +564,7 @@ void BPlusTree::InsertInInternalNode(Node* Parent, Node* N, int KeyPrime, Node* 
         Parent->accessChildren()[i+1] = Parent->accessChildren()[i];
     }
 
+    // insert the KPrime key and NPrime child and set Slots + 1
     Parent->accessKeys()[index_for_KeyPrime] = KeyPrime;
     Parent->accessChildren()[index_for_NPrime] = NPrime;
     Parent->setSlots(Parent->getSlots() + 1);
@@ -570,15 +572,15 @@ void BPlusTree::InsertInInternalNode(Node* Parent, Node* N, int KeyPrime, Node* 
 }
 
 
-bool BPlusTree::Delete(int k)
+bool BPlusTree::Delete(int key)
 {
     bool ret = false; 
     // find the leaf node L that contains (K, P)
-    Node* found_in_node = this->Find(k);
+    Node* found_in_node = this->Find(key);
     if (found_in_node != NULL)
     {
         // delete entry(L, K, P)
-        this->delete_entry(found_in_node, k, NULL);
+        this->delete_entry(found_in_node, key, NULL);
         ret = true; 
     }
 
@@ -588,15 +590,11 @@ bool BPlusTree::Delete(int k)
 
 
 
-bool BPlusTree::delete_entry(Node* N, int K, Node* pointer)
+bool BPlusTree::delete_entry(Node* N, int key, Node* pointer)
 {   
-
-
-    // Removing the element 
-
     // delete key-pointer pair (K, P) from N
-    unsigned int index_of_K = N->getIndexByKey(K);
-    for (unsigned int i = index_of_K; i < N->getSlots(); ++i)
+    unsigned int index_of_key = N->getIndexByKey(key);
+    for (unsigned int i = index_of_key; i < N->getSlots(); ++i)
     {   
         N->accessKeys()[i] = N->accessKeys()[i+1]; 
     }
@@ -604,7 +602,7 @@ bool BPlusTree::delete_entry(Node* N, int K, Node* pointer)
     // if N is Leaf node, also remove the Value of the key-value pair 
     if (N->getLeaf() == true)
     {
-        for (unsigned int i = index_of_K; i < N->getSlots(); ++i)
+        for (unsigned int i = index_of_key; i < N->getSlots(); ++i)
         {   
             N->accessValues()[i] = N->accessValues()[i+1]; 
         }
@@ -625,425 +623,297 @@ bool BPlusTree::delete_entry(Node* N, int K, Node* pointer)
         delete pointer;
     }
 
-    // update slots aget deleting key 
+    // update slots after deleting key 
     N->setSlots(N->getSlots() - 1);
 
 
 
 
+
+
     // ROOT case 
-    // if (N is root node AND N has 0 Keys left AND N has 0 Children left )
-    if (N == this->getRootNode() && N->getNumOfChildren() == 0 && N->getSlots() == 0)
+    if (N == this->getRootNode())
     {
-        this->setRootNode(nullptr); 
-        delete N; 
-    }
-
-
-    // else if (N is the root AND N has only one remaining child (which also imples 1 Child pointer left by B+Tree invariant ))
-    // N->getNumOfChildren() == 1 SAME AS N->getSlots() == 0 by the B+Tree Invariant 
-    else if (N == this->getRootNode() && N->getNumOfChildren() == 1 && N->getSlots() == 0)
-    {
-        Node* child_of_N = N->getTheRemainingChild();
-        this->setRootNode(child_of_N); 
-        delete N; 
-    }
-
-
-    // NON ROOT case 
-
-    // else if (N has too few values/pointers AND N is Not the Root Node) then begin
-    // if N is the Root Node, then do nothing
-    // becuase the Root Node is NOT bounded to have at least ⌈(ORDER_M - 1) / 2⌉ Keys
-    else if (N->hasTooFewValuesOrPointersRemain() == true && N != this->getRootNode())
-    {
-
-        Node* Parent = this->getParentNode(N); 
-
-
-
-        // std::cout << "Parent should be [24, 30]" << std::endl;
-        // for (unsigned int i=0 ; i<Parent->getSlots(); ++i)
-        // {
-        //     std::cout << Parent->accessKeys()[i] << " ";
-        // }
-        // std::cout << std::endl;
-
-
-
-
-        Node* NPrime = NULL; // to be passed by reference!! 
-        // Check whether N is Left OR Mid1 child of P 
-        // Let N′ be the previous or next child of parent(N) 
-        bool prev_true_next_false = this->getPrevOrNextChildFromParentOfN(Parent, N, NPrime); // NPrime is Pass by Reference!!!!!
-        
-
-
-        // prev_true_next_false == true when retrieved the prev child 
-        // prev_true_next_false == false when retrieved the next child 
-
-        // Let K′ be the value between pointers N and N′ in parent(N)
-        int index_for_KPrime = this->findIndexOfKPrime(Parent, N, NPrime, prev_true_next_false);
-        int KPrime = Parent->accessKeys()[index_for_KPrime]; 
-
-
-
-
-        // std::cout << "Or in Delete(14) iteration Parent should be [15, 17]" << std::endl; 
-        // std::cout << "Or in Delete(14) iteration Parent should be [13]" << std::endl; 
-        // for (unsigned int i=0; i < Parent->getSlots(); ++i)
-        // {
-        //     std::cout << Parent->accessKeys()[i]<< " ";
-        // }
-        // std::cout << std::endl;
-
-        // std::cout << "Or in Delete(14) iteration N should be [13]" << std::endl; 
-        // std::cout << "Or in Delete(14) iteration N should be [17]" << std::endl; 
-        // for (unsigned int i=0; i < N->getSlots(); ++i)
-        // {
-        //     std::cout << N->accessKeys()[i]<< " ";
-        // }
-        // std::cout << std::endl;
-
-        // std::cout << "Or in Delete(14) iteration NPrime should be [15, 16]" << std::endl;
-        // std::cout << "Or in Delete(14) iteration NPrime should be [5, 7, 9, 11]" << std::endl;
-        // for (unsigned int i=0; i < NPrime->getSlots(); ++i)
-        // {
-        //     std::cout << NPrime->accessKeys()[i]<< " ";
-        // }
-        // std::cout << std::endl;
-                
-        // std::cout << "Or in Delete(14) iteration KPrime should be 15: " << std::endl;
-        // std::cout << "Or in Delete(14) iteration KPrime should be 13: " << std::endl;
-        // std::cout << KPrime << std::endl; 
-
-
-
-
-
-
-
-        // if (entries in N and N′ can fit in a single node)
-        // if ((N->getSlots() + NPrime->getSlots()) <= ORDER_M - 1)
-        // if stealing 1 elem from sibling makes the sibling NPrime become having TOO FEW values
-        // then merge
-        if ((NPrime->getSlots() - 1) < ceil((ORDER_M - 1) / 2.0))
+        // if (N has No remaining Key AND NO remaining child pointer)
+        if (N->getNumOfChildren() == 0 && N->getSlots() == 0)
         {
-            // ~~~~~~~~~~~~~~~~~~~~~~~~~~ Merge/Combine case ~~~~~~~~~~~~~~~~~~~~~~~~~~
-            // then begin /* Coalesce nodes */
-
-
-            // if (N is a predecessor of N′) then swap variables(N, N′)
-            if (Parent->getIndexByChildPointer(N) < Parent->getIndexByChildPointer(NPrime))
-            {
-                // The procedure swap_pointers(N, N′) merely swaps the values of 
-                // the (pointer) variables N and N′ 
-                // this swap has no effect on the tree itself
-                this->swap_pointers(N, NPrime);
-
-            }
-
-
-            // std::cout << "We want N to have [3, 4], and NPrime to have [2]" << std::endl;
-            // std::cout << "OR in 2nd Iteration want N to have [9, 11], and NPrime to have [5]" << std::endl;
-            // std::cout << "OR in Delete(14) iteration we want N to have [15, 16], and NPrime to have [13]" << std::endl;
-            // std::cout << "" <<  std::endl;
-            // std::cout << "Insdie N: " << std::endl;
-            // for (unsigned int i=0; i<N->getSlots(); ++i)
-            // {
-            //     std::cout << N->accessKeys()[i] << " "; 
-            // }
-            // std::cout << std::endl; 
-            // std::cout << "Insdie NPrime : " << std::endl;
-            // for (unsigned int i=0; i<NPrime->getSlots(); ++i)
-            // {
-            //     std::cout << NPrime->accessKeys()[i] << " "; 
-            // }
-            // std::cout << std::endl; 
-
-
-
-
-            // if (N is not a leaf)
-            if (N->getLeaf() != true)
-            {
-                this->appendKPrimeAndNToNPrime(NPrime, KPrime, N);
-
-                // std::cout << "In 2nd Iteration" << std::endl;
-                // std::cout << "NPrime should have [5, 7, 9, 11]" << std::endl;
-                // for (unsigned int i=0; i<NPrime->getSlots(); ++i)
-                // {
-                //     std::cout << NPrime->accessKeys()[i] << " "; 
-                // }
-                // std::cout << std::endl; 
-            
-            }
-            // else N is a Leaf 
-            else
-            {
-                this->appendNToNPrime(NPrime, N);
-
-
-                // Update Next and Prev Pointers of NPimre, (N is to be Deleted, so does not matter)
-                NPrime->setNext(N->getNext());
-                if (NPrime->getNext() != NULL)
-                {
-                    NPrime->getNext()->setPrev(NPrime);
-                }
-            }
-
-  
-
-
-
-            // std::cout << "We should have NPrime with all the Keys from NPrime and N" << std::endl;
-            // std::cout << "where NPrime Keys is NOW [2, 3, 4]" << std::endl;
-            // std::cout << "Or in 2 nd Iteration where NPrime Keys is NOW [5, 7, 9, 11]" << std::endl;
-            // std::cout << "Or in Delete(14) interation where NPrime Keys is NOW [13, 15, 16]" << std::endl;
-            // std::cout << "" << std::endl;
-           
-            // for (unsigned int i=0; i<NPrime->getSlots(); ++i)
-            // {
-            //     std::cout <<NPrime->accessKeys()[i] << " "; 
-            // }
-            // std::cout << std::endl; 
-            // std::cout << std::endl; 
-
-
-
-
-
-            delete_entry(Parent, KPrime, N);
-
-
+            this->setRootNode(nullptr); 
+            delete N; 
+        }
+        // else if (N has No remaining Key AND 1 remaining Child pointer)
+        // B+Tree Invariant matters
+        else if (N->getNumOfChildren() == 1 && N->getSlots() == 0)
+        {
+            Node* child_of_N = N->getTheRemainingChild();
+            this->setRootNode(child_of_N); 
+            delete N; 
         }
 
 
-        // else when (NPrime->getSlots() - 1)  >=  ceil((ORDER_M - 1) / 2.0)
-        // begin /* Redistribution: borrow an entry from N′ */
-        // steal key-value from the sibling node 
+    }
 
-        // NPrime still have Valid # of Keys after being stolen Keys - 1 
-        else
+
+
+    // NON ROOT case 
+    else // N != this->getRootNode()
+    {
+
+    // else if (N has too few values/pointers after deleting the given Key and Pointer) then begin
+    // Note: The case of (N has too few values/pointers AND N is Root) is not important
+    // as Root is NOT bounded by to have at least ⌈(ORDER_M - 1) / 2⌉ Keys
+        if (N->hasTooFewRemainingValuesOrPointers() == true)
         {
-            // ~~~~~~~~~~~~~~~~~~~~~~~~~~ Stealing From the Sibiling ~~~~~~~~~~~~~~~~~~~~~~~~~~
+            Node* Parent = this->getParentNode(N); 
 
-            // if (N′ is a predecessor of N) then begin  [NPrime] -> [N]
-            // if (NPrime->getNext() == N && N->getPrev() == NPrime) NO!!!!!!!! NOT work for internal node!!!!!!!
+            Node* NPrime = NULL;
+            // Check whether N is Left OR Mid1 child of P 
+            // Let N′ be the previous or next child of parent(N) 
+            bool prev_true_next_false = this->getPrevOrNextChildFromParentOfN(Parent, N, NPrime); // NPrime is Pass by Reference!
+            
+            // prev_true_next_false == true when retrieved the prev child 
+            // prev_true_next_false == false when retrieved the next child 
 
-            // if index of child in Parent node of NPrime is < index of child in Parent node of N
-            // then NPrime is a predecessor of N ??????????????????????????
-            // I think...????????????????????????????
+            // Let K′ be the value between pointers N and N′ in parent(N)
+            int index_for_KeyPrime = this->findIndexOfKPrime(Parent, N, NPrime, prev_true_next_false);
+            int KeyPrime = Parent->accessKeys()[index_for_KeyPrime]; 
 
 
-            if (Parent->getIndexByChildPointer(NPrime) < Parent->getIndexByChildPointer(N))
+            // if stealing 1 elem from sibling NPrime makes the sibling NPrime become having TOO FEW values
+            // then merge/combine/coalesce
+            if ((NPrime->getSlots() - 1) < ceil((ORDER_M - 1) / 2.0))
             {
-                // ~~~~~~~~~~~~~~ N′ is a predecessor of N ~~~~~~~~~~~~~~~~~
+                // ~~~~~~~~~~~~~~~~~~~~~~~~~~ Merge/Combine case ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-                // if (N is a nonleaf node) then begin
-                if (N->getLeaf() != true)
-                {   
-                    
-
-                    // let m be such that N′.Pm is the last child pointer in N′
-                    unsigned m = NPrime->getSlots();
-
-                    // retrieve mth child pointer and m-1th Key of NPrime for later before deleting from NPrime 
-                    Node* mth_child_of_NPrime = NPrime->accessChildren()[m];
-                    int mth_minus_one_key_of_NPrime = NPrime->accessKeys()[m-1];
-
-                    // remove (N′.Km−1, N′.Pm) from N′
-                    // And update the Slots count 
-                    NPrime->accessKeys()[m-1] = 0;
-                    NPrime->accessChildren()[m] = NULL;
-                    NPrime->setSlots(NPrime->getSlots() - 1);
-
-
-                    // insert (N′.Pm, K′) as the first pointer and value in N,
-                    // by shifting other pointers and values right
-
-                    // shifting Keys to the right by 1 slot 
-                    for (int i = N->getSlots() - 1; i >= 0; --i)
-                    {
-                        N->accessKeys()[i + 1] = N->accessKeys()[i];  
-                    }
-                    // insert K′ as the first Key 
-                    N->accessKeys()[0] = KPrime;
-
-                    // shifting Children to the right by 1 slot 
-                    for (int i = N->getSlots(); i >= 0; --i)
-                    {
-                        N->accessChildren()[i + 1] = N->accessChildren()[i];  
-                    }
-                    // insert N′.Pm as the first child 
-                    N->accessChildren()[0] = mth_child_of_NPrime;
-
-                    // SLot increment by 1 
-                    N->setSlots(N->getSlots() + 1);
-
-                    // replace K′ in parent(N) by N′.Km−1
-                    int index_of_KPrime = Parent->getIndexByKey(KPrime);
-                    Parent->accessKeys()[index_of_KPrime] = mth_minus_one_key_of_NPrime; 
+                // if (N is a predecessor of N′) then swap variables(N, N′)
+                if (Parent->getIndexByChildPointer(N) < Parent->getIndexByChildPointer(NPrime))
+                {
+                    // swaps the pointers of N and NPrime 
+                    this->swap_pointers(N, NPrime);
 
                 }
 
 
-                // else: N is a Leaf Node 
+
+                // if (N is not a Leaf node)
+                if (N->getLeaf() != true)
+                {
+                    this->appendKPrimeAndNToNPrime(NPrime, KeyPrime, N);
+                
+                }
+                // else if (N is a Leaf node)
                 else
                 {
-
-
-
-                    // let m be such that (N′.Pm, N′.Km) is the last pointer/value pair in N′
-                    // Since we don't use key-point pair at Leaf but to store data in Leaf directly 
-                    // We set m to index of last Key in NPrime 
-                    int m = NPrime->getSlots() - 1;
-                    int mth_key_of_NPrime = NPrime->accessKeys()[m];
-
-                    // remove (N′.Pm, N′.Km) from N′
-                    // skipped N′.Pm because our B+Tree don't have it 
-                    NPrime->accessKeys()[m] = 0;
-                    // for (unsigned int i = m; i<NPrime->getSlots(); ++i)
-                    // {
-                    //     NPrime->accessKeys()[i] = NPrime->accessKeys()[i+1];
-                    // }
-                    NPrime->setSlots(NPrime->getSlots() - 1);
-
-                    // insert (N′.Pm, N′.Km) as the first pointer and value in N,
-                    // by shifting other pointers and values right
-                    for (int i = N->getSlots() - 1; i >= 0; --i)
+                    this->appendNToNPrime(NPrime, N);
+                    // Update Next and Prev Pointers of NPimre, (N is to be Deleted, so does not matter)
+                    NPrime->setNext(N->getNext());
+                    // just in case, NPrime->getNext() could be NULL
+                    if (NPrime->getNext() != NULL)
                     {
-                        N->accessKeys()[i + 1] = N->accessKeys()[i];  
+                        NPrime->getNext()->setPrev(NPrime);
                     }
-                    // slot in to index 0 as the 1 st elem 
-                    N->accessKeys()[0] = mth_key_of_NPrime;
-
-
-
-                    // SLot increment by 1 
-                    N->setSlots(N->getSlots() + 1);
-
-                    std::cout << "What is themth_key_of_NPrime?, Is it 8? " << std::endl;
-                    std::cout << mth_key_of_NPrime << std::endl;
-
-
-
-                    // replace K′ in parent(N) by N′.Km
-                    int index_of_KPrime = Parent->getIndexByKey(KPrime);
-                    Parent->accessKeys()[index_of_KPrime] = mth_key_of_NPrime;
                 }
+
+                // recurse to delete KPrime and N from Parent in 1 level higher up
+                delete_entry(Parent, KeyPrime, N);
+
             }
 
 
-            // SYMMETRIC MEans? 
-
-            // else if (N is a predecessor of N′) then begin    [N] -> [NPrime]
-            // then use  symmetric case
-
-            // else if (N->getNext() == NPrime && NPrime->getPrev() == N)???????????????????????
-
-
-            // ~~~~~~~~~~~~~~~~~ SYMMETRIC ~~~~~~~~~~~~~~~~~
-            else if (Parent->getIndexByChildPointer(N) < Parent->getIndexByChildPointer(NPrime))
+            // else when (NPrime->getSlots() - 1)  >=  ceil((ORDER_M - 1) / 2.0)
+            // NPrime still have Valid # of Keys after being stolen Keys - 1 
+            else
             {
+                // ~~~~~~~~~~~~~~~~~~~~~~~~~~ Stealing From the Sibiling ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-                // if (NPrime is a nonleaf node) then begin
-                if (NPrime->getLeaf() != true)
-                {   
-                    // let m be such that N′.Pm is the 1st (by SYMMETRIC) child pointer in N
-                    unsigned m = 0;// N->getSlots();
+                // if (NPrime is a predecessor of N) 
+                if (Parent->getIndexByChildPointer(NPrime) < Parent->getIndexByChildPointer(N))
+                {
 
-                    // retrieve mth child pointer and mth   which is the 1st (by SYMMETRIC) Key of N for later before deleting from N′
-                    Node* mth_child_of_NPrime = NPrime->accessChildren()[m];
-                    int mth_key_of_NPrime = NPrime->accessKeys()[m];
+                    // if (N is a Not a Leaf node)
+                    if (N->getLeaf() != true)
+                    {   
+                        // let m be such that N′.Pm is the last child pointer in N′
+                        unsigned m = NPrime->getSlots();
+
+                        // retrieve mth child pointer and m-1th Key of NPrime for later, before deleting from NPrime 
+                        Node* mth_child_of_NPrime = NPrime->accessChildren()[m];
+                        int mth_minus_one_key_of_NPrime = NPrime->accessKeys()[m-1];
+
+                        // remove (N′.Km−1, N′.Pm) from N′
+                        // And update the Slots count 
+                        NPrime->accessKeys()[m-1] = 0;
+                        NPrime->accessChildren()[m] = NULL;
+                        NPrime->setSlots(NPrime->getSlots() - 1);
 
 
-                    // move the Keys and Children Array to the Left by 1 slot to cover the removed slot 
-                    for (unsigned int i = 0; i < NPrime->getSlots(); ++i)
-                    {
-                        NPrime->accessKeys()[i] = NPrime->accessKeys()[i+1];
+                        // insert (N′.Pm, K′) as the first pointer and value in N,
+                        // by shifting other pointers and values right
+
+                        // shifting Keys to the right by 1 slot 
+                        for (int i = N->getSlots() - 1; i >= 0; --i)
+                        {
+                            N->accessKeys()[i + 1] = N->accessKeys()[i];  
+                        }
+                        // insert K′ as the first Key 
+                        N->accessKeys()[0] = KeyPrime;
+
+                        // shifting Children to the right by 1 slot 
+                        for (int i = N->getSlots(); i >= 0; --i)
+                        {
+                            N->accessChildren()[i + 1] = N->accessChildren()[i];  
+                        }
+                        // insert N′.Pm as the first child 
+                        N->accessChildren()[0] = mth_child_of_NPrime;
+
+                        // SLot increment by 1 
+                        N->setSlots(N->getSlots() + 1);
+
+                        // replace K′ in parent(N) by N′.Km−1
+                        int index_of_KPrime = Parent->getIndexByKey(KeyPrime);
+                        Parent->accessKeys()[index_of_KPrime] = mth_minus_one_key_of_NPrime; 
+
                     }
-                    for (unsigned int i = 0; i < NPrime->getSlots() + 1; ++i)
+
+
+                    // else if (N is a Leaf Node)
+                    else
                     {
-                        NPrime->accessChildren()[i] = NPrime->accessChildren()[i+1];
+                        // let m be such that (N′.Pm, N′.Km) is the last pointer/Key pair in N′
+                        // Since we don't use key-point pair in Leaf but to store data in Leaf directly 
+                        // We set m to same index of last Key in NPrime 
+                        int m = NPrime->getSlots() - 1;
+                        int mth_key_of_NPrime = NPrime->accessKeys()[m];
+                        std::string mth_value_of_NPrime = NPrime->accessValues()[m];
+
+                        // remove (N′.Pm, N′.Km) from N′
+                        // skipped N′.Pm and replace with removing string value at index m 
+                        NPrime->accessKeys()[m] = 0;
+                        NPrime->accessValues()[m] = "";
+                        NPrime->setSlots(NPrime->getSlots() - 1);
+
+                        // insert (N′.Pm, N′.Km) as the first pointer and value in N,
+                        // by shifting other Keys and Values right
+                        for (int i = N->getSlots() - 1; i >= 0; --i)
+                        {
+                            N->accessKeys()[i + 1] = N->accessKeys()[i];  
+                        }
+                        for (int i = N->getSlots() - 1; i >= 0; --i)
+                        {
+                            N->accessValues()[i + 1] = N->accessValues()[i];  
+                        }
+
+
+                        // slot in to index 0 as the 1 st elem 
+                        N->accessKeys()[0] = mth_key_of_NPrime;
+                        N->accessValues()[0] = mth_value_of_NPrime;
+
+
+                        // SLot increment by 1 
+                        N->setSlots(N->getSlots() + 1);
+
+
+                        // replace K′ in parent(N) by N′.Km
+                        int index_of_KPrime = Parent->getIndexByKey(KeyPrime);
+
+                        // take mth_key_of_NPrime is the mth key BEFORE the stealing operations 
+                        Parent->accessKeys()[index_of_KPrime] = mth_key_of_NPrime;
+                        
                     }
-                    
-                    // since the whole array of Keys and Children have moved to the Left by 1 Slot,
-                    // Set the last elem to 0 and NULL just in case 
-                    // And update the Slots count 
-                    NPrime->accessKeys()[NPrime->getSlots() - 1] = 0;
-                    NPrime->accessChildren()[NPrime->getSlots()] = NULL;
-                    NPrime->setSlots(NPrime->getSlots() - 1);
-
-
-
-
-                    // insert (N′.Pm, K′) as the Last pointer and value in N (by SYMMETRIC),
-                    // by shifting other pointers and values right
-
-                    // insert K′ as the Last Key of N(by SYMMETRIC)
-                    NPrime->accessKeys()[NPrime->getSlots()] = KPrime;
-
-                    // insert N′.Pm as the Last child of N (by SYMMETRIC)
-                    NPrime->accessChildren()[NPrime->getSlots() + 1] = mth_child_of_NPrime;
-
-                    // N and N′ share the SAME parent? ????????
-                    // replace K′ in parent(N) by N′.Km−1?????????????????????????????????
-                    int index_of_KPrime = Parent->getIndexByKey(KPrime);
-                    Parent->accessKeys()[index_of_KPrime] = mth_key_of_NPrime; 
-
                 }
 
-
-                // else: NPrime IS a Leaf Node 
-                else
+                // ~~~~~~~~~~~~~~~~~ SYMMETRIC CASES ~~~~~~~~~~~~~~~~~
+                // else if (N is a predecessor of NPrime) 
+                else if (Parent->getIndexByChildPointer(N) < Parent->getIndexByChildPointer(NPrime))
                 {
-                    // 最尾 else case tested only 
 
-                    
+                    // if (NPrime is a nonleaf node) then begin
+                    if (NPrime->getLeaf() != true)
+                    {   
+                        // let m be such that N′.Pm is the 1st (by SYMMETRIC) child pointer in N
+                        unsigned int m = 0;
 
-                    // std::cout << "We should be here for removing 20? " << std::endl;
-
-
-                    // let m be such that (N.Pm, N.Km) is the FIRST(by SYMMETRIC) pointer/value pair in N
-                    // Since we don't use key-point pair at Leaf but to store data in Leaf directly 
-                    // We set m to index of last Key in N
-                    int m = 0; //NPrime->getSlots() - 1;
-                    /// GETTING 1st elem of NPrime, SYMMETRIC in terms of indexing, but not N and NPrime???
+                        // retrieve 1th child pointer and 1th Key of N (by SYMMETRIC) for later before deleting from N′
+                        Node* mth_child_of_NPrime = NPrime->accessChildren()[m];
+                        int mth_key_of_NPrime = NPrime->accessKeys()[m];
 
 
-                    // STEAL 1st elem from NPrime to N ????!!!!!
+                        // move the Keys and Children Array to the Left by 1 slot to cover the removed slot 
+                        for (unsigned int i = m; i < NPrime->getSlots(); ++i)
+                        {
+                            NPrime->accessKeys()[i] = NPrime->accessKeys()[i+1];
+                        }
+                        for (unsigned int i = m; i < NPrime->getSlots() + 1; ++i)
+                        {
+                            NPrime->accessChildren()[i] = NPrime->accessChildren()[i+1];
+                        }
+                        
+                        // since the whole array of Keys and Children have moved to the Left by 1 Slot,
+                        // just in case, Set the last elem to 0 and NULL
+                        // And update the Slots count 
+                        NPrime->accessKeys()[NPrime->getSlots() - 1] = 0;
+                        NPrime->accessChildren()[NPrime->getSlots()] = NULL;
+                        NPrime->setSlots(NPrime->getSlots() - 1);
 
-                    int mth_key_of_NPrime = NPrime->accessKeys()[m];
 
-                    // remove (N′.Pm, N′.Km) from N′
-                    NPrime->accessKeys()[m] = 0;
 
-                    for (unsigned int i = m; i<NPrime->getSlots(); ++i)
-                    {
-                        NPrime->accessKeys()[i] = NPrime->accessKeys()[i+1];
+
+                        // insert (N′.Pm, K′) as the Last pointer and value in N (by SYMMETRIC),
+
+                        // insert K′ as the Last Key of N(by SYMMETRIC)
+                        N->accessKeys()[N->getSlots()] = KeyPrime;
+
+                        // insert N′.Pm as the Last child of N (by SYMMETRIC)
+                        N->accessChildren()[N->getSlots() + 1] = mth_child_of_NPrime;
+
+                        // SLot increment by 1 
+                        N->setSlots(N->getSlots() + 1);
+
+                        // replace K′ in parent(N) by N′.Km−1?
+                        int index_of_KeyPrime = Parent->getIndexByKey(KeyPrime);
+                        Parent->accessKeys()[index_of_KeyPrime] = mth_key_of_NPrime; 
+
                     }
-                    NPrime->setSlots(NPrime->getSlots() - 1);
-                    
+                    // else is (NPrime is a Leaf Node)
+                    else
+                    {
+                        // let m be such that (N.Pm, N.Km) is the 1st (by SYMMETRIC) pointer/value pair in N
+                        // Since we don't use key-point pair at Leaf but to store data in Leaf directly 
+                        // We set m to index 1st Key in N
+                        int m = 0; 
 
+                        // STEAL 1st elem from NPrime to N 
+                        int mth_key_of_NPrime = NPrime->accessKeys()[m];
+                        std::string mth_value_of_NPrime = NPrime->accessValues()[m];
 
+                        // remove (N′.Value_m, N′.Km) from N′
+                        // 
+                        NPrime->accessKeys()[m] = 0;
+                        NPrime->accessValues()[m] = "";
 
-                    // insert (N′.Pm, N′.Km) as the LAST(by SYMMETRIC) pointer and value in N,
-                    // by shifting other pointers and values right
+                        for (unsigned int i = m; i<NPrime->getSlots(); ++i)
+                        {
+                            NPrime->accessKeys()[i] = NPrime->accessKeys()[i+1];
+                        }
+                        for (unsigned int i = m; i<NPrime->getSlots(); ++i)
+                        {
+                            NPrime->accessValues()[i] = NPrime->accessValues()[i+1];
+                        }
 
-                    N->accessKeys()[N->getSlots()] = mth_key_of_NPrime;
-                    N->setSlots(N->getSlots() + 1);
+                        NPrime->setSlots(NPrime->getSlots() - 1);
 
-                    // for (int i = N->getSlots() - 1; i >= 0; --i)
-                    // {
-                    //     N->accessKeys()[i + 1] = NPrime->accessKeys()[i];  
-                    // }
-                    // N->accessKeys()[0] = mth_key_of_NPrime;
+                        
+                        // insert (N′.Value_m, N′.Km) as the LAST(by SYMMETRIC) pointer and value in N,
+                        N->accessKeys()[N->getSlots()] = mth_key_of_NPrime;
+                        N->accessValues()[N->getSlots()] = mth_value_of_NPrime;
+                        N->setSlots(N->getSlots() + 1);
 
+                        // replace K′ in parent(N) by N′.Km
+                        int index_of_KPrime = Parent->getIndexByKey(KeyPrime);
 
-                    // replace K′ in parent(N) by N′.Km
-                    int index_of_KPrime = Parent->getIndexByKey(KPrime);
-                    Parent->accessKeys()[index_of_KPrime] = NPrime->accessKeys()[m];
+                        // take mth key of NPrime is the mth key AFTER the stealing operations 
+                        Parent->accessKeys()[index_of_KPrime] = NPrime->accessKeys()[m];
+                    }
+
                 }
 
             }
@@ -1055,62 +925,12 @@ bool BPlusTree::delete_entry(Node* N, int K, Node* pointer)
 }
 
 
-
-
-
-bool BPlusTree::getPrevOrNextChildFromParentOfN(Node* P, Node* N, Node* &NPrime) // NPrime is Pass by Reference!!!!!
+// set NPrime to Either the prev child OR next child of N in P
+// THIS FUNCTION CAN BE OPTIMIZE by also checking if the sibiling node have enough keys to steal from immediately
+// But the test cases has settled with the current design of this function, So no refactoring or optimization at the moment  : (
+bool BPlusTree::getPrevOrNextChildFromParentOfN(Node* P, Node* N, Node* &NPrime) // NPrime is Pass by Reference
 {
     bool ret = false;
-    // int index_of_N = P->getIndexByChildPointer(N);
-    // // check + 1 Children slot on the Right is Valid index
-    // // just in case, also make use the Valid index is NOT accessing NULL
-    // // check if stealing from sibiling will NOT break invariant 
-    // if ((index_of_N + 1) <= (int)P->getSlots() && P->accessChildren()[index_of_N + 1] != NULL
-    // && (P->accessChildren()[index_of_N + 1]->getSlots() - 1) < ceil((ORDER_M - 1) / 2.0))
-    // {
-    //     NPrime = P->accessChildren()[index_of_N + 1];
-    //     ret = true; 
-    // }
-    // // If right is Not good sibiling to steal from 
-    // // check the left sibiling 
-    // else if ((index_of_N - 1) >= 0 && P->accessChildren()[index_of_N - 1] != NULL
-    // && (P->accessChildren()[index_of_N - 1]->getSlots() - 1) < ceil((ORDER_M - 1) / 2.0))
-    // {
-    //     NPrime = P->accessChildren()[index_of_N - 1];
-    //     ret = true; 
-    // }
-    // // if CANNOT steal from both Right or Left,
-    // // then access Left if N is the Last Child of P
-    // // Or access Right if N is NOT the Last Child of P
-    // else
-    // {
-    //     // if N == Last Child of P
-    //     // NPrime = Previous Child
-    //     if (P->accessChildren()[P->getSlots()] == N)
-    //     {
-    //         NPrime = P->accessChildren()[P->getSlots() - 1];
-    //         ret = true; // true == retrieved Prev Child  
-    //     }
-    //     // else if N != Last Child of P
-    //     // NPrime = Next Child 
-    //     else
-    //     {
-    //         for (unsigned int i=0; i < P->getSlots();++i)
-    //         {
-    //             if (P->accessChildren()[i] == N)
-    //             {
-    //                 NPrime = P->accessChildren()[i + 1];
-    //                 ret = false; // false = retrieved Next Child 
-    //                 break;
-    //             }
-    //         }
-    //     }
-
-    // }
-
-
-
-
     // if N == Last Child of P
     // NPrime = Previous Child
     if (P->accessChildren()[P->getSlots()] == N)
@@ -1127,7 +947,6 @@ bool BPlusTree::getPrevOrNextChildFromParentOfN(Node* P, Node* N, Node* &NPrime)
             if (P->accessChildren()[i] == N)
             {
                 NPrime = P->accessChildren()[i + 1];
-                //ret = false; // false = retrieved Next Child 
                 break;
             }
         }
@@ -1173,10 +992,6 @@ void BPlusTree::appendKPrimeAndNToNPrime(Node* &NPrime, int KPrime, Node* N)
 {   
     // append KPrime 
     NPrime->accessKeys()[NPrime->getSlots()] = KPrime; 
-
-
-    // NPrime_slots for reference 
-    // int NPrime_slots = NPrime->getSlots();
     NPrime->setSlots(NPrime->getSlots() + 1);
 
 
@@ -1197,7 +1012,7 @@ void BPlusTree::appendKPrimeAndNToNPrime(Node* &NPrime, int KPrime, Node* N)
             NPrime->accessChildren()[i + NPrime->getSlots()]->setPrev(NPrime->accessChildren()[(i + NPrime->getSlots() - 1)]);
         }
     }
-    // 1 for KPrime 
+
     NPrime->setSlots(N->getSlots() + NPrime->getSlots());
 
 }

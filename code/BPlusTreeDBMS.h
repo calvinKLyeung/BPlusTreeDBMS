@@ -19,10 +19,6 @@ private:
   BPlusTree* _bplustree = NULL;
 
 
-  // you can add add more private member variables and member functions here if you need
-
-
-
 
 
 public:
