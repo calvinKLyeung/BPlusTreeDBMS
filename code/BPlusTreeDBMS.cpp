@@ -4,8 +4,7 @@
 
 // constructor, initialize class variables and pointers here if need.
 BPlusTreeDBMS::BPlusTreeDBMS(){
-  // Your code here
-  // top_ptr_ = NULL; // top_ptr_ already in private data section 
+  this->_bplustree = NULL;
     
 }
 
@@ -101,11 +100,7 @@ bool BPlusTreeDBMS::ReadByRange(int lower_bound, int upper_bound)
 
       ret = true;
     }
-    // else
-    // {
-    //   // tell the user the range of keys is NOT in the database
-    //   std::cout << "Given range of keys is not in the database." << std::endl;
-    // }
+
   }
   else
   {

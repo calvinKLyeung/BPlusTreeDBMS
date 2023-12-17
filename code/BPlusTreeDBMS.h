@@ -16,7 +16,7 @@
 class BPlusTreeDBMS {
 
 private:
-  BPlusTree* _bplustree = NULL;
+  BPlusTree* _bplustree;
 
 
 
