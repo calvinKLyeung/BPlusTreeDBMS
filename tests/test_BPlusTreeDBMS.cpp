@@ -1,6 +1,3 @@
-// If you change anything in this file, your changes will be ignored 
-// in your homework submission.
-// Chekout TEST_F functions bellow to learn what is being tested.
 #include "../code/BPlusTreeDBMS.h"
 #include "../code/BPlusTree.h"
 #include "../code/Node.h"
@@ -259,26 +256,26 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_InsertInLeaf){
 	std::string arr_values1[] = {"five", "eight"};
 	Node* Leaf_Example1 = new Node("test_leaf", 0, true, 2, arr_keys1, arr_values1);
 
-	cout << endl; 
-	for (unsigned int i=0; i<Leaf_Example1->getSlots(); ++i)
-	{
-		cout << Leaf_Example1->accessKeys()[i] << " : " << Leaf_Example1->accessValues()[i] << " " << endl;
-	}
-	cout << endl;
+	// cout << endl; 
+	// for (unsigned int i=0; i<Leaf_Example1->getSlots(); ++i)
+	// {
+	// 	cout << Leaf_Example1->accessKeys()[i] << " : " << Leaf_Example1->accessValues()[i] << " " << endl;
+	// }
+	// cout << endl;
 	
 	// for (unsigned int i=0; i < Leaf_Example1->getSlots(); ++i)
 	// {
 	// 	cout << Leaf_Example1->accessKeys()[i] << endl;
 	// }	
-	cout << "INSERTING 7 and seven to singl Leaf Node for testing " << endl; 
+	// cout << "INSERTING 7 and seven to singl Leaf Node for testing " << endl; 
 	myBPlusTree_InsertInLeaf_1->InsertInLeaf(Leaf_Example1, 7, "seven");
 
-	cout << "What is in  Leaf_Example1 after INSERTING 7 : seven?" << endl; 
-	for (unsigned int i=0; i<Leaf_Example1->getSlots(); ++i)
-	{
-		cout << Leaf_Example1->accessKeys()[i] << " : " << Leaf_Example1->accessValues()[i] << " " << endl;
-	}
-	cout << endl;
+	// cout << "What is in  Leaf_Example1 after INSERTING 7 : seven?" << endl; 
+	// for (unsigned int i=0; i<Leaf_Example1->getSlots(); ++i)
+	// {
+	// 	cout << Leaf_Example1->accessKeys()[i] << " : " << Leaf_Example1->accessValues()[i] << " " << endl;
+	// }
+	// cout << endl;
 
 
 	// for (unsigned int i=0; i<Leaf_Example1->getSlots(); ++i)
@@ -290,8 +287,8 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_InsertInLeaf){
 	ASSERT_TRUE(Leaf_Example1->accessKeys()[1] == 7);
 	ASSERT_TRUE(Leaf_Example1->accessKeys()[2] == 8);
 
-	cout << "What is in Leaf_Example->accessValues()[0]???" << endl;
-	cout << Leaf_Example->accessValues()[0] << endl; 
+	// cout << "What is in Leaf_Example->accessValues()[0]???" << endl;
+	// cout << Leaf_Example->accessValues()[0] << endl; 
 
 	ASSERT_TRUE(Leaf_Example1->accessValues()[0] == "five");
 	ASSERT_TRUE(Leaf_Example1->accessValues()[1] == "seven");
@@ -309,17 +306,17 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_InsertInLeaf){
 	Node* Leaf_Example2 = new Node("test_leaf", 0, true, 2, 
         arr_keys2, arr_values2);
 	
-	for (unsigned int i=0; i < Leaf_Example2->getSlots(); ++i)
-	{
-		cout << Leaf_Example2->accessKeys()[i] << endl;
-	}	
+	// for (unsigned int i=0; i < Leaf_Example2->getSlots(); ++i)
+	// {
+	// 	cout << Leaf_Example2->accessKeys()[i] << endl;
+	// }	
 
 	myBPlusTree_InsertInLeaf_2->InsertInLeaf(Leaf_Example2, 9, "nine");
 
-	for (unsigned int i=0; i<Leaf_Example2->getSlots(); ++i)
-	{
-		cout << Leaf_Example2->accessKeys()[i] << endl;
-	}	
+	// for (unsigned int i=0; i<Leaf_Example2->getSlots(); ++i)
+	// {
+	// 	cout << Leaf_Example2->accessKeys()[i] << endl;
+	// }	
 
 	ASSERT_TRUE(Leaf_Example2->accessKeys()[0] == 5);
 	ASSERT_TRUE(Leaf_Example2->accessKeys()[1] == 8);
@@ -422,16 +419,16 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_Insert)
 
 	BPlusTree* myBPlusTree_Insert = mkBPlusTree1();
 
-	cout << "Checking what is in Root Node BEFORE INSERT: " << endl; 
-	for (unsigned int i=0; i<GlobalRoot1->getSlots(); ++i)
-	{
-		cout <<	GlobalRoot1->accessKeys()[i] << " " ;
-	}
-	cout << endl;
+	// cout << "Checking what is in Root Node BEFORE INSERT: " << endl; 
+	// for (unsigned int i=0; i<GlobalRoot1->getSlots(); ++i)
+	// {
+	// 	cout <<	GlobalRoot1->accessKeys()[i] << " " ;
+	// }
+	// cout << endl;
 
-	bool inserted = myBPlusTree_Insert->Insert(8, "eight");
+	myBPlusTree_Insert->Insert(8, "eight");
 
-	cout << "Insert successfully? " << std::boolalpha << inserted << endl;
+	// cout << "Insert successfully? " << std::boolalpha << inserted << endl;
 
 	// Node* newLeafNode = myBPlusTree_Insert->Find(8);
 
@@ -1872,9 +1869,6 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_DeleteExtraTestCases)
 
 
 
-
-	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl; 
-
 	myBPlusTree_DeleteExtraTestCases->Delete(14);
 
 
@@ -1952,7 +1946,7 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_DeleteOneToNineteenTestCases)
 	// //       	[3, 5]	   			[9, 11]					[15, 17]
 	// // [1, 2] [3, 4] [5, 6]   [7, 8] [9, 10] [11, 12]	[13, 14] [15, 16] [17, 18, 19] 
 
-	cout << "~~~Inserting~~~" << endl; 
+	//cout << "~~~Inserting~~~" << endl; 
 	// for (unsigned int i=1; i < 20; ++i)
 	// {
 	// 	myBPlusTree_OneToNineteen->Insert(i);
@@ -2168,14 +2162,13 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_DeleteOneToNineteenTestCases)
 	ASSERT_EQ(myBPlusTree_OneToNineteen->getRootNode()->accessChildren()[1]->accessChildren()[2]->getNext(), nullptr);
 	
 
-	Node* found14 = myBPlusTree_OneToNineteen->Find(14); 
-
-	cout << "What is FOUND in 14" << endl; 
-	for (unsigned int i = 0; i < found14->getSlots(); ++i)
-    {   
-        cout << found14->accessKeys()[i] << " ";
-    }
-	cout << endl; 
+	// Node* found14 = myBPlusTree_OneToNineteen->Find(14); 
+	// cout << "What is FOUND in 14" << endl; 
+	// for (unsigned int i = 0; i < found14->getSlots(); ++i)
+    // {   
+    //     cout << found14->accessKeys()[i] << " ";
+    // }
+	// cout << endl; 
 
 
 	myBPlusTree_OneToNineteen->Delete(14);
@@ -2316,13 +2309,6 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_DeleteOneToNineteenTestCases)
 
 
 
-	cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl; 
-
-
-
-
-
-
 
 
 	// myBPlusTree_OneToNineteen->Delete(7);
@@ -2381,7 +2367,7 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_DeleteOneToNineteenTestCases)
 
 
 
-	cout << "~~~Deleting~~~" << endl; 
+	// cout << "~~~Deleting~~~" << endl; 
 	for (int i=2; i < 20; ++i)
 	{
 		if (i == 14 || i == 6)
@@ -2389,9 +2375,9 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_DeleteOneToNineteenTestCases)
 			continue;
 		}
 		myBPlusTree_OneToNineteen->Delete(i);
-		cout << i << " "; 
+		// cout << i << " "; 
 	}
-	cout << endl; 
+	// cout << endl; 
 
 	// cout << "What is in the ROOT after deleing ???" << endl; 
 	// for (unsigned int i = 0; i < myBPlusTree_OneToNineteen->getRootNode()->getSlots(); ++i)
@@ -2426,7 +2412,7 @@ TEST_F(test_BPlusTreeDBMS, TestBPlusTree_DeleteOneToNineteenTestCases)
 
 	ASSERT_EQ(myBPlusTree_OneToNineteen->getRootNode(), nullptr);
 
-	cout << "This means ASSERT_EQ(myBPlusTree_OneToNineteen->getRootNode(), nullptr); Passes!!!!" << endl;
+	// cout << "This means ASSERT_EQ(myBPlusTree_OneToNineteen->getRootNode(), nullptr); Passes!!!!" << endl;
 
 
 

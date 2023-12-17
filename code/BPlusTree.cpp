@@ -80,7 +80,7 @@ Node* BPlusTree::Find(int v)
                 unsigned int m = curr_node->getSlots();  // m == index of last non-null pointer in the node, slot IS ALREADY the last pointer as Exclusive End indexing [0, 4)
                 curr_node = curr_node->accessChildren()[m]; // Pointer at index m
             }
-            else if (v == curr_node->getKeyByIndex((unsigned int)i))
+            else if (v == curr_node->getKeyByIndex(i))
             {
                 curr_node = curr_node->accessChildren()[i+1];
             }
@@ -133,7 +133,7 @@ std::vector <Node *> BPlusTree::FindRange(int lower_bound, int upper_bound)
                 unsigned int m = curr_node->getSlots();
                 curr_node = curr_node->accessChildren()[m];
             }
-            else if (lower_bound == curr_node->getKeyByIndex((unsigned int)i))
+            else if (lower_bound == curr_node->getKeyByIndex(i))
             {
                 curr_node = curr_node->accessChildren()[i+1];
             }
@@ -198,7 +198,7 @@ bool BPlusTree::Insert(int key, std::string value)
                 unsigned int m = Leaf->getSlots();
                 Leaf = Leaf->accessChildren()[m];
             }
-            else if (key == Leaf->getKeyByIndex((unsigned int)i))
+            else if (key == Leaf->getKeyByIndex(i))
             {
                 Leaf = Leaf->accessChildren()[i+1];
             }
@@ -473,7 +473,7 @@ Node* BPlusTree::getParentNode(Node* N) // find the Parent node of the given nod
             }
         }
         // else if (the key is equal to the ith key in curr_node)
-        else if (key == curr_node->getKeyByIndex((unsigned int) i))
+        else if (key == curr_node->getKeyByIndex(i))
         {
             // access the [i + 1] child, which is the Child on the Right of the Key
             if (N == curr_node->accessChildren()[i+1])

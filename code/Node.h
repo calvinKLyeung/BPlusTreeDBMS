@@ -12,23 +12,19 @@
 
 class Node {
 private:
-    std::string node_identifier;
-    unsigned int level;
-    bool leaf;
+    std::string node_identifier; // for testing purpose only, USELESS
+    unsigned int level; // USELESS 
 
 
-    unsigned int slots;  // number of valid keys in keys[]     BUT NOT     // how many empty slots remain?
-    // OR 
-    // unsigned int num_keys; // number of valid keys in keys[]
 
-    // NOT STANDARD PRACTICE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    int keys[ORDER_M];  // ORDER_M - 1 == max keys 
-    Node* children[ORDER_M + 1]; // ORDER_M == max children 
 
-    std::string values[ORDER_M]; // ORDER_M - 1 == max string data, since key and value are 1 to 1
-
-    Node* prev;
-    Node* next;
+    bool leaf;                      // node is a Leaf node OR not  
+    unsigned int slots;             // number of valid keys in keys[], e.g. if [2, 3, 5, 7] in the keys array, then slots == 4
+    int keys[ORDER_M];              // ORDER_M - 1 == actual max keys, designed to have 1 extra slot to handle OVERFULL situation 
+    Node* children[ORDER_M + 1];    // ORDER_M == actual max children, designed to have 1 extra slot to handle OVERFULL situation 
+    std::string values[ORDER_M];    // ORDER_M - 1 == actual max string data, only being used in the Leaf node, designed to have 1 extra slot to handle OVERFULL situation 
+    Node* prev;                     // pointer for Leaf node to link to the previous leaf node (on the left)
+    Node* next;                     // pointer for Leaf node to link to the next leaf node (on the right)
 
 
 
