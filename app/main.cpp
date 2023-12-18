@@ -109,7 +109,7 @@ void demo_with_CSPB_courses()
 	myDBMS->Delete(3302);
 	myDBMS->Delete(4253);
 
-	// try to read the delete key 
+	// try to read the deleted keys
 	myDBMS->ReadByRange(0, 5000);
 
 	delete myDBMS;
