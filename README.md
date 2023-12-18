@@ -16,7 +16,7 @@ nodes at the bottom level. The self-balancing nature of B+tree allows O(log n) t
 - Root node can hold fewer than ⌈(ORDER_M - 1) / 2⌉ pointers, however, it must hold at least two pointers, unless the tree consists of only one node
 
 **B+Tree implementation** <br> 
-I was not able to figure out how to assign pointers to point to persistent storage in the hard disk. Therefore, I decided to store the data within the Leaf Nodes in heap memory instead. It turns out implementing a data structure from scratch, like designing my own test cases with expected input and output values, is way more tricky than I thought. Also, Memory allocation and management with plane pointer for more than a few lines of code is way more difficult than expected. Right now, the so called B+Tree database feels like a associative array in practice but with the item in sorted order. <br>
+I was not able to figure out how to assign pointers to point to persistent storage in the hard disk. Therefore, I decided to store the data within the Leaf Nodes in heap memory instead. It turns out implementing a data structure from scratch, like designing my own test cases with expected input and output values, is way more tricky than I thought. Also, Memory allocation and management with plane pointer for more than a few lines of code is way more difficult than expected. In addition, for simplicity, the current B+Tree database does NOT accept duplicate index key. Right now, the so called B+Tree database feels like a associative array in practice but with the item in sorted order. <br>
 
 **Memory Leaks Status** <br>
 I thought the project might be a good chance to practice pointer and memory management.
@@ -60,6 +60,7 @@ Follow the below steps to set up and run the program:
 5. Run ```./run_app``` 
 
 The demo uses the CRUD operations to store the CSPB courses in the B+Tree. The course code number serves as the index key and the course title serves as the content string value. <br>
+Please note that the current B+Tree database only accept UNIQUE index key. <br>
 You can modify the function calls in main.cpp to use the CRUD <br>
 
 
