@@ -25,28 +25,29 @@ But ended up in an infinite loop of memory leaks debugging. <br>
 
 main.cpp <br> 
 ```
-==1789== LEAK SUMMARY:
-==1789==    definitely lost: 8 bytes in 1 blocks
-==1789==    indirectly lost: 5,342 bytes in 46 blocks
-==1789==      possibly lost: 0 bytes in 0 blocks
-==1789==    still reachable: 0 bytes in 0 blocks
-==1789==         suppressed: 0 bytes in 0 blocks
-==1789==
-==1789== For lists of detected and suppressed errors, rerun with: -s
-==1789== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+==2489== HEAP SUMMARY:
+==2489==     in use at exit: 0 bytes in 0 blocks
+==2489==   total heap usage: 191 allocs, 191 frees, 86,964 bytes allocated
+==2489==
+==2489== All heap blocks were freed -- no leaks are possible
+==2489==
+==2489== For lists of detected and suppressed errors, rerun with: -s
+==2489== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0
 ```
 
 Test file<br>
 ```
-==1790== LEAK SUMMARY:
-==1790==    definitely lost: 392 bytes in 14 blocks
-==1790==    indirectly lost: 24,358 bytes in 113 blocks
-==1790==      possibly lost: 0 bytes in 0 blocks
-==1790==    still reachable: 4,896 bytes in 17 blocks
-==1790==         suppressed: 0 bytes in 0 blocks
-==1790==
-==1790== For lists of detected and suppressed errors, rerun with: -s
-==1790== ERROR SUMMARY: 24 errors from 19 contexts (suppressed: 0 from 0)
+==2491== LEAK SUMMARY:
+==2491==    definitely lost: 392 bytes in 14 blocks
+==2491==    indirectly lost: 24,358 bytes in 113 blocks
+==2491==      possibly lost: 0 bytes in 0 blocks
+==2491==    still reachable: 4,896 bytes in 17 blocks
+==2491==         suppressed: 0 bytes in 0 blocks
+==2491== Reachable blocks (those to which a pointer was found) are not shown.
+==2491== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==2491==
+==2491== For lists of detected and suppressed errors, rerun with: -s
+==2491== ERROR SUMMARY: 14 errors from 14 contexts (suppressed: 0 from 0
 ```
 
 
