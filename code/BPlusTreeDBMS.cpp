@@ -3,13 +3,16 @@
 
 
 // constructor, initialize class variables and pointers here if need.
-BPlusTreeDBMS::BPlusTreeDBMS(){
+BPlusTreeDBMS::BPlusTreeDBMS()
+{
   this->_bplustree = NULL;
     
 }
 
 //deconstructor,
-BPlusTreeDBMS::~BPlusTreeDBMS(){
+BPlusTreeDBMS::~BPlusTreeDBMS()
+{
+  delete this->_bplustree;
 }
 
 bool BPlusTreeDBMS::Create(int key, std::string value)

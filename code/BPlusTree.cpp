@@ -12,6 +12,7 @@ BPlusTree::~BPlusTree()
     {
         DestroyRecursive(this->getRootNode());
     }
+    delete this->getRootNode();
 
 }
 
@@ -31,15 +32,6 @@ void BPlusTree::DestroyRecursive(Node* node)
             node->accessChildren()[i] = NULL;
         }
     }
-    // for (unsigned int i=0; i < node->getSlots() + 1; ++i)
-    // {
-    //     if (node->accessChildren()[i] != NULL)
-    //     {
-    //         delete node->accessChildren()[i];
-    //         node->accessChildren()[i] = NULL;
-    //     }
-    // }
-    delete node; 
 
 }
 
@@ -590,9 +582,9 @@ bool BPlusTree::Delete(int key)
 
 
 
-bool BPlusTree::delete_entry(Node* N, int key, Node* pointer)
+void BPlusTree::delete_entry(Node* N, int key, Node* pointer)
 {
-    
+
     // delete key-pointer pair (K, P) from N
     unsigned int index_of_key = N->getIndexByKey(key);
     for (unsigned int i = index_of_key; i < N->getSlots(); ++i)
@@ -934,7 +926,7 @@ bool BPlusTree::delete_entry(Node* N, int key, Node* pointer)
         }
 
     }
-    return false; 
+    // return false; 
 }
 
 

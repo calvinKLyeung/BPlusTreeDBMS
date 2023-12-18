@@ -48,7 +48,7 @@ public:
 
     // Delete 
     bool Delete(int key);
-    bool delete_entry(Node* N, int key, Node* pointer);
+    void delete_entry(Node* N, int key, Node* pointer);
     bool getPrevOrNextChildFromParentOfN(Node* P, Node* N, Node* &NPrime);
     int findIndexOfKPrime(Node* P, Node* N, Node* NPrime, bool retrieved_prev_child);
     void swap_pointers(Node* &N, Node* &NPrime);
